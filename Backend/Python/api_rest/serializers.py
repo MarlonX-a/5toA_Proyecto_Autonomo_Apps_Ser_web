@@ -60,37 +60,66 @@ class ProveedorSerializer(serializers.ModelSerializer):
         return proveedor
 
 
-class ServicioUbicacionSerializer(serializers.ModelSerializer):
-    ubicacion = UbicacionSerializer()
+class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.ServicioUbicacion
-        fields = ['id', 'ubicacion']
+        model = models.Categoria
+        fields = '__all__'
+
 
 class ServicioSerializer(serializers.ModelSerializer):
-    proveedor = ProveedorSerializer(read_only=True)
-    ubicaciones = UbicacionSerializer(many=True, read_only=True)
+    proveedor = serializers.PrimaryKeyRelatedField(queryset=models.Proveedor.objects.all())
+    categoria = serializers.PrimaryKeyRelatedField(queryset=models.Categoria.objects.all())
 
     class Meta:
         model = models.Servicio
-        fields = ['id', 'proveedor','nombre_servicio', 'descripcion', 'categoria', 'duracion', 'ubicaciones']
+        fields = '__all__'
+
+
+class ServicioUbicacionSerializer(serializers.ModelSerializer):
+    ubicacion = serializers.PrimaryKeyRelatedField(queryset=models.Ubicacion.objects.all())
+    servicio = serializers.PrimaryKeyRelatedField(queryset=models.Servicio.objects.all())
+    class Meta:
+        model = models.ServicioUbicacion
+        fields = '__all__'
+
+class FotoServicio(serializers.ModelSerializer):
+    servicio = serializers.PrimaryKeyRelatedField(queryset=models.Servicio.objects.all())
+    class Meta:
+        model = models.FotoServicio
+        fields = '__all__'
 
 class ReservaSerializer(serializers.ModelSerializer):
-    cliente = ClienteSerializer(read_only=True)
-    servicio = ServicioSerializer(read_only=True)
+    cliente = serializers.PrimaryKeyRelatedField(queryset=models.Cliente.objects.all())
     class Meta:
         model = models.Reserva
-        fields = ['id', 'cliente', 'servicio', 'fecha', 'estado']
+        fields = '__all__'
+
+class ReservaServicioSerializer(serializers.ModelSerializer):
+    reserva = serializers.PrimaryKeyRelatedField(queryset=models.Reserva.objects.all())
+    servicio = serializers.PrimaryKeyRelatedField(queryset=models.Servicio.objects.all())
+    class Meta:
+        model = models.ReservaServicio
+        fields = '__all__'
+
 
 class PagoSerializer(serializers.ModelSerializer):
-    reserva = ReservaSerializer(read_only=True)
+    reserva = serializers.PrimaryKeyRelatedField(queryset=models.Reserva.objects.all())
     class Meta:
         model = models.Pago
-        fields = ['id', 'reserva', 'monto', 'metodo_pago', 'estado']
-
+        fields = '__all__'
+        
 class ComentarioSerializer(serializers.ModelSerializer):
-    cliente = ClienteSerializer(read_only=True)
-    servicio = ServicioSerializer(read_only=True)
+    cliente = serializers.PrimaryKeyRelatedField(queryset=models.Cliente.objects.all())
+    servicio = serializers.PrimaryKeyRelatedField(queryset=models.Servicio.objects.all())
 
     class Meta:
         model = models.Comentario
-        fields = ['id', 'cliente', 'servicio', 'fecha']
+        fields = '__all__'
+
+class CalificacionSerializer(serializers.ModelSerializer):
+    cliente = serializers.PrimaryKeyRelatedField(queryset=models.Cliente.objects.all())
+    servicio = serializers.PrimaryKeyRelatedField(queryset=models.Servicio.objects.all())
+
+    class Meta:
+        model = models.Calificacion
+        fields = '__all__'

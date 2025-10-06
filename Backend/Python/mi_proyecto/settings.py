@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'api_rest',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +130,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ORIGINS = []
 
 AUTH_USER_MODEL = 'api_rest.User'
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API_REST FINDYOURWORK',
+    'DESCRIPTION': 'API REST para la aplicacion FindYourWork',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
+

@@ -12,7 +12,7 @@ from drf_spectacular.utils import extend_schema
 
 # Create your views here.
 @extend_schema(
-    request=serializers.UserSerializer,  # ejemplo genérico
+    request=serializers.UserSerializer,  
     responses={201: serializers.UserSerializer}
 )
 class RegisterView(GenericAPIView):
@@ -102,7 +102,7 @@ class ServicioUbicacionView(viewsets.ModelViewSet):
     queryset = models.ServicioUbicacion.objects.all()
 
 class FotoServicioView(viewsets.ModelViewSet):
-    serializer_class = serializers.FotoServicio
+    serializer_class = serializers.FotoServicioSerializer
     queryset = models.FotoServicio.objects.all()
 
 class ReservaView(viewsets.ModelViewSet):

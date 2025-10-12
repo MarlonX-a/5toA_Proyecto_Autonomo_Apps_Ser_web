@@ -1,0 +1,165 @@
+body {
+  background: #202020;
+  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  background-color: #2c2c2c;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.navbar li {
+  margin: 0 1rem;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: 500;
+  transition: color 0.2s ease-in-out;
+}
+
+.navbar a:hover {
+  color: #00bcd4;
+}
+
+form {
+  background-color: #2c2c2c;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 400px;
+  margin: 2rem auto;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+label {
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+  color: #cccccc;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background: #1a1a1a;
+  color: white;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #00bcd4;
+}
+
+button {
+  background: #00bcd4;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease-in-out;
+}
+
+button:hover {
+  background: #0097a7;
+}
+
+a {
+  color: #00bcd4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.card {
+  background: #2c2c2c;
+  padding: 1rem;
+  border-radius: 8px;
+  color: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+
+.homepage-container {
+  padding: 2rem;
+  text-align: center;
+}
+
+.banner {
+  padding: 4rem 2rem;
+}
+
+.banner h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.banner p {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.banner-buttons button {
+  margin: 0 0.5rem;
+  padding: 0.8rem 1.5rem;
+}
+
+.categories {
+  margin-top: 3rem;
+}
+
+.categories h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.category-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.category-card {
+  background-color: #2c2c2c;
+  padding: 1.5rem 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  min-width: 150px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  background-color: #00bcd4;
+  color: #202020;
+}

@@ -1,0 +1,191 @@
+
+scalar Date
+scalar Time
+scalar UUID
+scalar Float
+scalar Int
+
+# -----------------------------
+# User
+# -----------------------------
+type User {
+  id: UUID!
+  username: String!
+  password: String!
+  email: String!
+  rol: String!
+  cliente: Cliente
+  proveedor: Proveedor
+}
+
+# -----------------------------
+# Cliente
+# -----------------------------
+type Cliente {
+  id: UUID!
+  telefono: Float!
+  user: User!
+  calificaciones: [Calificacion!]
+  comentarios: [Comentario!]
+  reservas: [Reserva!]
+}
+
+# -----------------------------
+# Proveedor
+# -----------------------------
+type Proveedor {
+  id: UUID!
+  descripcion: String!
+  telefono: Float!
+  user: User
+  servicios: [Servicio!]
+}
+
+# -----------------------------
+# Categoria
+# -----------------------------
+type Categoria {
+  id: UUID!
+  nombre: String!
+  descripcion: String!
+  servicios: [Servicio!]
+}
+
+# -----------------------------
+# Servicio
+# -----------------------------
+type Servicio {
+  id: UUID!
+  proveedor: Proveedor!
+  categoria: Categoria!
+  nombre_servicio: String!
+  descripcion: String!
+  duracion: String!
+  calificaciones: [Calificacion!]
+  comentarios: [Comentario!]
+  fotos: [FotoServicio!]
+  ubicaciones: [ServicioUbicacion!]
+  reservas: [ReservaServicio!]
+}
+
+# -----------------------------
+# Calificacion
+# -----------------------------
+type Calificacion {
+  id: UUID!
+  cliente: Cliente!
+  servicio: Servicio!
+  fecha: Date!
+  puntuacion: Int!
+  comentario_extra: String
+}
+
+# -----------------------------
+# Comentario
+# -----------------------------
+type Comentario {
+  id: UUID!
+  cliente: Cliente!
+  servicio: Servicio!
+  titulo: String!
+  texto: String!
+  fecha: Date!
+}
+
+# -----------------------------
+# FotoServicio
+# -----------------------------
+type FotoServicio {
+  id: UUID!
+  servicio: Servicio!
+  url_foto: String!
+  descripcion: String
+}
+
+# -----------------------------
+# Reserva
+# -----------------------------
+type Reserva {
+  id: UUID!
+  cliente: Cliente!
+  fecha: Date!
+  hora: Time!
+  estado: String!
+  total_estimado: Float!
+  pagos: [Pago!]
+  reservaServicios: [ReservaServicio!]
+}
+
+# -----------------------------
+# ReservaServicio
+# -----------------------------
+type ReservaServicio {
+  id: UUID!
+  reserva: Reserva!
+  servicio: Servicio!
+  cantidad: Int!
+  precio_unitario: Float!
+  subtotal: Float!
+}
+
+# -----------------------------
+# Pago
+# -----------------------------
+type Pago {
+  id: UUID!
+  reserva: Reserva!
+  monto: Float!
+  metodo_pago: String!
+  estado: String!
+  referencia: String!
+  fecha_pago: Date!
+}
+
+# -----------------------------
+# Ubicacion
+# -----------------------------
+type Ubicacion {
+  id: UUID!
+  direccion: String!
+  ciudad: String!
+  provincia: String!
+  pais: String!
+  servicios: [ServicioUbicacion!]
+}
+
+# -----------------------------
+# ServicioUbicacion
+# -----------------------------
+type ServicioUbicacion {
+  id: UUID!
+  servicio: Servicio!
+  ubicacion: Ubicacion!
+}
+
+# -----------------------------
+# Queries y Mutations
+# -----------------------------
+type Query {
+  users: [User!]
+  clientes: [Cliente!]
+  proveedores: [Proveedor!]
+  categorias: [Categoria!]
+  servicios: [Servicio!]
+  calificaciones: [Calificacion!]
+  comentarios: [Comentario!]
+  fotosServicios: [FotoServicio!]
+  reservas: [Reserva!]
+  reservaServicios: [ReservaServicio!]
+  pagos: [Pago!]
+  ubicaciones: [Ubicacion!]
+  servicioUbicaciones: [ServicioUbicacion!]
+}
+
+type Mutation {
+  # Ejemplo de mutations básicas
+  createUser(username: String!, password: String!, email: String!, rol: String!): User!
+  createCliente(user_id: UUID!, telefono: Float!): Cliente!
+  createProveedor(user_id: UUID, descripcion: String!, telefono: Float!): Proveedor!
+  createCategoria(nombre: String!, descripcion: String!): Categoria!
+  createServicio(proveedor_id: UUID!, categoria_id: UUID!, nombre_servicio: String!, descripcion: String!, duracion: String!): Servicio!
+}

@@ -4,4 +4,12 @@ package graph
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
 
-type Resolver struct{}
+//imports para lo que se necesite
+import (
+	"github.com/jmoiron/sqlx" // <- asegúrate de importar sqlx
+)
+
+// Resolvers para el backend
+type Resolver struct {
+	DB *sqlx.DB
+}

@@ -11,14 +11,291 @@ import (
 	"github.com/MarlonX-a/5toA_Proyecto_Autonomo_Apps_Ser_web/Golang/graph/model"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+// Ejemplo: Mutation para crear usuario
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
+	user := &model.User{
+		Username:  input.Username,
+		Email:     input.Email,
+		FirstName: input.FirstName,
+		LastName:  input.LastName,
+		Rol:       input.Rol,
+	}
+	query := "INSERT INTO users (username,email,first_name,last_name,rol,created_at,updated_at) VALUES ($1,$2,$3,$4,$5,NOW(),NOW()) RETURNING id"
+	err := r.DB.QueryRow(query, user.Username, user.Email, user.FirstName, user.LastName, user.Rol).Scan(&user.ID)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
+// UpdateUser is the resolver for the updateUser field.
+func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input model.UserInput) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: UpdateUser - updateUser"))
+}
+
+// DeleteUser is the resolver for the deleteUser field.
+func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteUser - deleteUser"))
+}
+
+// CreateUbicacion is the resolver for the createUbicacion field.
+func (r *mutationResolver) CreateUbicacion(ctx context.Context, input model.UbicacionInput) (*model.Ubicacion, error) {
+	panic(fmt.Errorf("not implemented: CreateUbicacion - createUbicacion"))
+}
+
+// UpdateUbicacion is the resolver for the updateUbicacion field.
+func (r *mutationResolver) UpdateUbicacion(ctx context.Context, id string, input model.UbicacionInput) (*model.Ubicacion, error) {
+	panic(fmt.Errorf("not implemented: UpdateUbicacion - updateUbicacion"))
+}
+
+// DeleteUbicacion is the resolver for the deleteUbicacion field.
+func (r *mutationResolver) DeleteUbicacion(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteUbicacion - deleteUbicacion"))
+}
+
+// CreateCliente is the resolver for the createCliente field.
+func (r *mutationResolver) CreateCliente(ctx context.Context, input model.ClienteInput) (*model.Cliente, error) {
+	panic(fmt.Errorf("not implemented: CreateCliente - createCliente"))
+}
+
+// UpdateCliente is the resolver for the updateCliente field.
+func (r *mutationResolver) UpdateCliente(ctx context.Context, id string, input model.ClienteInput) (*model.Cliente, error) {
+	panic(fmt.Errorf("not implemented: UpdateCliente - updateCliente"))
+}
+
+// DeleteCliente is the resolver for the deleteCliente field.
+func (r *mutationResolver) DeleteCliente(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteCliente - deleteCliente"))
+}
+
+// CreateProveedor is the resolver for the createProveedor field.
+func (r *mutationResolver) CreateProveedor(ctx context.Context, input model.ProveedorInput) (*model.Proveedor, error) {
+	panic(fmt.Errorf("not implemented: CreateProveedor - createProveedor"))
+}
+
+// UpdateProveedor is the resolver for the updateProveedor field.
+func (r *mutationResolver) UpdateProveedor(ctx context.Context, id string, input model.ProveedorInput) (*model.Proveedor, error) {
+	panic(fmt.Errorf("not implemented: UpdateProveedor - updateProveedor"))
+}
+
+// DeleteProveedor is the resolver for the deleteProveedor field.
+func (r *mutationResolver) DeleteProveedor(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteProveedor - deleteProveedor"))
+}
+
+// CreateCategoria is the resolver for the createCategoria field.
+func (r *mutationResolver) CreateCategoria(ctx context.Context, input model.CategoriaInput) (*model.Categoria, error) {
+	panic(fmt.Errorf("not implemented: CreateCategoria - createCategoria"))
+}
+
+// UpdateCategoria is the resolver for the updateCategoria field.
+func (r *mutationResolver) UpdateCategoria(ctx context.Context, id string, input model.CategoriaInput) (*model.Categoria, error) {
+	panic(fmt.Errorf("not implemented: UpdateCategoria - updateCategoria"))
+}
+
+// DeleteCategoria is the resolver for the deleteCategoria field.
+func (r *mutationResolver) DeleteCategoria(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteCategoria - deleteCategoria"))
+}
+
+// CreateServicio is the resolver for the createServicio field.
+func (r *mutationResolver) CreateServicio(ctx context.Context, input model.ServicioInput) (*model.Servicio, error) {
+	panic(fmt.Errorf("not implemented: CreateServicio - createServicio"))
+}
+
+// UpdateServicio is the resolver for the updateServicio field.
+func (r *mutationResolver) UpdateServicio(ctx context.Context, id string, input model.ServicioInput) (*model.Servicio, error) {
+	panic(fmt.Errorf("not implemented: UpdateServicio - updateServicio"))
+}
+
+// DeleteServicio is the resolver for the deleteServicio field.
+func (r *mutationResolver) DeleteServicio(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteServicio - deleteServicio"))
+}
+
+// CreateFotoServicio is the resolver for the createFotoServicio field.
+func (r *mutationResolver) CreateFotoServicio(ctx context.Context, input model.FotoServicioInput) (*model.FotoServicio, error) {
+	panic(fmt.Errorf("not implemented: CreateFotoServicio - createFotoServicio"))
+}
+
+// UpdateFotoServicio is the resolver for the updateFotoServicio field.
+func (r *mutationResolver) UpdateFotoServicio(ctx context.Context, id string, input model.FotoServicioInput) (*model.FotoServicio, error) {
+	panic(fmt.Errorf("not implemented: UpdateFotoServicio - updateFotoServicio"))
+}
+
+// DeleteFotoServicio is the resolver for the deleteFotoServicio field.
+func (r *mutationResolver) DeleteFotoServicio(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteFotoServicio - deleteFotoServicio"))
+}
+
+// CreateReserva is the resolver for the createReserva field.
+func (r *mutationResolver) CreateReserva(ctx context.Context, input model.ReservaInput) (*model.Reserva, error) {
+	panic(fmt.Errorf("not implemented: CreateReserva - createReserva"))
+}
+
+// UpdateReserva is the resolver for the updateReserva field.
+func (r *mutationResolver) UpdateReserva(ctx context.Context, id string, input model.ReservaInput) (*model.Reserva, error) {
+	panic(fmt.Errorf("not implemented: UpdateReserva - updateReserva"))
+}
+
+// DeleteReserva is the resolver for the deleteReserva field.
+func (r *mutationResolver) DeleteReserva(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteReserva - deleteReserva"))
+}
+
+// CreateReservaServicio is the resolver for the createReservaServicio field.
+func (r *mutationResolver) CreateReservaServicio(ctx context.Context, input model.ReservaServicioInput) (*model.ReservaServicio, error) {
+	panic(fmt.Errorf("not implemented: CreateReservaServicio - createReservaServicio"))
+}
+
+// UpdateReservaServicio is the resolver for the updateReservaServicio field.
+func (r *mutationResolver) UpdateReservaServicio(ctx context.Context, id string, input model.ReservaServicioInput) (*model.ReservaServicio, error) {
+	panic(fmt.Errorf("not implemented: UpdateReservaServicio - updateReservaServicio"))
+}
+
+// DeleteReservaServicio is the resolver for the deleteReservaServicio field.
+func (r *mutationResolver) DeleteReservaServicio(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteReservaServicio - deleteReservaServicio"))
+}
+
+// CreatePago is the resolver for the createPago field.
+func (r *mutationResolver) CreatePago(ctx context.Context, input model.PagoInput) (*model.Pago, error) {
+	panic(fmt.Errorf("not implemented: CreatePago - createPago"))
+}
+
+// UpdatePago is the resolver for the updatePago field.
+func (r *mutationResolver) UpdatePago(ctx context.Context, id string, input model.PagoInput) (*model.Pago, error) {
+	panic(fmt.Errorf("not implemented: UpdatePago - updatePago"))
+}
+
+// DeletePago is the resolver for the deletePago field.
+func (r *mutationResolver) DeletePago(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeletePago - deletePago"))
+}
+
+// CreateCalificacion is the resolver for the createCalificacion field.
+func (r *mutationResolver) CreateCalificacion(ctx context.Context, input model.CalificacionInput) (*model.Calificacion, error) {
+	panic(fmt.Errorf("not implemented: CreateCalificacion - createCalificacion"))
+}
+
+// UpdateCalificacion is the resolver for the updateCalificacion field.
+func (r *mutationResolver) UpdateCalificacion(ctx context.Context, id string, input model.CalificacionInput) (*model.Calificacion, error) {
+	panic(fmt.Errorf("not implemented: UpdateCalificacion - updateCalificacion"))
+}
+
+// DeleteCalificacion is the resolver for the deleteCalificacion field.
+func (r *mutationResolver) DeleteCalificacion(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteCalificacion - deleteCalificacion"))
+}
+
+// CreateComentario is the resolver for the createComentario field.
+func (r *mutationResolver) CreateComentario(ctx context.Context, input model.ComentarioInput) (*model.Comentario, error) {
+	panic(fmt.Errorf("not implemented: CreateComentario - createComentario"))
+}
+
+// UpdateComentario is the resolver for the updateComentario field.
+func (r *mutationResolver) UpdateComentario(ctx context.Context, id string, input model.ComentarioInput) (*model.Comentario, error) {
+	panic(fmt.Errorf("not implemented: UpdateComentario - updateComentario"))
+}
+
+// DeleteComentario is the resolver for the deleteComentario field.
+func (r *mutationResolver) DeleteComentario(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteComentario - deleteComentario"))
+}
+
+// Ejemplo: Query de todos los usuarios
+func (r *queryResolver) Users(ctx context.Context, pagination *model.Pagination) ([]*model.User, error) {
+	var users []*model.User
+	err := r.DB.Select(&users, "SELECT * FROM users")
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
+// User is the resolver for the user field.
+func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: User - user"))
+}
+
+// Ubicaciones is the resolver for the ubicaciones field.
+func (r *queryResolver) Ubicaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Ubicacion, error) {
+	panic(fmt.Errorf("not implemented: Ubicaciones - ubicaciones"))
+}
+
+// Ubicacion is the resolver for the ubicacion field.
+func (r *queryResolver) Ubicacion(ctx context.Context, id string) (*model.Ubicacion, error) {
+	panic(fmt.Errorf("not implemented: Ubicacion - ubicacion"))
+}
+
+// Clientes is the resolver for the clientes field.
+func (r *queryResolver) Clientes(ctx context.Context, pagination *model.Pagination) ([]*model.Cliente, error) {
+	panic(fmt.Errorf("not implemented: Clientes - clientes"))
+}
+
+// Cliente is the resolver for the cliente field.
+func (r *queryResolver) Cliente(ctx context.Context, id string) (*model.Cliente, error) {
+	panic(fmt.Errorf("not implemented: Cliente - cliente"))
+}
+
+// Proveedores is the resolver for the proveedores field.
+func (r *queryResolver) Proveedores(ctx context.Context, pagination *model.Pagination) ([]*model.Proveedor, error) {
+	panic(fmt.Errorf("not implemented: Proveedores - proveedores"))
+}
+
+// Proveedor is the resolver for the proveedor field.
+func (r *queryResolver) Proveedor(ctx context.Context, id string) (*model.Proveedor, error) {
+	panic(fmt.Errorf("not implemented: Proveedor - proveedor"))
+}
+
+// Categorias is the resolver for the categorias field.
+func (r *queryResolver) Categorias(ctx context.Context, pagination *model.Pagination) ([]*model.Categoria, error) {
+	panic(fmt.Errorf("not implemented: Categorias - categorias"))
+}
+
+// Categoria is the resolver for the categoria field.
+func (r *queryResolver) Categoria(ctx context.Context, id string) (*model.Categoria, error) {
+	panic(fmt.Errorf("not implemented: Categoria - categoria"))
+}
+
+// Servicios is the resolver for the servicios field.
+func (r *queryResolver) Servicios(ctx context.Context, filter *model.ServicioFilter, pagination *model.Pagination) ([]*model.Servicio, error) {
+	panic(fmt.Errorf("not implemented: Servicios - servicios"))
+}
+
+// Servicio is the resolver for the servicio field.
+func (r *queryResolver) Servicio(ctx context.Context, id string) (*model.Servicio, error) {
+	panic(fmt.Errorf("not implemented: Servicio - servicio"))
+}
+
+// Reservas is the resolver for the reservas field.
+func (r *queryResolver) Reservas(ctx context.Context, filter *model.ReservaFilter, pagination *model.Pagination) ([]*model.Reserva, error) {
+	panic(fmt.Errorf("not implemented: Reservas - reservas"))
+}
+
+// Reserva is the resolver for the reserva field.
+func (r *queryResolver) Reserva(ctx context.Context, id string) (*model.Reserva, error) {
+	panic(fmt.Errorf("not implemented: Reserva - reserva"))
+}
+
+// Pagos is the resolver for the pagos field.
+func (r *queryResolver) Pagos(ctx context.Context, pagination *model.Pagination) ([]*model.Pago, error) {
+	panic(fmt.Errorf("not implemented: Pagos - pagos"))
+}
+
+// Pago is the resolver for the pago field.
+func (r *queryResolver) Pago(ctx context.Context, id string) (*model.Pago, error) {
+	panic(fmt.Errorf("not implemented: Pago - pago"))
+}
+
+// Calificaciones is the resolver for the calificaciones field.
+func (r *queryResolver) Calificaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Calificacion, error) {
+	panic(fmt.Errorf("not implemented: Calificaciones - calificaciones"))
+}
+
+// Comentarios is the resolver for the comentarios field.
+func (r *queryResolver) Comentarios(ctx context.Context, pagination *model.Pagination) ([]*model.Comentario, error) {
+	panic(fmt.Errorf("not implemented: Comentarios - comentarios"))
 }
 
 // Mutation returns MutationResolver implementation.

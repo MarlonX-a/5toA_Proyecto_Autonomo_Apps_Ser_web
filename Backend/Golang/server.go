@@ -17,27 +17,44 @@ import (
 const defaultPort = "9090"
 
 func main() {
+	// Obtener puerto desde variable de entorno
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
 	}
 
-	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	// 1️⃣ Conectar a la base de datos primero
+	graph.ConnectDB()
 
+	// 2️⃣ Crear resolver inyectando la conexión a DB
+	resolver := &graph.Resolver{
+		DB: graph.DB,
+	}
+
+	// 3️⃣ Crear servidor gqlgen
+	srv := handler.NewDefaultServer(
+		graph.NewExecutableSchema(graph.Config{Resolvers: resolver}),
+	)
+
+	// 4️⃣ Transportes HTTP
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})
 	srv.AddTransport(transport.POST{})
 
-	srv.SetQueryCache(lru.New[*ast.QueryDocument](1000))
+	// 5️⃣ Caché para queries
+	srv.SetQueryCache(lru.New[*ast.QueryDocument](100)) // tamaño de caché explícito
 
+	// 6️⃣ Extensiones
 	srv.Use(extension.Introspection{})
 	srv.Use(extension.AutomaticPersistedQuery{
-		Cache: lru.New[string](100),
+		Cache: lru.New[string](100), // tamaño de caché explícito y tipo genérico
 	})
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	// 7️⃣ Handlers HTTP
+	http.Handle("/", playground.Handler("GraphQL Playground", "/query"))
 	http.Handle("/query", srv)
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	// 8️⃣ Iniciar servidor
+	log.Printf("Servidor corriendo en http://localhost:%s/ para GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

@@ -4,6 +4,8 @@ go 1.25.1
 
 require (
 	github.com/99designs/gqlgen v0.17.81
+	github.com/jmoiron/sqlx v1.4.0
+	github.com/lib/pq v1.10.9
 	github.com/vektah/gqlparser/v2 v2.5.30
 )
 
@@ -14,4 +16,5 @@ require (
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/sosodev/duration v1.3.1 // indirect
+	golang.org/x/net v0.46.0 // indirect
 )

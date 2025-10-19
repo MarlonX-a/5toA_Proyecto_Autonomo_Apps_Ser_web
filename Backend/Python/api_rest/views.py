@@ -48,30 +48,68 @@ class RegisterView(GenericAPIView):
     request=serializers.UserSerializer,
     responses={200: serializers.UserSerializer}
 )
+
 class LoginView(GenericAPIView):
     serializer_class = serializers.UserSerializer
 
     def post(self, request):
-        user = get_object_or_404(models.User, username=request.data.get('username'))
+        username = request.data.get('username')
+        password = request.data.get('password')
 
-        if not user.check_password(request.data.get('password')):
-            return Response({"error": "Credenciales inválidadas"}, status=status.HTTP_400_BAD_REQUEST)
-        token, created = Token.objects.get_or_create(user=user)
-        serializers = self.serializer_class(instance=user)
-        return Response({"token": token.key, "user": serializers.data}, status=status.HTTP_200_OK)
+        if not username or not password:
+            return Response({"error": "Username y password son obligatorios"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = models.User.objects.get(username=username)
+        except models.User.DoesNotExist:
+            return Response({"error": "Credenciales inválidas"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not user.check_password(password):
+            return Response({"error": "Credenciales inválidas"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Generar token
+        token, _ = Token.objects.get_or_create(user=user)
+        user_serialized = self.serializer_class(user)
+
+        return Response({"token": token.key, "user": user_serialized.data}, status=status.HTTP_200_OK)
 
 
 @extend_schema(
-    responses={200: serializers.UserSerializer}
-    )
+    responses={200: serializers.UserSerializer}  # opcional: puedes crear un serializer de perfil completo
+)
 class ProfileView(GenericAPIView):
-    serializers_class = serializers.UserSerializer
+    serializer_class = serializers.UserSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        serializers = self.serializers_class(instance=request.user)
-        return Response({"user": serializers.data}, status=status.HTTP_200_OK)
+        user = request.user
+
+        # Serializamos el user
+        perfil_data = {"user": self.serializer_class(instance=user).data}
+
+        # Agregamos cliente o proveedor con id
+        if hasattr(user, "cliente"):
+            cliente = user.cliente
+            perfil_data.update({
+                "id": cliente.id,  # ✅ id del registro cliente
+                "rol": "cliente",
+                "telefono": cliente.telefono,
+                "ubicacion": serializers.UbicacionSerializer(cliente.ubicacion).data if cliente.ubicacion else None
+            })
+        elif hasattr(user, "proveedor"):
+            proveedor = user.proveedor
+            perfil_data.update({
+                "id": proveedor.id,  # ✅ id del registro proveedor
+                "rol": "proveedor",
+                "telefono": proveedor.telefono,
+                "descripcion": proveedor.descripcion,
+                "ubicacion": serializers.UbicacionSerializer(proveedor.ubicacion).data if proveedor.ubicacion else None
+            })
+        else:
+            perfil_data.update({"rol": None})
+
+        return Response(perfil_data, status=status.HTTP_200_OK)
 
 
 

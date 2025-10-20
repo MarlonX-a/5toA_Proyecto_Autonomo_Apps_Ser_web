@@ -3,6 +3,10 @@
 package model
 
 import (
+	"bytes"
+	"fmt"
+	"io"
+	"strconv"
 	"time"
 )
 
@@ -74,6 +78,12 @@ type ComentarioInput struct {
 	Respuesta  *string `json:"respuesta,omitempty"`
 }
 
+type DistribucionCalificacion struct {
+	Puntuacion int32   `json:"puntuacion"`
+	Cantidad   int32   `json:"cantidad"`
+	Porcentaje float64 `json:"porcentaje"`
+}
+
 type FotoServicio struct {
 	ID          string    `json:"id"`
 	Servicio    *Servicio `json:"servicio"`
@@ -87,6 +97,21 @@ type FotoServicioInput struct {
 	ServicioID  string  `json:"servicioId"`
 	URLFoto     string  `json:"urlFoto"`
 	Descripcion *string `json:"descripcion,omitempty"`
+}
+
+type MetricasFilter struct {
+	FechaDesde *string         `json:"fechaDesde,omitempty"`
+	FechaHasta *string         `json:"fechaHasta,omitempty"`
+	AgruparPor *AgrupacionTipo `json:"agruparPor,omitempty"`
+}
+
+type MetricasGenerales struct {
+	TotalUsuarios        int32   `json:"totalUsuarios"`
+	TotalProveedores     int32   `json:"totalProveedores"`
+	TotalServicios       int32   `json:"totalServicios"`
+	TotalReservas        int32   `json:"totalReservas"`
+	IngresosTotales      string  `json:"ingresosTotales"`
+	PromedioSatisfaccion float64 `json:"promedioSatisfaccion"`
 }
 
 type Mutation struct {
@@ -136,7 +161,53 @@ type ProveedorInput struct {
 	UbicacionID *string `json:"ubicacionId,omitempty"`
 }
 
+type PuntoTendencia struct {
+	Fecha    string  `json:"fecha"`
+	Valor    float64 `json:"valor"`
+	Etiqueta *string `json:"etiqueta,omitempty"`
+}
+
 type Query struct {
+}
+
+type ReporteCliente struct {
+	Cliente            *Cliente `json:"cliente"`
+	TotalReservas      int32    `json:"totalReservas"`
+	GastoTotal         string   `json:"gastoTotal"`
+	PromedioPorReserva string   `json:"promedioPorReserva"`
+	UltimaReserva      *string  `json:"ultimaReserva,omitempty"`
+}
+
+type ReporteFilter struct {
+	FechaDesde    *string `json:"fechaDesde,omitempty"`
+	FechaHasta    *string `json:"fechaHasta,omitempty"`
+	CategoriaID   *string `json:"categoriaId,omitempty"`
+	ProveedorID   *string `json:"proveedorId,omitempty"`
+	Ciudad        *string `json:"ciudad,omitempty"`
+	EstadoReserva *string `json:"estadoReserva,omitempty"`
+}
+
+type ReporteProveedor struct {
+	Proveedor            *Proveedor `json:"proveedor"`
+	TotalServicios       int32      `json:"totalServicios"`
+	IngresosTotales      string     `json:"ingresosTotales"`
+	PromedioCalificacion float64    `json:"promedioCalificacion"`
+	ServiciosActivos     int32      `json:"serviciosActivos"`
+}
+
+type ReporteSatisfaccion struct {
+	Servicio                   *Servicio                   `json:"servicio"`
+	PromedioCalificacion       float64                     `json:"promedioCalificacion"`
+	TotalCalificaciones        int32                       `json:"totalCalificaciones"`
+	DistribucionCalificaciones []*DistribucionCalificacion `json:"distribucionCalificaciones"`
+}
+
+type ReporteVentas struct {
+	Periodo              string             `json:"periodo"`
+	TotalVentas          string             `json:"totalVentas"`
+	CantidadReservas     int32              `json:"cantidadReservas"`
+	PromedioPorReserva   string             `json:"promedioPorReserva"`
+	ServiciosMasVendidos []*ServicioVendido `json:"serviciosMasVendidos"`
 }
 
 type Reserva struct {
@@ -226,6 +297,12 @@ type ServicioUbicacion struct {
 	UpdatedAt time.Time  `json:"updatedAt"`
 }
 
+type ServicioVendido struct {
+	Servicio          *Servicio `json:"servicio"`
+	CantidadVendida   int32     `json:"cantidadVendida"`
+	IngresosGenerados string    `json:"ingresosGenerados"`
+}
+
 type Ubicacion struct {
 	ID          string       `json:"id"`
 	Direccion   string       `json:"direccion"`
@@ -265,4 +342,63 @@ type UserInput struct {
 	FirstName *string `json:"firstName,omitempty"`
 	LastName  *string `json:"lastName,omitempty"`
 	Rol       string  `json:"rol"`
+}
+
+type AgrupacionTipo string
+
+const (
+	AgrupacionTipoDia    AgrupacionTipo = "DIA"
+	AgrupacionTipoSemana AgrupacionTipo = "SEMANA"
+	AgrupacionTipoMes    AgrupacionTipo = "MES"
+	AgrupacionTipoAno    AgrupacionTipo = "ANO"
+)
+
+var AllAgrupacionTipo = []AgrupacionTipo{
+	AgrupacionTipoDia,
+	AgrupacionTipoSemana,
+	AgrupacionTipoMes,
+	AgrupacionTipoAno,
+}
+
+func (e AgrupacionTipo) IsValid() bool {
+	switch e {
+	case AgrupacionTipoDia, AgrupacionTipoSemana, AgrupacionTipoMes, AgrupacionTipoAno:
+		return true
+	}
+	return false
+}
+
+func (e AgrupacionTipo) String() string {
+	return string(e)
+}
+
+func (e *AgrupacionTipo) UnmarshalGQL(v any) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = AgrupacionTipo(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid AgrupacionTipo", str)
+	}
+	return nil
+}
+
+func (e AgrupacionTipo) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+func (e *AgrupacionTipo) UnmarshalJSON(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	return e.UnmarshalGQL(s)
+}
+
+func (e AgrupacionTipo) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	e.MarshalGQL(&buf)
+	return buf.Bytes(), nil
 }

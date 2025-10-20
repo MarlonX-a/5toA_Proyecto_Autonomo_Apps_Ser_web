@@ -273,6 +273,88 @@ input Pagination {
   offset: Int
 }
 
+# Tipos para reportes analíticos
+type ReporteVentas {
+  periodo: String!
+  totalVentas: Decimal!
+  cantidadReservas: Int!
+  promedioPorReserva: Decimal!
+  serviciosMasVendidos: [ServicioVendido!]!
+}
+
+type ServicioVendido {
+  servicio: Servicio!
+  cantidadVendida: Int!
+  ingresosGenerados: Decimal!
+}
+
+type ReporteSatisfaccion {
+  servicio: Servicio!
+  promedioCalificacion: Float!
+  totalCalificaciones: Int!
+  distribucionCalificaciones: [DistribucionCalificacion!]!
+}
+
+type DistribucionCalificacion {
+  puntuacion: Int!
+  cantidad: Int!
+  porcentaje: Float!
+}
+
+type ReporteProveedor {
+  proveedor: Proveedor!
+  totalServicios: Int!
+  ingresosTotales: Decimal!
+  promedioCalificacion: Float!
+  serviciosActivos: Int!
+}
+
+type ReporteCliente {
+  cliente: Cliente!
+  totalReservas: Int!
+  gastoTotal: Decimal!
+  promedioPorReserva: Decimal!
+  ultimaReserva: Date
+}
+
+type MetricasGenerales {
+  totalUsuarios: Int!
+  totalProveedores: Int!
+  totalServicios: Int!
+  totalReservas: Int!
+  ingresosTotales: Decimal!
+  promedioSatisfaccion: Float!
+}
+
+# Filtros para reportes
+input ReporteFilter {
+  fechaDesde: Date
+  fechaHasta: Date
+  categoriaId: ID
+  proveedorId: ID
+  ciudad: String
+  estadoReserva: String
+}
+
+input MetricasFilter {
+  fechaDesde: Date
+  fechaHasta: Date
+  agruparPor: AgrupacionTipo
+}
+
+enum AgrupacionTipo {
+  DIA
+  SEMANA
+  MES
+  ANO
+}
+
+type PuntoTendencia {
+  fecha: String!
+  valor: Float!
+  etiqueta: String
+}
+
 # Query con la clase de limitacion que se creo antes para el limite
 type Query {
   users(pagination: Pagination): [User!]!
@@ -301,6 +383,22 @@ type Query {
 
   calificaciones(pagination: Pagination): [Calificacion!]!
   comentarios(pagination: Pagination): [Comentario!]!
+
+  # Reportes analíticos
+  reporteVentas(filter: ReporteFilter): ReporteVentas!
+  reporteSatisfaccion(filter: ReporteFilter): [ReporteSatisfaccion!]!
+  reporteProveedores(filter: ReporteFilter): [ReporteProveedor!]!
+  reporteClientes(filter: ReporteFilter): [ReporteCliente!]!
+  metricasGenerales(filter: MetricasFilter): MetricasGenerales!
+  
+  # Consultas optimizadas
+  serviciosMasPopulares(limit: Int): [ServicioVendido!]!
+  proveedoresMejorCalificados(limit: Int): [ReporteProveedor!]!
+  clientesMasActivos(limit: Int): [ReporteCliente!]!
+  
+  # Análisis de tendencias
+  tendenciasVentas(filter: MetricasFilter): [PuntoTendencia!]!
+  tendenciasSatisfaccion(filter: MetricasFilter): [PuntoTendencia!]!
 }
 
 # Mutaciones para crear cada dato dentro de nuestro modelo

@@ -7,25 +7,16 @@ package graph
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/MarlonX-a/5toA_Proyecto_Autonomo_Apps_Ser_web/Golang/graph/model"
 )
 
-// Ejemplo: Mutation para crear usuario
+// CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
-	user := &model.User{
-		Username:  input.Username,
-		Email:     input.Email,
-		FirstName: input.FirstName,
-		LastName:  input.LastName,
-		Rol:       input.Rol,
-	}
-	query := "INSERT INTO users (username,email,first_name,last_name,rol,created_at,updated_at) VALUES ($1,$2,$3,$4,$5,NOW(),NOW()) RETURNING id"
-	err := r.DB.QueryRow(query, user.Username, user.Email, user.FirstName, user.LastName, user.Rol).Scan(&user.ID)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
+	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
 }
 
 // UpdateUser is the resolver for the updateUser field.
@@ -203,14 +194,9 @@ func (r *mutationResolver) DeleteComentario(ctx context.Context, id string) (boo
 	panic(fmt.Errorf("not implemented: DeleteComentario - deleteComentario"))
 }
 
-// Ejemplo: Query de todos los usuarios
+// Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context, pagination *model.Pagination) ([]*model.User, error) {
-	var users []*model.User
-	err := r.DB.Select(&users, "SELECT * FROM users")
-	if err != nil {
-		return nil, err
-	}
-	return users, nil
+	panic(fmt.Errorf("not implemented: Users - users"))
 }
 
 // User is the resolver for the user field.
@@ -295,7 +281,679 @@ func (r *queryResolver) Calificaciones(ctx context.Context, pagination *model.Pa
 
 // Comentarios is the resolver for the comentarios field.
 func (r *queryResolver) Comentarios(ctx context.Context, pagination *model.Pagination) ([]*model.Comentario, error) {
-	panic(fmt.Errorf("not implemented: Comentarios - comentarios"))
+	var comentarios []*model.Comentario
+	query := "SELECT * FROM comentarios"
+
+	// Aplicar paginación si se proporciona
+	if pagination != nil {
+		if pagination.Limit != nil {
+			query += fmt.Sprintf(" LIMIT %d", *pagination.Limit)
+		}
+		if pagination.Offset != nil {
+			query += fmt.Sprintf(" OFFSET %d", *pagination.Offset)
+		}
+	}
+
+	err := r.DB.Select(&comentarios, query)
+	if err != nil {
+		return nil, err
+	}
+	return comentarios, nil
+}
+
+// ReporteVentas resolver
+func (r *queryResolver) ReporteVentas(ctx context.Context, filter *model.ReporteFilter) (*model.ReporteVentas, error) {
+	query := `
+		SELECT 
+			COUNT(r.id) as cantidad_reservas,
+			COALESCE(SUM(CAST(r.total_estimado AS DECIMAL)), 0) as total_ventas,
+			COALESCE(AVG(CAST(r.total_estimado AS DECIMAL)), 0) as promedio_por_reserva
+		FROM reservas r
+		WHERE r.estado = 'completada'
+	`
+
+	args := []interface{}{}
+	argIndex := 1
+
+	if filter != nil {
+		if filter.FechaDesde != nil {
+			query += fmt.Sprintf(" AND r.fecha >= $%d", argIndex)
+			args = append(args, *filter.FechaDesde)
+			argIndex++
+		}
+		if filter.FechaHasta != nil {
+			query += fmt.Sprintf(" AND r.fecha <= $%d", argIndex)
+			args = append(args, *filter.FechaHasta)
+			argIndex++
+		}
+		if filter.EstadoReserva != nil {
+			query += fmt.Sprintf(" AND r.estado = $%d", argIndex)
+			args = append(args, *filter.EstadoReserva)
+			argIndex++
+		}
+	}
+
+	var result struct {
+		CantidadReservas   int    `db:"cantidad_reservas"`
+		TotalVentas        string `db:"total_ventas"`
+		PromedioPorReserva string `db:"promedio_por_reserva"`
+	}
+
+	err := r.DB.Get(&result, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	// Obtener servicios más vendidos
+	serviciosVendidos, err := r.getServiciosMasVendidos(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	periodo := "Período analizado"
+	if filter != nil && filter.FechaDesde != nil && filter.FechaHasta != nil {
+		periodo = fmt.Sprintf("Del %s al %s", *filter.FechaDesde, *filter.FechaHasta)
+	}
+
+	reporte := &model.ReporteVentas{
+		Periodo:              periodo,
+		TotalVentas:          result.TotalVentas,
+		CantidadReservas:     int32(result.CantidadReservas),
+		PromedioPorReserva:   result.PromedioPorReserva,
+		ServiciosMasVendidos: serviciosVendidos,
+	}
+
+	return reporte, nil
+}
+
+// Reporte de satisfacción
+func (r *queryResolver) ReporteSatisfaccion(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteSatisfaccion, error) {
+	query := `
+		SELECT 
+			s.id,
+			s.nombre_servicio,
+			AVG(c.puntuacion) as promedio_calificacion,
+			COUNT(c.id) as total_calificaciones
+		FROM servicios s
+		LEFT JOIN calificaciones c ON s.id = c.servicio_id
+		WHERE c.id IS NOT NULL
+	`
+
+	args := []interface{}{}
+	argIndex := 1
+
+	if filter != nil {
+		if filter.FechaDesde != nil {
+			query += fmt.Sprintf(" AND c.fecha >= $%d", argIndex)
+			args = append(args, *filter.FechaDesde)
+			argIndex++
+		}
+		if filter.FechaHasta != nil {
+			query += fmt.Sprintf(" AND c.fecha <= $%d", argIndex)
+			args = append(args, *filter.FechaHasta)
+			argIndex++
+		}
+		if filter.CategoriaID != nil {
+			query += fmt.Sprintf(" AND s.categoria_id = $%d", argIndex)
+			args = append(args, *filter.CategoriaID)
+			argIndex++
+		}
+	}
+
+	query += " GROUP BY s.id, s.nombre_servicio ORDER BY promedio_calificacion DESC"
+
+	var resultados []struct {
+		ServicioID           string  `db:"id"`
+		NombreServicio       string  `db:"nombre_servicio"`
+		PromedioCalificacion float64 `db:"promedio_calificacion"`
+		TotalCalificaciones  int     `db:"total_calificaciones"`
+	}
+
+	err := r.DB.Select(&resultados, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	var reportesSatisfaccion []*model.ReporteSatisfaccion
+	for _, resultado := range resultados {
+		servicio := &model.Servicio{
+			ID:             resultado.ServicioID,
+			NombreServicio: resultado.NombreServicio,
+		}
+
+		// Obtener distribución de calificaciones
+		distribucion, err := r.getDistribucionCalificaciones(ctx, resultado.ServicioID)
+		if err != nil {
+			return nil, err
+		}
+
+		reporte := &model.ReporteSatisfaccion{
+			Servicio:                   servicio,
+			PromedioCalificacion:       resultado.PromedioCalificacion,
+			TotalCalificaciones:        int32(resultado.TotalCalificaciones),
+			DistribucionCalificaciones: distribucion,
+		}
+
+		reportesSatisfaccion = append(reportesSatisfaccion, reporte)
+	}
+
+	return reportesSatisfaccion, nil
+}
+
+// Reporte de proveedores
+func (r *queryResolver) ReporteProveedores(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteProveedor, error) {
+	query := `
+		SELECT 
+			p.id,
+			p.telefono,
+			p.descripcion,
+			COUNT(DISTINCT s.id) as total_servicios,
+			COALESCE(SUM(CAST(rs.subtotal AS DECIMAL)), 0) as ingresos_totales,
+			COALESCE(AVG(c.puntuacion), 0) as promedio_calificacion,
+			COUNT(DISTINCT CASE WHEN s.id IS NOT NULL THEN s.id END) as servicios_activos
+		FROM proveedores p
+		LEFT JOIN servicios s ON p.id = s.proveedor_id
+		LEFT JOIN reserva_servicios rs ON s.id = rs.servicio_id
+		LEFT JOIN reservas r ON rs.reserva_id = r.id AND r.estado = 'completada'
+		LEFT JOIN calificaciones c ON s.id = c.servicio_id
+	`
+
+	args := []interface{}{}
+	argIndex := 1
+
+	if filter != nil {
+		whereClauses := []string{}
+
+		if filter.FechaDesde != nil {
+			whereClauses = append(whereClauses, fmt.Sprintf("r.fecha >= $%d", argIndex))
+			args = append(args, *filter.FechaDesde)
+			argIndex++
+		}
+		if filter.FechaHasta != nil {
+			whereClauses = append(whereClauses, fmt.Sprintf("r.fecha <= $%d", argIndex))
+			args = append(args, *filter.FechaHasta)
+			argIndex++
+		}
+
+		if len(whereClauses) > 0 {
+			query += " WHERE " + strings.Join(whereClauses, " AND ")
+		}
+	}
+
+	query += " GROUP BY p.id, p.telefono, p.descripcion ORDER BY ingresos_totales DESC"
+
+	var resultados []struct {
+		ProveedorID          string  `db:"id"`
+		Telefono             string  `db:"telefono"`
+		Descripcion          *string `db:"descripcion"`
+		TotalServicios       int     `db:"total_servicios"`
+		IngresosTotales      string  `db:"ingresos_totales"`
+		PromedioCalificacion float64 `db:"promedio_calificacion"`
+		ServiciosActivos     int     `db:"servicios_activos"`
+	}
+
+	err := r.DB.Select(&resultados, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	var reportesProveedores []*model.ReporteProveedor
+	for _, resultado := range resultados {
+		proveedor := &model.Proveedor{
+			ID:          resultado.ProveedorID,
+			Telefono:    resultado.Telefono,
+			Descripcion: resultado.Descripcion,
+		}
+
+		reporte := &model.ReporteProveedor{
+			Proveedor:            proveedor,
+			TotalServicios:       int32(resultado.TotalServicios),
+			IngresosTotales:      resultado.IngresosTotales,
+			PromedioCalificacion: resultado.PromedioCalificacion,
+			ServiciosActivos:     int32(resultado.ServiciosActivos),
+		}
+
+		reportesProveedores = append(reportesProveedores, reporte)
+	}
+
+	return reportesProveedores, nil
+}
+
+// Reporte de clientes
+func (r *queryResolver) ReporteClientes(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteCliente, error) {
+	query := `
+		SELECT 
+			c.id,
+			c.telefono,
+			COUNT(r.id) as total_reservas,
+			COALESCE(SUM(CAST(r.total_estimado AS DECIMAL)), 0) as gasto_total,
+			COALESCE(AVG(CAST(r.total_estimado AS DECIMAL)), 0) as promedio_por_reserva,
+			MAX(r.fecha) as ultima_reserva
+		FROM clientes c
+		LEFT JOIN reservas r ON c.id = r.cliente_id
+	`
+
+	args := []interface{}{}
+	argIndex := 1
+
+	if filter != nil {
+		whereClauses := []string{}
+
+		if filter.FechaDesde != nil {
+			whereClauses = append(whereClauses, fmt.Sprintf("r.fecha >= $%d", argIndex))
+			args = append(args, *filter.FechaDesde)
+			argIndex++
+		}
+		if filter.FechaHasta != nil {
+			whereClauses = append(whereClauses, fmt.Sprintf("r.fecha <= $%d", argIndex))
+			args = append(args, *filter.FechaHasta)
+			argIndex++
+		}
+
+		if len(whereClauses) > 0 {
+			query += " WHERE " + strings.Join(whereClauses, " AND ")
+		}
+	}
+
+	query += " GROUP BY c.id, c.telefono ORDER BY gasto_total DESC"
+
+	var resultados []struct {
+		ClienteID          string  `db:"id"`
+		Telefono           string  `db:"telefono"`
+		TotalReservas      int     `db:"total_reservas"`
+		GastoTotal         string  `db:"gasto_total"`
+		PromedioPorReserva string  `db:"promedio_por_reserva"`
+		UltimaReserva      *string `db:"ultima_reserva"`
+	}
+
+	err := r.DB.Select(&resultados, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	var reportesClientes []*model.ReporteCliente
+	for _, resultado := range resultados {
+		cliente := &model.Cliente{
+			ID:       resultado.ClienteID,
+			Telefono: resultado.Telefono,
+		}
+
+		reporte := &model.ReporteCliente{
+			Cliente:            cliente,
+			TotalReservas:      int32(resultado.TotalReservas),
+			GastoTotal:         resultado.GastoTotal,
+			PromedioPorReserva: resultado.PromedioPorReserva,
+			UltimaReserva:      resultado.UltimaReserva,
+		}
+
+		reportesClientes = append(reportesClientes, reporte)
+	}
+
+	return reportesClientes, nil
+}
+
+// Métricas generales
+func (r *queryResolver) MetricasGenerales(ctx context.Context, filter *model.MetricasFilter) (*model.MetricasGenerales, error) {
+	// Contar usuarios
+	var totalUsuarios int
+	err := r.DB.Get(&totalUsuarios, "SELECT COUNT(*) FROM users")
+	if err != nil {
+		return nil, err
+	}
+
+	// Contar proveedores
+	var totalProveedores int
+	err = r.DB.Get(&totalProveedores, "SELECT COUNT(*) FROM proveedores")
+	if err != nil {
+		return nil, err
+	}
+
+	// Contar servicios
+	var totalServicios int
+	err = r.DB.Get(&totalServicios, "SELECT COUNT(*) FROM servicios")
+	if err != nil {
+		return nil, err
+	}
+
+	// Contar reservas
+	var totalReservas int
+	err = r.DB.Get(&totalReservas, "SELECT COUNT(*) FROM reservas")
+	if err != nil {
+		return nil, err
+	}
+
+	// Calcular ingresos totales
+	var ingresosTotales string
+	err = r.DB.Get(&ingresosTotales, "SELECT COALESCE(SUM(CAST(total_estimado AS DECIMAL)), 0) FROM reservas WHERE estado = 'completada'")
+	if err != nil {
+		return nil, err
+	}
+
+	// Calcular promedio de satisfacción
+	var promedioSatisfaccion float64
+	err = r.DB.Get(&promedioSatisfaccion, "SELECT COALESCE(AVG(puntuacion), 0) FROM calificaciones")
+	if err != nil {
+		return nil, err
+	}
+
+	metricas := &model.MetricasGenerales{
+		TotalUsuarios:        int32(totalUsuarios),
+		TotalProveedores:     int32(totalProveedores),
+		TotalServicios:       int32(totalServicios),
+		TotalReservas:        int32(totalReservas),
+		IngresosTotales:      ingresosTotales,
+		PromedioSatisfaccion: promedioSatisfaccion,
+	}
+
+	return metricas, nil
+}
+
+// Servicios más populares
+func (r *queryResolver) ServiciosMasPopulares(ctx context.Context, limit *int32) ([]*model.ServicioVendido, error) {
+	limite := 10
+	if limit != nil {
+		limite = int(*limit)
+	}
+
+	query := fmt.Sprintf(`
+		SELECT 
+			s.id,
+			s.nombre_servicio,
+			COUNT(rs.id) as cantidad_vendida,
+			COALESCE(SUM(CAST(rs.subtotal AS DECIMAL)), 0) as ingresos_generados
+		FROM servicios s
+		JOIN reserva_servicios rs ON s.id = rs.servicio_id
+		JOIN reservas r ON rs.reserva_id = r.id
+		WHERE r.estado = 'completada'
+		GROUP BY s.id, s.nombre_servicio
+		ORDER BY cantidad_vendida DESC
+		LIMIT %d
+	`, limite)
+
+	var resultados []struct {
+		ServicioID        string `db:"id"`
+		NombreServicio    string `db:"nombre_servicio"`
+		CantidadVendida   int    `db:"cantidad_vendida"`
+		IngresosGenerados string `db:"ingresos_generados"`
+	}
+
+	err := r.DB.Select(&resultados, query)
+	if err != nil {
+		return nil, err
+	}
+
+	var serviciosVendidos []*model.ServicioVendido
+	for _, resultado := range resultados {
+		servicio := &model.Servicio{
+			ID:             resultado.ServicioID,
+			NombreServicio: resultado.NombreServicio,
+		}
+
+		servicioVendido := &model.ServicioVendido{
+			Servicio:          servicio,
+			CantidadVendida:   int32(resultado.CantidadVendida),
+			IngresosGenerados: resultado.IngresosGenerados,
+		}
+
+		serviciosVendidos = append(serviciosVendidos, servicioVendido)
+	}
+
+	return serviciosVendidos, nil
+}
+
+// Proveedores mejor calificados
+func (r *queryResolver) ProveedoresMejorCalificados(ctx context.Context, limit *int32) ([]*model.ReporteProveedor, error) {
+	limite := 10
+	if limit != nil {
+		limite = int(*limit)
+	}
+
+	query := fmt.Sprintf(`
+		SELECT 
+			p.id,
+			p.telefono,
+			p.descripcion,
+			COUNT(DISTINCT s.id) as total_servicios,
+			COALESCE(SUM(CAST(rs.subtotal AS DECIMAL)), 0) as ingresos_totales,
+			COALESCE(AVG(c.puntuacion), 0) as promedio_calificacion,
+			COUNT(DISTINCT CASE WHEN s.id IS NOT NULL THEN s.id END) as servicios_activos
+		FROM proveedores p
+		LEFT JOIN servicios s ON p.id = s.proveedor_id
+		LEFT JOIN reserva_servicios rs ON s.id = rs.servicio_id
+		LEFT JOIN reservas r ON rs.reserva_id = r.id AND r.estado = 'completada'
+		LEFT JOIN calificaciones c ON s.id = c.servicio_id
+		GROUP BY p.id, p.telefono, p.descripcion
+		HAVING AVG(c.puntuacion) > 0
+		ORDER BY promedio_calificacion DESC
+		LIMIT %d
+	`, limite)
+
+	var resultados []struct {
+		ProveedorID          string  `db:"id"`
+		Telefono             string  `db:"telefono"`
+		Descripcion          *string `db:"descripcion"`
+		TotalServicios       int     `db:"total_servicios"`
+		IngresosTotales      string  `db:"ingresos_totales"`
+		PromedioCalificacion float64 `db:"promedio_calificacion"`
+		ServiciosActivos     int     `db:"servicios_activos"`
+	}
+
+	err := r.DB.Select(&resultados, query)
+	if err != nil {
+		return nil, err
+	}
+
+	var reportesProveedores []*model.ReporteProveedor
+	for _, resultado := range resultados {
+		proveedor := &model.Proveedor{
+			ID:          resultado.ProveedorID,
+			Telefono:    resultado.Telefono,
+			Descripcion: resultado.Descripcion,
+		}
+
+		reporte := &model.ReporteProveedor{
+			Proveedor:            proveedor,
+			TotalServicios:       int32(resultado.TotalServicios),
+			IngresosTotales:      resultado.IngresosTotales,
+			PromedioCalificacion: resultado.PromedioCalificacion,
+			ServiciosActivos:     int32(resultado.ServiciosActivos),
+		}
+
+		reportesProveedores = append(reportesProveedores, reporte)
+	}
+
+	return reportesProveedores, nil
+}
+
+// Clientes más activos
+func (r *queryResolver) ClientesMasActivos(ctx context.Context, limit *int32) ([]*model.ReporteCliente, error) {
+	limite := 10
+	if limit != nil {
+		limite = int(*limit)
+	}
+
+	query := fmt.Sprintf(`
+		SELECT 
+			c.id,
+			c.telefono,
+			COUNT(r.id) as total_reservas,
+			COALESCE(SUM(CAST(r.total_estimado AS DECIMAL)), 0) as gasto_total,
+			COALESCE(AVG(CAST(r.total_estimado AS DECIMAL)), 0) as promedio_por_reserva,
+			MAX(r.fecha) as ultima_reserva
+		FROM clientes c
+		LEFT JOIN reservas r ON c.id = r.cliente_id
+		GROUP BY c.id, c.telefono
+		ORDER BY total_reservas DESC
+		LIMIT %d
+	`, limite)
+
+	var resultados []struct {
+		ClienteID          string  `db:"id"`
+		Telefono           string  `db:"telefono"`
+		TotalReservas      int     `db:"total_reservas"`
+		GastoTotal         string  `db:"gasto_total"`
+		PromedioPorReserva string  `db:"promedio_por_reserva"`
+		UltimaReserva      *string `db:"ultima_reserva"`
+	}
+
+	err := r.DB.Select(&resultados, query)
+	if err != nil {
+		return nil, err
+	}
+
+	var reportesClientes []*model.ReporteCliente
+	for _, resultado := range resultados {
+		cliente := &model.Cliente{
+			ID:       resultado.ClienteID,
+			Telefono: resultado.Telefono,
+		}
+
+		reporte := &model.ReporteCliente{
+			Cliente:            cliente,
+			TotalReservas:      int32(resultado.TotalReservas),
+			GastoTotal:         resultado.GastoTotal,
+			PromedioPorReserva: resultado.PromedioPorReserva,
+			UltimaReserva:      resultado.UltimaReserva,
+		}
+
+		reportesClientes = append(reportesClientes, reporte)
+	}
+
+	return reportesClientes, nil
+}
+
+// Tendencias de ventas
+func (r *queryResolver) TendenciasVentas(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error) {
+	agrupacion := "MONTH"
+	if filter != nil && filter.AgruparPor != nil {
+		switch *filter.AgruparPor {
+		case model.AgrupacionTipoDia:
+			agrupacion = "DAY"
+		case model.AgrupacionTipoSemana:
+			agrupacion = "WEEK"
+		case model.AgrupacionTipoMes:
+			agrupacion = "MONTH"
+		case model.AgrupacionTipoAno:
+			agrupacion = "YEAR"
+		}
+	}
+
+	query := fmt.Sprintf(`
+		SELECT 
+			DATE_TRUNC('%s', r.fecha) as fecha,
+			SUM(CAST(r.total_estimado AS DECIMAL)) as valor
+		FROM reservas r
+		WHERE r.estado = 'completada'
+	`, agrupacion)
+
+	args := []interface{}{}
+	argIndex := 1
+
+	if filter != nil {
+		if filter.FechaDesde != nil {
+			query += fmt.Sprintf(" AND r.fecha >= $%d", argIndex)
+			args = append(args, *filter.FechaDesde)
+			argIndex++
+		}
+		if filter.FechaHasta != nil {
+			query += fmt.Sprintf(" AND r.fecha <= $%d", argIndex)
+			args = append(args, *filter.FechaHasta)
+			argIndex++
+		}
+	}
+
+	query += " GROUP BY DATE_TRUNC('" + agrupacion + "', r.fecha) ORDER BY fecha"
+
+	var resultados []struct {
+		Fecha time.Time `db:"fecha"`
+		Valor string    `db:"valor"`
+	}
+
+	err := r.DB.Select(&resultados, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	var tendencias []*model.PuntoTendencia
+	for _, resultado := range resultados {
+		valorFloat, err := strconv.ParseFloat(resultado.Valor, 64)
+		if err != nil {
+			valorFloat = 0
+		}
+
+		punto := &model.PuntoTendencia{
+			Fecha: resultado.Fecha.Format("2006-01-02"),
+			Valor: valorFloat,
+		}
+
+		tendencias = append(tendencias, punto)
+	}
+
+	return tendencias, nil
+}
+
+// Tendencias de satisfacción
+func (r *queryResolver) TendenciasSatisfaccion(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error) {
+	agrupacion := "MONTH"
+	if filter != nil && filter.AgruparPor != nil {
+		switch *filter.AgruparPor {
+		case model.AgrupacionTipoDia:
+			agrupacion = "DAY"
+		case model.AgrupacionTipoSemana:
+			agrupacion = "WEEK"
+		case model.AgrupacionTipoMes:
+			agrupacion = "MONTH"
+		case model.AgrupacionTipoAno:
+			agrupacion = "YEAR"
+		}
+	}
+
+	query := fmt.Sprintf(`
+		SELECT 
+			DATE_TRUNC('%s', c.fecha) as fecha,
+			AVG(c.puntuacion) as valor
+		FROM calificaciones c
+	`, agrupacion)
+
+	args := []interface{}{}
+	argIndex := 1
+
+	if filter != nil {
+		if filter.FechaDesde != nil {
+			query += fmt.Sprintf(" WHERE c.fecha >= $%d", argIndex)
+			args = append(args, *filter.FechaDesde)
+			argIndex++
+		}
+		if filter.FechaHasta != nil {
+			query += fmt.Sprintf(" AND c.fecha <= $%d", argIndex)
+			args = append(args, *filter.FechaHasta)
+			argIndex++
+		}
+	}
+
+	query += " GROUP BY DATE_TRUNC('" + agrupacion + "', c.fecha) ORDER BY fecha"
+
+	var resultados []struct {
+		Fecha time.Time `db:"fecha"`
+		Valor float64   `db:"valor"`
+	}
+
+	err := r.DB.Select(&resultados, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	var tendencias []*model.PuntoTendencia
+	for _, resultado := range resultados {
+		punto := &model.PuntoTendencia{
+			Fecha: resultado.Fecha.Format("2006-01-02"),
+			Valor: resultado.Valor,
+		}
+
+		tendencias = append(tendencias, punto)
+	}
+
+	return tendencias, nil
 }
 
 // Mutation returns MutationResolver implementation.
@@ -306,3 +964,125 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+// Métodos auxiliares para reportes
+
+// getServiciosMasVendidos obtiene los servicios más vendidos
+func (r *queryResolver) getServiciosMasVendidos(ctx context.Context, filter *model.ReporteFilter) ([]*model.ServicioVendido, error) {
+	query := `
+		SELECT 
+			s.id,
+			s.nombre_servicio,
+			COUNT(rs.id) as cantidad_vendida,
+			COALESCE(SUM(CAST(rs.subtotal AS DECIMAL)), 0) as ingresos_generados
+		FROM servicios s
+		JOIN reserva_servicios rs ON s.id = rs.servicio_id
+		JOIN reservas r ON rs.reserva_id = r.id
+		WHERE r.estado = 'completada'
+	`
+	
+	args := []interface{}{}
+	argIndex := 1
+	
+	if filter != nil {
+		if filter.FechaDesde != nil {
+			query += fmt.Sprintf(" AND r.fecha >= $%d", argIndex)
+			args = append(args, *filter.FechaDesde)
+			argIndex++
+		}
+		if filter.FechaHasta != nil {
+			query += fmt.Sprintf(" AND r.fecha <= $%d", argIndex)
+			args = append(args, *filter.FechaHasta)
+			argIndex++
+		}
+		if filter.CategoriaID != nil {
+			query += fmt.Sprintf(" AND s.categoria_id = $%d", argIndex)
+			args = append(args, *filter.CategoriaID)
+			argIndex++
+		}
+		if filter.ProveedorID != nil {
+			query += fmt.Sprintf(" AND s.proveedor_id = $%d", argIndex)
+			args = append(args, *filter.ProveedorID)
+			argIndex++
+		}
+	}
+	
+	query += " GROUP BY s.id, s.nombre_servicio ORDER BY cantidad_vendida DESC LIMIT 10"
+	
+	var resultados []struct {
+		ServicioID        string `db:"id"`
+		NombreServicio    string `db:"nombre_servicio"`
+		CantidadVendida   int    `db:"cantidad_vendida"`
+		IngresosGenerados string `db:"ingresos_generados"`
+	}
+	
+	err := r.DB.Select(&resultados, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	
+	var serviciosVendidos []*model.ServicioVendido
+	for _, resultado := range resultados {
+		servicio := &model.Servicio{
+			ID:             resultado.ServicioID,
+			NombreServicio: resultado.NombreServicio,
+		}
+		
+		servicioVendido := &model.ServicioVendido{
+			Servicio:          servicio,
+			CantidadVendida:   int32(resultado.CantidadVendida),
+			IngresosGenerados: resultado.IngresosGenerados,
+		}
+		
+		serviciosVendidos = append(serviciosVendidos, servicioVendido)
+	}
+	
+	return serviciosVendidos, nil
+}
+
+// getDistribucionCalificaciones obtiene la distribución de calificaciones para un servicio
+func (r *queryResolver) getDistribucionCalificaciones(ctx context.Context, servicioID string) ([]*model.DistribucionCalificacion, error) {
+	query := `
+		SELECT 
+			puntuacion,
+			COUNT(*) as cantidad
+		FROM calificaciones 
+		WHERE servicio_id = $1
+		GROUP BY puntuacion
+		ORDER BY puntuacion
+	`
+	
+	var resultados []struct {
+		Puntuacion int `db:"puntuacion"`
+		Cantidad   int `db:"cantidad"`
+	}
+	
+	err := r.DB.Select(&resultados, query, servicioID)
+	if err != nil {
+		return nil, err
+	}
+	
+	// Calcular total para porcentajes
+	total := 0
+	for _, resultado := range resultados {
+		total += resultado.Cantidad
+	}
+	
+	var distribucion []*model.DistribucionCalificacion
+	for _, resultado := range resultados {
+		var porcentaje float64
+		if total > 0 {
+			porcentaje = float64(resultado.Cantidad) / float64(total) * 100
+		}
+		
+		dist := &model.DistribucionCalificacion{
+			Puntuacion: int32(resultado.Puntuacion),
+			Cantidad:   int32(resultado.Cantidad),
+			Porcentaje: porcentaje,
+		}
+		
+		distribucion = append(distribucion, dist)
+	}
+	
+	return distribucion, nil
+}

@@ -91,6 +91,12 @@ type ComplexityRoot struct {
 		UpdatedAt func(childComplexity int) int
 	}
 
+	DistribucionCalificacion struct {
+		Cantidad   func(childComplexity int) int
+		Porcentaje func(childComplexity int) int
+		Puntuacion func(childComplexity int) int
+	}
+
 	FotoServicio struct {
 		CreatedAt   func(childComplexity int) int
 		Descripcion func(childComplexity int) int
@@ -98,6 +104,15 @@ type ComplexityRoot struct {
 		Servicio    func(childComplexity int) int
 		URLFoto     func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
+	}
+
+	MetricasGenerales struct {
+		IngresosTotales      func(childComplexity int) int
+		PromedioSatisfaccion func(childComplexity int) int
+		TotalProveedores     func(childComplexity int) int
+		TotalReservas        func(childComplexity int) int
+		TotalServicios       func(childComplexity int) int
+		TotalUsuarios        func(childComplexity int) int
 	}
 
 	Mutation struct {
@@ -162,25 +177,72 @@ type ComplexityRoot struct {
 		User        func(childComplexity int) int
 	}
 
+	PuntoTendencia struct {
+		Etiqueta func(childComplexity int) int
+		Fecha    func(childComplexity int) int
+		Valor    func(childComplexity int) int
+	}
+
 	Query struct {
-		Calificaciones func(childComplexity int, pagination *model.Pagination) int
-		Categoria      func(childComplexity int, id string) int
-		Categorias     func(childComplexity int, pagination *model.Pagination) int
-		Cliente        func(childComplexity int, id string) int
-		Clientes       func(childComplexity int, pagination *model.Pagination) int
-		Comentarios    func(childComplexity int, pagination *model.Pagination) int
-		Pago           func(childComplexity int, id string) int
-		Pagos          func(childComplexity int, pagination *model.Pagination) int
-		Proveedor      func(childComplexity int, id string) int
-		Proveedores    func(childComplexity int, pagination *model.Pagination) int
-		Reserva        func(childComplexity int, id string) int
-		Reservas       func(childComplexity int, filter *model.ReservaFilter, pagination *model.Pagination) int
-		Servicio       func(childComplexity int, id string) int
-		Servicios      func(childComplexity int, filter *model.ServicioFilter, pagination *model.Pagination) int
-		Ubicacion      func(childComplexity int, id string) int
-		Ubicaciones    func(childComplexity int, pagination *model.Pagination) int
-		User           func(childComplexity int, id string) int
-		Users          func(childComplexity int, pagination *model.Pagination) int
+		Calificaciones              func(childComplexity int, pagination *model.Pagination) int
+		Categoria                   func(childComplexity int, id string) int
+		Categorias                  func(childComplexity int, pagination *model.Pagination) int
+		Cliente                     func(childComplexity int, id string) int
+		Clientes                    func(childComplexity int, pagination *model.Pagination) int
+		ClientesMasActivos          func(childComplexity int, limit *int32) int
+		Comentarios                 func(childComplexity int, pagination *model.Pagination) int
+		MetricasGenerales           func(childComplexity int, filter *model.MetricasFilter) int
+		Pago                        func(childComplexity int, id string) int
+		Pagos                       func(childComplexity int, pagination *model.Pagination) int
+		Proveedor                   func(childComplexity int, id string) int
+		Proveedores                 func(childComplexity int, pagination *model.Pagination) int
+		ProveedoresMejorCalificados func(childComplexity int, limit *int32) int
+		ReporteClientes             func(childComplexity int, filter *model.ReporteFilter) int
+		ReporteProveedores          func(childComplexity int, filter *model.ReporteFilter) int
+		ReporteSatisfaccion         func(childComplexity int, filter *model.ReporteFilter) int
+		ReporteVentas               func(childComplexity int, filter *model.ReporteFilter) int
+		Reserva                     func(childComplexity int, id string) int
+		Reservas                    func(childComplexity int, filter *model.ReservaFilter, pagination *model.Pagination) int
+		Servicio                    func(childComplexity int, id string) int
+		Servicios                   func(childComplexity int, filter *model.ServicioFilter, pagination *model.Pagination) int
+		ServiciosMasPopulares       func(childComplexity int, limit *int32) int
+		TendenciasSatisfaccion      func(childComplexity int, filter *model.MetricasFilter) int
+		TendenciasVentas            func(childComplexity int, filter *model.MetricasFilter) int
+		Ubicacion                   func(childComplexity int, id string) int
+		Ubicaciones                 func(childComplexity int, pagination *model.Pagination) int
+		User                        func(childComplexity int, id string) int
+		Users                       func(childComplexity int, pagination *model.Pagination) int
+	}
+
+	ReporteCliente struct {
+		Cliente            func(childComplexity int) int
+		GastoTotal         func(childComplexity int) int
+		PromedioPorReserva func(childComplexity int) int
+		TotalReservas      func(childComplexity int) int
+		UltimaReserva      func(childComplexity int) int
+	}
+
+	ReporteProveedor struct {
+		IngresosTotales      func(childComplexity int) int
+		PromedioCalificacion func(childComplexity int) int
+		Proveedor            func(childComplexity int) int
+		ServiciosActivos     func(childComplexity int) int
+		TotalServicios       func(childComplexity int) int
+	}
+
+	ReporteSatisfaccion struct {
+		DistribucionCalificaciones func(childComplexity int) int
+		PromedioCalificacion       func(childComplexity int) int
+		Servicio                   func(childComplexity int) int
+		TotalCalificaciones        func(childComplexity int) int
+	}
+
+	ReporteVentas struct {
+		CantidadReservas     func(childComplexity int) int
+		Periodo              func(childComplexity int) int
+		PromedioPorReserva   func(childComplexity int) int
+		ServiciosMasVendidos func(childComplexity int) int
+		TotalVentas          func(childComplexity int) int
 	}
 
 	Reserva struct {
@@ -230,6 +292,12 @@ type ComplexityRoot struct {
 		Servicio  func(childComplexity int) int
 		Ubicacion func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
+	}
+
+	ServicioVendido struct {
+		CantidadVendida   func(childComplexity int) int
+		IngresosGenerados func(childComplexity int) int
+		Servicio          func(childComplexity int) int
 	}
 
 	Ubicacion struct {
@@ -316,6 +384,16 @@ type QueryResolver interface {
 	Pago(ctx context.Context, id string) (*model.Pago, error)
 	Calificaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Calificacion, error)
 	Comentarios(ctx context.Context, pagination *model.Pagination) ([]*model.Comentario, error)
+	ReporteVentas(ctx context.Context, filter *model.ReporteFilter) (*model.ReporteVentas, error)
+	ReporteSatisfaccion(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteSatisfaccion, error)
+	ReporteProveedores(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteProveedor, error)
+	ReporteClientes(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteCliente, error)
+	MetricasGenerales(ctx context.Context, filter *model.MetricasFilter) (*model.MetricasGenerales, error)
+	ServiciosMasPopulares(ctx context.Context, limit *int32) ([]*model.ServicioVendido, error)
+	ProveedoresMejorCalificados(ctx context.Context, limit *int32) ([]*model.ReporteProveedor, error)
+	ClientesMasActivos(ctx context.Context, limit *int32) ([]*model.ReporteCliente, error)
+	TendenciasVentas(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error)
+	TendenciasSatisfaccion(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error)
 }
 
 type executableSchema struct {
@@ -527,6 +605,25 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Comentario.UpdatedAt(childComplexity), true
 
+	case "DistribucionCalificacion.cantidad":
+		if e.complexity.DistribucionCalificacion.Cantidad == nil {
+			break
+		}
+
+		return e.complexity.DistribucionCalificacion.Cantidad(childComplexity), true
+	case "DistribucionCalificacion.porcentaje":
+		if e.complexity.DistribucionCalificacion.Porcentaje == nil {
+			break
+		}
+
+		return e.complexity.DistribucionCalificacion.Porcentaje(childComplexity), true
+	case "DistribucionCalificacion.puntuacion":
+		if e.complexity.DistribucionCalificacion.Puntuacion == nil {
+			break
+		}
+
+		return e.complexity.DistribucionCalificacion.Puntuacion(childComplexity), true
+
 	case "FotoServicio.createdAt":
 		if e.complexity.FotoServicio.CreatedAt == nil {
 			break
@@ -563,6 +660,43 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.FotoServicio.UpdatedAt(childComplexity), true
+
+	case "MetricasGenerales.ingresosTotales":
+		if e.complexity.MetricasGenerales.IngresosTotales == nil {
+			break
+		}
+
+		return e.complexity.MetricasGenerales.IngresosTotales(childComplexity), true
+	case "MetricasGenerales.promedioSatisfaccion":
+		if e.complexity.MetricasGenerales.PromedioSatisfaccion == nil {
+			break
+		}
+
+		return e.complexity.MetricasGenerales.PromedioSatisfaccion(childComplexity), true
+	case "MetricasGenerales.totalProveedores":
+		if e.complexity.MetricasGenerales.TotalProveedores == nil {
+			break
+		}
+
+		return e.complexity.MetricasGenerales.TotalProveedores(childComplexity), true
+	case "MetricasGenerales.totalReservas":
+		if e.complexity.MetricasGenerales.TotalReservas == nil {
+			break
+		}
+
+		return e.complexity.MetricasGenerales.TotalReservas(childComplexity), true
+	case "MetricasGenerales.totalServicios":
+		if e.complexity.MetricasGenerales.TotalServicios == nil {
+			break
+		}
+
+		return e.complexity.MetricasGenerales.TotalServicios(childComplexity), true
+	case "MetricasGenerales.totalUsuarios":
+		if e.complexity.MetricasGenerales.TotalUsuarios == nil {
+			break
+		}
+
+		return e.complexity.MetricasGenerales.TotalUsuarios(childComplexity), true
 
 	case "Mutation.createCalificacion":
 		if e.complexity.Mutation.CreateCalificacion == nil {
@@ -1065,6 +1199,25 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Proveedor.User(childComplexity), true
 
+	case "PuntoTendencia.etiqueta":
+		if e.complexity.PuntoTendencia.Etiqueta == nil {
+			break
+		}
+
+		return e.complexity.PuntoTendencia.Etiqueta(childComplexity), true
+	case "PuntoTendencia.fecha":
+		if e.complexity.PuntoTendencia.Fecha == nil {
+			break
+		}
+
+		return e.complexity.PuntoTendencia.Fecha(childComplexity), true
+	case "PuntoTendencia.valor":
+		if e.complexity.PuntoTendencia.Valor == nil {
+			break
+		}
+
+		return e.complexity.PuntoTendencia.Valor(childComplexity), true
+
 	case "Query.calificaciones":
 		if e.complexity.Query.Calificaciones == nil {
 			break
@@ -1120,6 +1273,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.Clientes(childComplexity, args["pagination"].(*model.Pagination)), true
+	case "Query.clientesMasActivos":
+		if e.complexity.Query.ClientesMasActivos == nil {
+			break
+		}
+
+		args, err := ec.field_Query_clientesMasActivos_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ClientesMasActivos(childComplexity, args["limit"].(*int32)), true
 	case "Query.comentarios":
 		if e.complexity.Query.Comentarios == nil {
 			break
@@ -1131,6 +1295,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.Comentarios(childComplexity, args["pagination"].(*model.Pagination)), true
+	case "Query.metricasGenerales":
+		if e.complexity.Query.MetricasGenerales == nil {
+			break
+		}
+
+		args, err := ec.field_Query_metricasGenerales_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MetricasGenerales(childComplexity, args["filter"].(*model.MetricasFilter)), true
 	case "Query.pago":
 		if e.complexity.Query.Pago == nil {
 			break
@@ -1175,6 +1350,61 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.Proveedores(childComplexity, args["pagination"].(*model.Pagination)), true
+	case "Query.proveedoresMejorCalificados":
+		if e.complexity.Query.ProveedoresMejorCalificados == nil {
+			break
+		}
+
+		args, err := ec.field_Query_proveedoresMejorCalificados_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ProveedoresMejorCalificados(childComplexity, args["limit"].(*int32)), true
+	case "Query.reporteClientes":
+		if e.complexity.Query.ReporteClientes == nil {
+			break
+		}
+
+		args, err := ec.field_Query_reporteClientes_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ReporteClientes(childComplexity, args["filter"].(*model.ReporteFilter)), true
+	case "Query.reporteProveedores":
+		if e.complexity.Query.ReporteProveedores == nil {
+			break
+		}
+
+		args, err := ec.field_Query_reporteProveedores_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ReporteProveedores(childComplexity, args["filter"].(*model.ReporteFilter)), true
+	case "Query.reporteSatisfaccion":
+		if e.complexity.Query.ReporteSatisfaccion == nil {
+			break
+		}
+
+		args, err := ec.field_Query_reporteSatisfaccion_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ReporteSatisfaccion(childComplexity, args["filter"].(*model.ReporteFilter)), true
+	case "Query.reporteVentas":
+		if e.complexity.Query.ReporteVentas == nil {
+			break
+		}
+
+		args, err := ec.field_Query_reporteVentas_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ReporteVentas(childComplexity, args["filter"].(*model.ReporteFilter)), true
 	case "Query.reserva":
 		if e.complexity.Query.Reserva == nil {
 			break
@@ -1219,6 +1449,39 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.Servicios(childComplexity, args["filter"].(*model.ServicioFilter), args["pagination"].(*model.Pagination)), true
+	case "Query.serviciosMasPopulares":
+		if e.complexity.Query.ServiciosMasPopulares == nil {
+			break
+		}
+
+		args, err := ec.field_Query_serviciosMasPopulares_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ServiciosMasPopulares(childComplexity, args["limit"].(*int32)), true
+	case "Query.tendenciasSatisfaccion":
+		if e.complexity.Query.TendenciasSatisfaccion == nil {
+			break
+		}
+
+		args, err := ec.field_Query_tendenciasSatisfaccion_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.TendenciasSatisfaccion(childComplexity, args["filter"].(*model.MetricasFilter)), true
+	case "Query.tendenciasVentas":
+		if e.complexity.Query.TendenciasVentas == nil {
+			break
+		}
+
+		args, err := ec.field_Query_tendenciasVentas_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.TendenciasVentas(childComplexity, args["filter"].(*model.MetricasFilter)), true
 	case "Query.ubicacion":
 		if e.complexity.Query.Ubicacion == nil {
 			break
@@ -1263,6 +1526,124 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.Users(childComplexity, args["pagination"].(*model.Pagination)), true
+
+	case "ReporteCliente.cliente":
+		if e.complexity.ReporteCliente.Cliente == nil {
+			break
+		}
+
+		return e.complexity.ReporteCliente.Cliente(childComplexity), true
+	case "ReporteCliente.gastoTotal":
+		if e.complexity.ReporteCliente.GastoTotal == nil {
+			break
+		}
+
+		return e.complexity.ReporteCliente.GastoTotal(childComplexity), true
+	case "ReporteCliente.promedioPorReserva":
+		if e.complexity.ReporteCliente.PromedioPorReserva == nil {
+			break
+		}
+
+		return e.complexity.ReporteCliente.PromedioPorReserva(childComplexity), true
+	case "ReporteCliente.totalReservas":
+		if e.complexity.ReporteCliente.TotalReservas == nil {
+			break
+		}
+
+		return e.complexity.ReporteCliente.TotalReservas(childComplexity), true
+	case "ReporteCliente.ultimaReserva":
+		if e.complexity.ReporteCliente.UltimaReserva == nil {
+			break
+		}
+
+		return e.complexity.ReporteCliente.UltimaReserva(childComplexity), true
+
+	case "ReporteProveedor.ingresosTotales":
+		if e.complexity.ReporteProveedor.IngresosTotales == nil {
+			break
+		}
+
+		return e.complexity.ReporteProveedor.IngresosTotales(childComplexity), true
+	case "ReporteProveedor.promedioCalificacion":
+		if e.complexity.ReporteProveedor.PromedioCalificacion == nil {
+			break
+		}
+
+		return e.complexity.ReporteProveedor.PromedioCalificacion(childComplexity), true
+	case "ReporteProveedor.proveedor":
+		if e.complexity.ReporteProveedor.Proveedor == nil {
+			break
+		}
+
+		return e.complexity.ReporteProveedor.Proveedor(childComplexity), true
+	case "ReporteProveedor.serviciosActivos":
+		if e.complexity.ReporteProveedor.ServiciosActivos == nil {
+			break
+		}
+
+		return e.complexity.ReporteProveedor.ServiciosActivos(childComplexity), true
+	case "ReporteProveedor.totalServicios":
+		if e.complexity.ReporteProveedor.TotalServicios == nil {
+			break
+		}
+
+		return e.complexity.ReporteProveedor.TotalServicios(childComplexity), true
+
+	case "ReporteSatisfaccion.distribucionCalificaciones":
+		if e.complexity.ReporteSatisfaccion.DistribucionCalificaciones == nil {
+			break
+		}
+
+		return e.complexity.ReporteSatisfaccion.DistribucionCalificaciones(childComplexity), true
+	case "ReporteSatisfaccion.promedioCalificacion":
+		if e.complexity.ReporteSatisfaccion.PromedioCalificacion == nil {
+			break
+		}
+
+		return e.complexity.ReporteSatisfaccion.PromedioCalificacion(childComplexity), true
+	case "ReporteSatisfaccion.servicio":
+		if e.complexity.ReporteSatisfaccion.Servicio == nil {
+			break
+		}
+
+		return e.complexity.ReporteSatisfaccion.Servicio(childComplexity), true
+	case "ReporteSatisfaccion.totalCalificaciones":
+		if e.complexity.ReporteSatisfaccion.TotalCalificaciones == nil {
+			break
+		}
+
+		return e.complexity.ReporteSatisfaccion.TotalCalificaciones(childComplexity), true
+
+	case "ReporteVentas.cantidadReservas":
+		if e.complexity.ReporteVentas.CantidadReservas == nil {
+			break
+		}
+
+		return e.complexity.ReporteVentas.CantidadReservas(childComplexity), true
+	case "ReporteVentas.periodo":
+		if e.complexity.ReporteVentas.Periodo == nil {
+			break
+		}
+
+		return e.complexity.ReporteVentas.Periodo(childComplexity), true
+	case "ReporteVentas.promedioPorReserva":
+		if e.complexity.ReporteVentas.PromedioPorReserva == nil {
+			break
+		}
+
+		return e.complexity.ReporteVentas.PromedioPorReserva(childComplexity), true
+	case "ReporteVentas.serviciosMasVendidos":
+		if e.complexity.ReporteVentas.ServiciosMasVendidos == nil {
+			break
+		}
+
+		return e.complexity.ReporteVentas.ServiciosMasVendidos(childComplexity), true
+	case "ReporteVentas.totalVentas":
+		if e.complexity.ReporteVentas.TotalVentas == nil {
+			break
+		}
+
+		return e.complexity.ReporteVentas.TotalVentas(childComplexity), true
 
 	case "Reserva.cliente":
 		if e.complexity.Reserva.Cliente == nil {
@@ -1490,6 +1871,25 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.ServicioUbicacion.UpdatedAt(childComplexity), true
 
+	case "ServicioVendido.cantidadVendida":
+		if e.complexity.ServicioVendido.CantidadVendida == nil {
+			break
+		}
+
+		return e.complexity.ServicioVendido.CantidadVendida(childComplexity), true
+	case "ServicioVendido.ingresosGenerados":
+		if e.complexity.ServicioVendido.IngresosGenerados == nil {
+			break
+		}
+
+		return e.complexity.ServicioVendido.IngresosGenerados(childComplexity), true
+	case "ServicioVendido.servicio":
+		if e.complexity.ServicioVendido.Servicio == nil {
+			break
+		}
+
+		return e.complexity.ServicioVendido.Servicio(childComplexity), true
+
 	case "Ubicacion.ciudad":
 		if e.complexity.Ubicacion.Ciudad == nil {
 			break
@@ -1625,9 +2025,11 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputClienteInput,
 		ec.unmarshalInputComentarioInput,
 		ec.unmarshalInputFotoServicioInput,
+		ec.unmarshalInputMetricasFilter,
 		ec.unmarshalInputPagination,
 		ec.unmarshalInputPagoInput,
 		ec.unmarshalInputProveedorInput,
+		ec.unmarshalInputReporteFilter,
 		ec.unmarshalInputReservaFilter,
 		ec.unmarshalInputReservaInput,
 		ec.unmarshalInputReservaServicioInput,
@@ -2262,6 +2664,17 @@ func (ec *executionContext) field_Query_cliente_args(ctx context.Context, rawArg
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_clientesMasActivos_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "limit", ec.unmarshalOInt2ᚖint32)
+	if err != nil {
+		return nil, err
+	}
+	args["limit"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_clientes_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -2281,6 +2694,17 @@ func (ec *executionContext) field_Query_comentarios_args(ctx context.Context, ra
 		return nil, err
 	}
 	args["pagination"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_metricasGenerales_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOMetricasFilter2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐMetricasFilter)
+	if err != nil {
+		return nil, err
+	}
+	args["filter"] = arg0
 	return args, nil
 }
 
@@ -2317,6 +2741,17 @@ func (ec *executionContext) field_Query_proveedor_args(ctx context.Context, rawA
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_proveedoresMejorCalificados_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "limit", ec.unmarshalOInt2ᚖint32)
+	if err != nil {
+		return nil, err
+	}
+	args["limit"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_proveedores_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -2325,6 +2760,50 @@ func (ec *executionContext) field_Query_proveedores_args(ctx context.Context, ra
 		return nil, err
 	}
 	args["pagination"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_reporteClientes_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOReporteFilter2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteFilter)
+	if err != nil {
+		return nil, err
+	}
+	args["filter"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_reporteProveedores_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOReporteFilter2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteFilter)
+	if err != nil {
+		return nil, err
+	}
+	args["filter"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_reporteSatisfaccion_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOReporteFilter2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteFilter)
+	if err != nil {
+		return nil, err
+	}
+	args["filter"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_reporteVentas_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOReporteFilter2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteFilter)
+	if err != nil {
+		return nil, err
+	}
+	args["filter"] = arg0
 	return args, nil
 }
 
@@ -2366,6 +2845,17 @@ func (ec *executionContext) field_Query_servicio_args(ctx context.Context, rawAr
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_serviciosMasPopulares_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "limit", ec.unmarshalOInt2ᚖint32)
+	if err != nil {
+		return nil, err
+	}
+	args["limit"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_servicios_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -2379,6 +2869,28 @@ func (ec *executionContext) field_Query_servicios_args(ctx context.Context, rawA
 		return nil, err
 	}
 	args["pagination"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_tendenciasSatisfaccion_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOMetricasFilter2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐMetricasFilter)
+	if err != nil {
+		return nil, err
+	}
+	args["filter"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_tendenciasVentas_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOMetricasFilter2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐMetricasFilter)
+	if err != nil {
+		return nil, err
+	}
+	args["filter"] = arg0
 	return args, nil
 }
 
@@ -3609,6 +4121,93 @@ func (ec *executionContext) fieldContext_Comentario_updatedAt(_ context.Context,
 	return fc, nil
 }
 
+func (ec *executionContext) _DistribucionCalificacion_puntuacion(ctx context.Context, field graphql.CollectedField, obj *model.DistribucionCalificacion) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_DistribucionCalificacion_puntuacion,
+		func(ctx context.Context) (any, error) {
+			return obj.Puntuacion, nil
+		},
+		nil,
+		ec.marshalNInt2int32,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_DistribucionCalificacion_puntuacion(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DistribucionCalificacion",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DistribucionCalificacion_cantidad(ctx context.Context, field graphql.CollectedField, obj *model.DistribucionCalificacion) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_DistribucionCalificacion_cantidad,
+		func(ctx context.Context) (any, error) {
+			return obj.Cantidad, nil
+		},
+		nil,
+		ec.marshalNInt2int32,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_DistribucionCalificacion_cantidad(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DistribucionCalificacion",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DistribucionCalificacion_porcentaje(ctx context.Context, field graphql.CollectedField, obj *model.DistribucionCalificacion) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_DistribucionCalificacion_porcentaje,
+		func(ctx context.Context) (any, error) {
+			return obj.Porcentaje, nil
+		},
+		nil,
+		ec.marshalNFloat2float64,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_DistribucionCalificacion_porcentaje(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DistribucionCalificacion",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _FotoServicio_id(ctx context.Context, field graphql.CollectedField, obj *model.FotoServicio) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -3808,6 +4407,180 @@ func (ec *executionContext) fieldContext_FotoServicio_updatedAt(_ context.Contex
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MetricasGenerales_totalUsuarios(ctx context.Context, field graphql.CollectedField, obj *model.MetricasGenerales) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MetricasGenerales_totalUsuarios,
+		func(ctx context.Context) (any, error) {
+			return obj.TotalUsuarios, nil
+		},
+		nil,
+		ec.marshalNInt2int32,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_MetricasGenerales_totalUsuarios(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MetricasGenerales",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MetricasGenerales_totalProveedores(ctx context.Context, field graphql.CollectedField, obj *model.MetricasGenerales) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MetricasGenerales_totalProveedores,
+		func(ctx context.Context) (any, error) {
+			return obj.TotalProveedores, nil
+		},
+		nil,
+		ec.marshalNInt2int32,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_MetricasGenerales_totalProveedores(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MetricasGenerales",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MetricasGenerales_totalServicios(ctx context.Context, field graphql.CollectedField, obj *model.MetricasGenerales) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MetricasGenerales_totalServicios,
+		func(ctx context.Context) (any, error) {
+			return obj.TotalServicios, nil
+		},
+		nil,
+		ec.marshalNInt2int32,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_MetricasGenerales_totalServicios(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MetricasGenerales",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MetricasGenerales_totalReservas(ctx context.Context, field graphql.CollectedField, obj *model.MetricasGenerales) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MetricasGenerales_totalReservas,
+		func(ctx context.Context) (any, error) {
+			return obj.TotalReservas, nil
+		},
+		nil,
+		ec.marshalNInt2int32,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_MetricasGenerales_totalReservas(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MetricasGenerales",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MetricasGenerales_ingresosTotales(ctx context.Context, field graphql.CollectedField, obj *model.MetricasGenerales) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MetricasGenerales_ingresosTotales,
+		func(ctx context.Context) (any, error) {
+			return obj.IngresosTotales, nil
+		},
+		nil,
+		ec.marshalNDecimal2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_MetricasGenerales_ingresosTotales(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MetricasGenerales",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Decimal does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MetricasGenerales_promedioSatisfaccion(ctx context.Context, field graphql.CollectedField, obj *model.MetricasGenerales) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MetricasGenerales_promedioSatisfaccion,
+		func(ctx context.Context) (any, error) {
+			return obj.PromedioSatisfaccion, nil
+		},
+		nil,
+		ec.marshalNFloat2float64,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_MetricasGenerales_promedioSatisfaccion(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MetricasGenerales",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
 		},
 	}
 	return fc, nil
@@ -6350,6 +7123,93 @@ func (ec *executionContext) fieldContext_Proveedor_servicios(_ context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _PuntoTendencia_fecha(ctx context.Context, field graphql.CollectedField, obj *model.PuntoTendencia) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PuntoTendencia_fecha,
+		func(ctx context.Context) (any, error) {
+			return obj.Fecha, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PuntoTendencia_fecha(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PuntoTendencia",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PuntoTendencia_valor(ctx context.Context, field graphql.CollectedField, obj *model.PuntoTendencia) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PuntoTendencia_valor,
+		func(ctx context.Context) (any, error) {
+			return obj.Valor, nil
+		},
+		nil,
+		ec.marshalNFloat2float64,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PuntoTendencia_valor(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PuntoTendencia",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PuntoTendencia_etiqueta(ctx context.Context, field graphql.CollectedField, obj *model.PuntoTendencia) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PuntoTendencia_etiqueta,
+		func(ctx context.Context) (any, error) {
+			return obj.Etiqueta, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_PuntoTendencia_etiqueta(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PuntoTendencia",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_users(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -7460,6 +8320,524 @@ func (ec *executionContext) fieldContext_Query_comentarios(ctx context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_reporteVentas(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_reporteVentas,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().ReporteVentas(ctx, fc.Args["filter"].(*model.ReporteFilter))
+		},
+		nil,
+		ec.marshalNReporteVentas2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteVentas,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_reporteVentas(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "periodo":
+				return ec.fieldContext_ReporteVentas_periodo(ctx, field)
+			case "totalVentas":
+				return ec.fieldContext_ReporteVentas_totalVentas(ctx, field)
+			case "cantidadReservas":
+				return ec.fieldContext_ReporteVentas_cantidadReservas(ctx, field)
+			case "promedioPorReserva":
+				return ec.fieldContext_ReporteVentas_promedioPorReserva(ctx, field)
+			case "serviciosMasVendidos":
+				return ec.fieldContext_ReporteVentas_serviciosMasVendidos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ReporteVentas", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_reporteVentas_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_reporteSatisfaccion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_reporteSatisfaccion,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().ReporteSatisfaccion(ctx, fc.Args["filter"].(*model.ReporteFilter))
+		},
+		nil,
+		ec.marshalNReporteSatisfaccion2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteSatisfaccionᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_reporteSatisfaccion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "servicio":
+				return ec.fieldContext_ReporteSatisfaccion_servicio(ctx, field)
+			case "promedioCalificacion":
+				return ec.fieldContext_ReporteSatisfaccion_promedioCalificacion(ctx, field)
+			case "totalCalificaciones":
+				return ec.fieldContext_ReporteSatisfaccion_totalCalificaciones(ctx, field)
+			case "distribucionCalificaciones":
+				return ec.fieldContext_ReporteSatisfaccion_distribucionCalificaciones(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ReporteSatisfaccion", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_reporteSatisfaccion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_reporteProveedores(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_reporteProveedores,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().ReporteProveedores(ctx, fc.Args["filter"].(*model.ReporteFilter))
+		},
+		nil,
+		ec.marshalNReporteProveedor2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteProveedorᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_reporteProveedores(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "proveedor":
+				return ec.fieldContext_ReporteProveedor_proveedor(ctx, field)
+			case "totalServicios":
+				return ec.fieldContext_ReporteProveedor_totalServicios(ctx, field)
+			case "ingresosTotales":
+				return ec.fieldContext_ReporteProveedor_ingresosTotales(ctx, field)
+			case "promedioCalificacion":
+				return ec.fieldContext_ReporteProveedor_promedioCalificacion(ctx, field)
+			case "serviciosActivos":
+				return ec.fieldContext_ReporteProveedor_serviciosActivos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ReporteProveedor", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_reporteProveedores_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_reporteClientes(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_reporteClientes,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().ReporteClientes(ctx, fc.Args["filter"].(*model.ReporteFilter))
+		},
+		nil,
+		ec.marshalNReporteCliente2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteClienteᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_reporteClientes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "cliente":
+				return ec.fieldContext_ReporteCliente_cliente(ctx, field)
+			case "totalReservas":
+				return ec.fieldContext_ReporteCliente_totalReservas(ctx, field)
+			case "gastoTotal":
+				return ec.fieldContext_ReporteCliente_gastoTotal(ctx, field)
+			case "promedioPorReserva":
+				return ec.fieldContext_ReporteCliente_promedioPorReserva(ctx, field)
+			case "ultimaReserva":
+				return ec.fieldContext_ReporteCliente_ultimaReserva(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ReporteCliente", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_reporteClientes_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_metricasGenerales(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_metricasGenerales,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().MetricasGenerales(ctx, fc.Args["filter"].(*model.MetricasFilter))
+		},
+		nil,
+		ec.marshalNMetricasGenerales2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐMetricasGenerales,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_metricasGenerales(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "totalUsuarios":
+				return ec.fieldContext_MetricasGenerales_totalUsuarios(ctx, field)
+			case "totalProveedores":
+				return ec.fieldContext_MetricasGenerales_totalProveedores(ctx, field)
+			case "totalServicios":
+				return ec.fieldContext_MetricasGenerales_totalServicios(ctx, field)
+			case "totalReservas":
+				return ec.fieldContext_MetricasGenerales_totalReservas(ctx, field)
+			case "ingresosTotales":
+				return ec.fieldContext_MetricasGenerales_ingresosTotales(ctx, field)
+			case "promedioSatisfaccion":
+				return ec.fieldContext_MetricasGenerales_promedioSatisfaccion(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MetricasGenerales", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_metricasGenerales_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_serviciosMasPopulares(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_serviciosMasPopulares,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().ServiciosMasPopulares(ctx, fc.Args["limit"].(*int32))
+		},
+		nil,
+		ec.marshalNServicioVendido2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioVendidoᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_serviciosMasPopulares(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "servicio":
+				return ec.fieldContext_ServicioVendido_servicio(ctx, field)
+			case "cantidadVendida":
+				return ec.fieldContext_ServicioVendido_cantidadVendida(ctx, field)
+			case "ingresosGenerados":
+				return ec.fieldContext_ServicioVendido_ingresosGenerados(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServicioVendido", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_serviciosMasPopulares_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_proveedoresMejorCalificados(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_proveedoresMejorCalificados,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().ProveedoresMejorCalificados(ctx, fc.Args["limit"].(*int32))
+		},
+		nil,
+		ec.marshalNReporteProveedor2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteProveedorᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_proveedoresMejorCalificados(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "proveedor":
+				return ec.fieldContext_ReporteProveedor_proveedor(ctx, field)
+			case "totalServicios":
+				return ec.fieldContext_ReporteProveedor_totalServicios(ctx, field)
+			case "ingresosTotales":
+				return ec.fieldContext_ReporteProveedor_ingresosTotales(ctx, field)
+			case "promedioCalificacion":
+				return ec.fieldContext_ReporteProveedor_promedioCalificacion(ctx, field)
+			case "serviciosActivos":
+				return ec.fieldContext_ReporteProveedor_serviciosActivos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ReporteProveedor", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_proveedoresMejorCalificados_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_clientesMasActivos(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_clientesMasActivos,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().ClientesMasActivos(ctx, fc.Args["limit"].(*int32))
+		},
+		nil,
+		ec.marshalNReporteCliente2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteClienteᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_clientesMasActivos(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "cliente":
+				return ec.fieldContext_ReporteCliente_cliente(ctx, field)
+			case "totalReservas":
+				return ec.fieldContext_ReporteCliente_totalReservas(ctx, field)
+			case "gastoTotal":
+				return ec.fieldContext_ReporteCliente_gastoTotal(ctx, field)
+			case "promedioPorReserva":
+				return ec.fieldContext_ReporteCliente_promedioPorReserva(ctx, field)
+			case "ultimaReserva":
+				return ec.fieldContext_ReporteCliente_ultimaReserva(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ReporteCliente", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_clientesMasActivos_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_tendenciasVentas(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_tendenciasVentas,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().TendenciasVentas(ctx, fc.Args["filter"].(*model.MetricasFilter))
+		},
+		nil,
+		ec.marshalNPuntoTendencia2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPuntoTendenciaᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_tendenciasVentas(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "fecha":
+				return ec.fieldContext_PuntoTendencia_fecha(ctx, field)
+			case "valor":
+				return ec.fieldContext_PuntoTendencia_valor(ctx, field)
+			case "etiqueta":
+				return ec.fieldContext_PuntoTendencia_etiqueta(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PuntoTendencia", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_tendenciasVentas_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_tendenciasSatisfaccion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_tendenciasSatisfaccion,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().TendenciasSatisfaccion(ctx, fc.Args["filter"].(*model.MetricasFilter))
+		},
+		nil,
+		ec.marshalNPuntoTendencia2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPuntoTendenciaᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_tendenciasSatisfaccion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "fecha":
+				return ec.fieldContext_PuntoTendencia_fecha(ctx, field)
+			case "valor":
+				return ec.fieldContext_PuntoTendencia_valor(ctx, field)
+			case "etiqueta":
+				return ec.fieldContext_PuntoTendencia_etiqueta(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PuntoTendencia", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_tendenciasSatisfaccion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -7563,6 +8941,641 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteCliente_cliente(ctx context.Context, field graphql.CollectedField, obj *model.ReporteCliente) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteCliente_cliente,
+		func(ctx context.Context) (any, error) {
+			return obj.Cliente, nil
+		},
+		nil,
+		ec.marshalNCliente2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐCliente,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteCliente_cliente(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteCliente",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Cliente_id(ctx, field)
+			case "user":
+				return ec.fieldContext_Cliente_user(ctx, field)
+			case "telefono":
+				return ec.fieldContext_Cliente_telefono(ctx, field)
+			case "ubicacion":
+				return ec.fieldContext_Cliente_ubicacion(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Cliente_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Cliente_updatedAt(ctx, field)
+			case "reservas":
+				return ec.fieldContext_Cliente_reservas(ctx, field)
+			case "calificaciones":
+				return ec.fieldContext_Cliente_calificaciones(ctx, field)
+			case "comentarios":
+				return ec.fieldContext_Cliente_comentarios(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Cliente", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteCliente_totalReservas(ctx context.Context, field graphql.CollectedField, obj *model.ReporteCliente) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteCliente_totalReservas,
+		func(ctx context.Context) (any, error) {
+			return obj.TotalReservas, nil
+		},
+		nil,
+		ec.marshalNInt2int32,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteCliente_totalReservas(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteCliente",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteCliente_gastoTotal(ctx context.Context, field graphql.CollectedField, obj *model.ReporteCliente) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteCliente_gastoTotal,
+		func(ctx context.Context) (any, error) {
+			return obj.GastoTotal, nil
+		},
+		nil,
+		ec.marshalNDecimal2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteCliente_gastoTotal(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteCliente",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Decimal does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteCliente_promedioPorReserva(ctx context.Context, field graphql.CollectedField, obj *model.ReporteCliente) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteCliente_promedioPorReserva,
+		func(ctx context.Context) (any, error) {
+			return obj.PromedioPorReserva, nil
+		},
+		nil,
+		ec.marshalNDecimal2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteCliente_promedioPorReserva(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteCliente",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Decimal does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteCliente_ultimaReserva(ctx context.Context, field graphql.CollectedField, obj *model.ReporteCliente) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteCliente_ultimaReserva,
+		func(ctx context.Context) (any, error) {
+			return obj.UltimaReserva, nil
+		},
+		nil,
+		ec.marshalODate2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteCliente_ultimaReserva(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteCliente",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Date does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteProveedor_proveedor(ctx context.Context, field graphql.CollectedField, obj *model.ReporteProveedor) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteProveedor_proveedor,
+		func(ctx context.Context) (any, error) {
+			return obj.Proveedor, nil
+		},
+		nil,
+		ec.marshalNProveedor2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐProveedor,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteProveedor_proveedor(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteProveedor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Proveedor_id(ctx, field)
+			case "user":
+				return ec.fieldContext_Proveedor_user(ctx, field)
+			case "telefono":
+				return ec.fieldContext_Proveedor_telefono(ctx, field)
+			case "descripcion":
+				return ec.fieldContext_Proveedor_descripcion(ctx, field)
+			case "ubicacion":
+				return ec.fieldContext_Proveedor_ubicacion(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Proveedor_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Proveedor_updatedAt(ctx, field)
+			case "servicios":
+				return ec.fieldContext_Proveedor_servicios(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Proveedor", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteProveedor_totalServicios(ctx context.Context, field graphql.CollectedField, obj *model.ReporteProveedor) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteProveedor_totalServicios,
+		func(ctx context.Context) (any, error) {
+			return obj.TotalServicios, nil
+		},
+		nil,
+		ec.marshalNInt2int32,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteProveedor_totalServicios(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteProveedor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteProveedor_ingresosTotales(ctx context.Context, field graphql.CollectedField, obj *model.ReporteProveedor) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteProveedor_ingresosTotales,
+		func(ctx context.Context) (any, error) {
+			return obj.IngresosTotales, nil
+		},
+		nil,
+		ec.marshalNDecimal2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteProveedor_ingresosTotales(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteProveedor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Decimal does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteProveedor_promedioCalificacion(ctx context.Context, field graphql.CollectedField, obj *model.ReporteProveedor) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteProveedor_promedioCalificacion,
+		func(ctx context.Context) (any, error) {
+			return obj.PromedioCalificacion, nil
+		},
+		nil,
+		ec.marshalNFloat2float64,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteProveedor_promedioCalificacion(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteProveedor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteProveedor_serviciosActivos(ctx context.Context, field graphql.CollectedField, obj *model.ReporteProveedor) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteProveedor_serviciosActivos,
+		func(ctx context.Context) (any, error) {
+			return obj.ServiciosActivos, nil
+		},
+		nil,
+		ec.marshalNInt2int32,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteProveedor_serviciosActivos(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteProveedor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteSatisfaccion_servicio(ctx context.Context, field graphql.CollectedField, obj *model.ReporteSatisfaccion) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteSatisfaccion_servicio,
+		func(ctx context.Context) (any, error) {
+			return obj.Servicio, nil
+		},
+		nil,
+		ec.marshalNServicio2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicio,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteSatisfaccion_servicio(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteSatisfaccion",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Servicio_id(ctx, field)
+			case "proveedor":
+				return ec.fieldContext_Servicio_proveedor(ctx, field)
+			case "categoria":
+				return ec.fieldContext_Servicio_categoria(ctx, field)
+			case "nombreServicio":
+				return ec.fieldContext_Servicio_nombreServicio(ctx, field)
+			case "descripcion":
+				return ec.fieldContext_Servicio_descripcion(ctx, field)
+			case "duracion":
+				return ec.fieldContext_Servicio_duracion(ctx, field)
+			case "ratingPromedio":
+				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "ubicaciones":
+				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
+			case "fotos":
+				return ec.fieldContext_Servicio_fotos(ctx, field)
+			case "calificaciones":
+				return ec.fieldContext_Servicio_calificaciones(ctx, field)
+			case "comentarios":
+				return ec.fieldContext_Servicio_comentarios(ctx, field)
+			case "detallesReserva":
+				return ec.fieldContext_Servicio_detallesReserva(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Servicio_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Servicio_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Servicio", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteSatisfaccion_promedioCalificacion(ctx context.Context, field graphql.CollectedField, obj *model.ReporteSatisfaccion) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteSatisfaccion_promedioCalificacion,
+		func(ctx context.Context) (any, error) {
+			return obj.PromedioCalificacion, nil
+		},
+		nil,
+		ec.marshalNFloat2float64,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteSatisfaccion_promedioCalificacion(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteSatisfaccion",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteSatisfaccion_totalCalificaciones(ctx context.Context, field graphql.CollectedField, obj *model.ReporteSatisfaccion) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteSatisfaccion_totalCalificaciones,
+		func(ctx context.Context) (any, error) {
+			return obj.TotalCalificaciones, nil
+		},
+		nil,
+		ec.marshalNInt2int32,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteSatisfaccion_totalCalificaciones(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteSatisfaccion",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteSatisfaccion_distribucionCalificaciones(ctx context.Context, field graphql.CollectedField, obj *model.ReporteSatisfaccion) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteSatisfaccion_distribucionCalificaciones,
+		func(ctx context.Context) (any, error) {
+			return obj.DistribucionCalificaciones, nil
+		},
+		nil,
+		ec.marshalNDistribucionCalificacion2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐDistribucionCalificacionᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteSatisfaccion_distribucionCalificaciones(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteSatisfaccion",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "puntuacion":
+				return ec.fieldContext_DistribucionCalificacion_puntuacion(ctx, field)
+			case "cantidad":
+				return ec.fieldContext_DistribucionCalificacion_cantidad(ctx, field)
+			case "porcentaje":
+				return ec.fieldContext_DistribucionCalificacion_porcentaje(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type DistribucionCalificacion", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteVentas_periodo(ctx context.Context, field graphql.CollectedField, obj *model.ReporteVentas) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteVentas_periodo,
+		func(ctx context.Context) (any, error) {
+			return obj.Periodo, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteVentas_periodo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteVentas",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteVentas_totalVentas(ctx context.Context, field graphql.CollectedField, obj *model.ReporteVentas) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteVentas_totalVentas,
+		func(ctx context.Context) (any, error) {
+			return obj.TotalVentas, nil
+		},
+		nil,
+		ec.marshalNDecimal2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteVentas_totalVentas(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteVentas",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Decimal does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteVentas_cantidadReservas(ctx context.Context, field graphql.CollectedField, obj *model.ReporteVentas) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteVentas_cantidadReservas,
+		func(ctx context.Context) (any, error) {
+			return obj.CantidadReservas, nil
+		},
+		nil,
+		ec.marshalNInt2int32,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteVentas_cantidadReservas(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteVentas",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteVentas_promedioPorReserva(ctx context.Context, field graphql.CollectedField, obj *model.ReporteVentas) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteVentas_promedioPorReserva,
+		func(ctx context.Context) (any, error) {
+			return obj.PromedioPorReserva, nil
+		},
+		nil,
+		ec.marshalNDecimal2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteVentas_promedioPorReserva(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteVentas",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Decimal does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ReporteVentas_serviciosMasVendidos(ctx context.Context, field graphql.CollectedField, obj *model.ReporteVentas) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ReporteVentas_serviciosMasVendidos,
+		func(ctx context.Context) (any, error) {
+			return obj.ServiciosMasVendidos, nil
+		},
+		nil,
+		ec.marshalNServicioVendido2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioVendidoᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ReporteVentas_serviciosMasVendidos(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ReporteVentas",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "servicio":
+				return ec.fieldContext_ServicioVendido_servicio(ctx, field)
+			case "cantidadVendida":
+				return ec.fieldContext_ServicioVendido_cantidadVendida(ctx, field)
+			case "ingresosGenerados":
+				return ec.fieldContext_ServicioVendido_ingresosGenerados(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServicioVendido", field.Name)
 		},
 	}
 	return fc, nil
@@ -8920,6 +10933,123 @@ func (ec *executionContext) fieldContext_ServicioUbicacion_updatedAt(_ context.C
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServicioVendido_servicio(ctx context.Context, field graphql.CollectedField, obj *model.ServicioVendido) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ServicioVendido_servicio,
+		func(ctx context.Context) (any, error) {
+			return obj.Servicio, nil
+		},
+		nil,
+		ec.marshalNServicio2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicio,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ServicioVendido_servicio(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServicioVendido",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Servicio_id(ctx, field)
+			case "proveedor":
+				return ec.fieldContext_Servicio_proveedor(ctx, field)
+			case "categoria":
+				return ec.fieldContext_Servicio_categoria(ctx, field)
+			case "nombreServicio":
+				return ec.fieldContext_Servicio_nombreServicio(ctx, field)
+			case "descripcion":
+				return ec.fieldContext_Servicio_descripcion(ctx, field)
+			case "duracion":
+				return ec.fieldContext_Servicio_duracion(ctx, field)
+			case "ratingPromedio":
+				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "ubicaciones":
+				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
+			case "fotos":
+				return ec.fieldContext_Servicio_fotos(ctx, field)
+			case "calificaciones":
+				return ec.fieldContext_Servicio_calificaciones(ctx, field)
+			case "comentarios":
+				return ec.fieldContext_Servicio_comentarios(ctx, field)
+			case "detallesReserva":
+				return ec.fieldContext_Servicio_detallesReserva(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Servicio_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Servicio_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Servicio", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServicioVendido_cantidadVendida(ctx context.Context, field graphql.CollectedField, obj *model.ServicioVendido) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ServicioVendido_cantidadVendida,
+		func(ctx context.Context) (any, error) {
+			return obj.CantidadVendida, nil
+		},
+		nil,
+		ec.marshalNInt2int32,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ServicioVendido_cantidadVendida(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServicioVendido",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServicioVendido_ingresosGenerados(ctx context.Context, field graphql.CollectedField, obj *model.ServicioVendido) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ServicioVendido_ingresosGenerados,
+		func(ctx context.Context) (any, error) {
+			return obj.IngresosGenerados, nil
+		},
+		nil,
+		ec.marshalNDecimal2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ServicioVendido_ingresosGenerados(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServicioVendido",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Decimal does not have child fields")
 		},
 	}
 	return fc, nil
@@ -11269,6 +13399,47 @@ func (ec *executionContext) unmarshalInputFotoServicioInput(ctx context.Context,
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputMetricasFilter(ctx context.Context, obj any) (model.MetricasFilter, error) {
+	var it model.MetricasFilter
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"fechaDesde", "fechaHasta", "agruparPor"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "fechaDesde":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fechaDesde"))
+			data, err := ec.unmarshalODate2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.FechaDesde = data
+		case "fechaHasta":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fechaHasta"))
+			data, err := ec.unmarshalODate2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.FechaHasta = data
+		case "agruparPor":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("agruparPor"))
+			data, err := ec.unmarshalOAgrupacionTipo2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐAgrupacionTipo(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AgruparPor = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputPagination(ctx context.Context, obj any) (model.Pagination, error) {
 	var it model.Pagination
 	asMap := map[string]any{}
@@ -11407,6 +13578,68 @@ func (ec *executionContext) unmarshalInputProveedorInput(ctx context.Context, ob
 				return it, err
 			}
 			it.UbicacionID = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputReporteFilter(ctx context.Context, obj any) (model.ReporteFilter, error) {
+	var it model.ReporteFilter
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"fechaDesde", "fechaHasta", "categoriaId", "proveedorId", "ciudad", "estadoReserva"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "fechaDesde":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fechaDesde"))
+			data, err := ec.unmarshalODate2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.FechaDesde = data
+		case "fechaHasta":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fechaHasta"))
+			data, err := ec.unmarshalODate2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.FechaHasta = data
+		case "categoriaId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("categoriaId"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CategoriaID = data
+		case "proveedorId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("proveedorId"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProveedorID = data
+		case "ciudad":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ciudad"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Ciudad = data
+		case "estadoReserva":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("estadoReserva"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EstadoReserva = data
 		}
 	}
 
@@ -12055,6 +14288,55 @@ func (ec *executionContext) _Comentario(ctx context.Context, sel ast.SelectionSe
 	return out
 }
 
+var distribucionCalificacionImplementors = []string{"DistribucionCalificacion"}
+
+func (ec *executionContext) _DistribucionCalificacion(ctx context.Context, sel ast.SelectionSet, obj *model.DistribucionCalificacion) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, distribucionCalificacionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("DistribucionCalificacion")
+		case "puntuacion":
+			out.Values[i] = ec._DistribucionCalificacion_puntuacion(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "cantidad":
+			out.Values[i] = ec._DistribucionCalificacion_cantidad(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "porcentaje":
+			out.Values[i] = ec._DistribucionCalificacion_porcentaje(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var fotoServicioImplementors = []string{"FotoServicio"}
 
 func (ec *executionContext) _FotoServicio(ctx context.Context, sel ast.SelectionSet, obj *model.FotoServicio) graphql.Marshaler {
@@ -12090,6 +14372,70 @@ func (ec *executionContext) _FotoServicio(ctx context.Context, sel ast.Selection
 			}
 		case "updatedAt":
 			out.Values[i] = ec._FotoServicio_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var metricasGeneralesImplementors = []string{"MetricasGenerales"}
+
+func (ec *executionContext) _MetricasGenerales(ctx context.Context, sel ast.SelectionSet, obj *model.MetricasGenerales) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, metricasGeneralesImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MetricasGenerales")
+		case "totalUsuarios":
+			out.Values[i] = ec._MetricasGenerales_totalUsuarios(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalProveedores":
+			out.Values[i] = ec._MetricasGenerales_totalProveedores(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalServicios":
+			out.Values[i] = ec._MetricasGenerales_totalServicios(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalReservas":
+			out.Values[i] = ec._MetricasGenerales_totalReservas(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "ingresosTotales":
+			out.Values[i] = ec._MetricasGenerales_ingresosTotales(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "promedioSatisfaccion":
+			out.Values[i] = ec._MetricasGenerales_promedioSatisfaccion(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -12548,6 +14894,52 @@ func (ec *executionContext) _Proveedor(ctx context.Context, sel ast.SelectionSet
 	return out
 }
 
+var puntoTendenciaImplementors = []string{"PuntoTendencia"}
+
+func (ec *executionContext) _PuntoTendencia(ctx context.Context, sel ast.SelectionSet, obj *model.PuntoTendencia) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, puntoTendenciaImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("PuntoTendencia")
+		case "fecha":
+			out.Values[i] = ec._PuntoTendencia_fecha(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "valor":
+			out.Values[i] = ec._PuntoTendencia_valor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "etiqueta":
+			out.Values[i] = ec._PuntoTendencia_etiqueta(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var queryImplementors = []string{"Query"}
 
 func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -12939,6 +15331,226 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "reporteVentas":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_reporteVentas(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "reporteSatisfaccion":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_reporteSatisfaccion(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "reporteProveedores":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_reporteProveedores(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "reporteClientes":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_reporteClientes(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "metricasGenerales":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_metricasGenerales(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "serviciosMasPopulares":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_serviciosMasPopulares(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "proveedoresMejorCalificados":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_proveedoresMejorCalificados(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "clientesMasActivos":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_clientesMasActivos(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "tendenciasVentas":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_tendenciasVentas(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "tendenciasSatisfaccion":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_tendenciasSatisfaccion(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -12947,6 +15559,234 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___schema(ctx, field)
 			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var reporteClienteImplementors = []string{"ReporteCliente"}
+
+func (ec *executionContext) _ReporteCliente(ctx context.Context, sel ast.SelectionSet, obj *model.ReporteCliente) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, reporteClienteImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ReporteCliente")
+		case "cliente":
+			out.Values[i] = ec._ReporteCliente_cliente(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalReservas":
+			out.Values[i] = ec._ReporteCliente_totalReservas(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "gastoTotal":
+			out.Values[i] = ec._ReporteCliente_gastoTotal(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "promedioPorReserva":
+			out.Values[i] = ec._ReporteCliente_promedioPorReserva(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "ultimaReserva":
+			out.Values[i] = ec._ReporteCliente_ultimaReserva(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var reporteProveedorImplementors = []string{"ReporteProveedor"}
+
+func (ec *executionContext) _ReporteProveedor(ctx context.Context, sel ast.SelectionSet, obj *model.ReporteProveedor) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, reporteProveedorImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ReporteProveedor")
+		case "proveedor":
+			out.Values[i] = ec._ReporteProveedor_proveedor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalServicios":
+			out.Values[i] = ec._ReporteProveedor_totalServicios(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "ingresosTotales":
+			out.Values[i] = ec._ReporteProveedor_ingresosTotales(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "promedioCalificacion":
+			out.Values[i] = ec._ReporteProveedor_promedioCalificacion(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serviciosActivos":
+			out.Values[i] = ec._ReporteProveedor_serviciosActivos(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var reporteSatisfaccionImplementors = []string{"ReporteSatisfaccion"}
+
+func (ec *executionContext) _ReporteSatisfaccion(ctx context.Context, sel ast.SelectionSet, obj *model.ReporteSatisfaccion) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, reporteSatisfaccionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ReporteSatisfaccion")
+		case "servicio":
+			out.Values[i] = ec._ReporteSatisfaccion_servicio(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "promedioCalificacion":
+			out.Values[i] = ec._ReporteSatisfaccion_promedioCalificacion(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalCalificaciones":
+			out.Values[i] = ec._ReporteSatisfaccion_totalCalificaciones(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "distribucionCalificaciones":
+			out.Values[i] = ec._ReporteSatisfaccion_distribucionCalificaciones(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var reporteVentasImplementors = []string{"ReporteVentas"}
+
+func (ec *executionContext) _ReporteVentas(ctx context.Context, sel ast.SelectionSet, obj *model.ReporteVentas) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, reporteVentasImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ReporteVentas")
+		case "periodo":
+			out.Values[i] = ec._ReporteVentas_periodo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalVentas":
+			out.Values[i] = ec._ReporteVentas_totalVentas(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "cantidadReservas":
+			out.Values[i] = ec._ReporteVentas_cantidadReservas(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "promedioPorReserva":
+			out.Values[i] = ec._ReporteVentas_promedioPorReserva(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serviciosMasVendidos":
+			out.Values[i] = ec._ReporteVentas_serviciosMasVendidos(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -13238,6 +16078,55 @@ func (ec *executionContext) _ServicioUbicacion(ctx context.Context, sel ast.Sele
 			}
 		case "updatedAt":
 			out.Values[i] = ec._ServicioUbicacion_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var servicioVendidoImplementors = []string{"ServicioVendido"}
+
+func (ec *executionContext) _ServicioVendido(ctx context.Context, sel ast.SelectionSet, obj *model.ServicioVendido) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, servicioVendidoImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServicioVendido")
+		case "servicio":
+			out.Values[i] = ec._ServicioVendido_servicio(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "cantidadVendida":
+			out.Values[i] = ec._ServicioVendido_cantidadVendida(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "ingresosGenerados":
+			out.Values[i] = ec._ServicioVendido_ingresosGenerados(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -14046,6 +16935,60 @@ func (ec *executionContext) marshalNDecimal2string(ctx context.Context, sel ast.
 	return res
 }
 
+func (ec *executionContext) marshalNDistribucionCalificacion2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐDistribucionCalificacionᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.DistribucionCalificacion) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNDistribucionCalificacion2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐDistribucionCalificacion(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNDistribucionCalificacion2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐDistribucionCalificacion(ctx context.Context, sel ast.SelectionSet, v *model.DistribucionCalificacion) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._DistribucionCalificacion(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v any) (float64, error) {
 	res, err := graphql.UnmarshalFloatContext(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -14111,6 +17054,20 @@ func (ec *executionContext) marshalNInt2int32(ctx context.Context, sel ast.Selec
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNMetricasGenerales2githubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐMetricasGenerales(ctx context.Context, sel ast.SelectionSet, v model.MetricasGenerales) graphql.Marshaler {
+	return ec._MetricasGenerales(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNMetricasGenerales2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐMetricasGenerales(ctx context.Context, sel ast.SelectionSet, v *model.MetricasGenerales) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._MetricasGenerales(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNPago2githubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPago(ctx context.Context, sel ast.SelectionSet, v model.Pago) graphql.Marshaler {
@@ -14237,6 +17194,236 @@ func (ec *executionContext) marshalNProveedor2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5t
 func (ec *executionContext) unmarshalNProveedorInput2githubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐProveedorInput(ctx context.Context, v any) (model.ProveedorInput, error) {
 	res, err := ec.unmarshalInputProveedorInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNPuntoTendencia2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPuntoTendenciaᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.PuntoTendencia) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNPuntoTendencia2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPuntoTendencia(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNPuntoTendencia2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPuntoTendencia(ctx context.Context, sel ast.SelectionSet, v *model.PuntoTendencia) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._PuntoTendencia(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNReporteCliente2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteClienteᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ReporteCliente) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNReporteCliente2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteCliente(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNReporteCliente2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteCliente(ctx context.Context, sel ast.SelectionSet, v *model.ReporteCliente) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ReporteCliente(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNReporteProveedor2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteProveedorᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ReporteProveedor) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNReporteProveedor2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteProveedor(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNReporteProveedor2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteProveedor(ctx context.Context, sel ast.SelectionSet, v *model.ReporteProveedor) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ReporteProveedor(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNReporteSatisfaccion2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteSatisfaccionᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ReporteSatisfaccion) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNReporteSatisfaccion2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteSatisfaccion(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNReporteSatisfaccion2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteSatisfaccion(ctx context.Context, sel ast.SelectionSet, v *model.ReporteSatisfaccion) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ReporteSatisfaccion(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNReporteVentas2githubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteVentas(ctx context.Context, sel ast.SelectionSet, v model.ReporteVentas) graphql.Marshaler {
+	return ec._ReporteVentas(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNReporteVentas2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteVentas(ctx context.Context, sel ast.SelectionSet, v *model.ReporteVentas) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ReporteVentas(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNReserva2githubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReserva(ctx context.Context, sel ast.SelectionSet, v model.Reserva) graphql.Marshaler {
@@ -14382,6 +17569,60 @@ func (ec *executionContext) marshalNServicio2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5to
 func (ec *executionContext) unmarshalNServicioInput2githubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioInput(ctx context.Context, v any) (model.ServicioInput, error) {
 	res, err := ec.unmarshalInputServicioInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServicioVendido2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioVendidoᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ServicioVendido) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNServicioVendido2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioVendido(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNServicioVendido2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioVendido(ctx context.Context, sel ast.SelectionSet, v *model.ServicioVendido) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServicioVendido(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v any) (string, error) {
@@ -14795,6 +18036,22 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
+func (ec *executionContext) unmarshalOAgrupacionTipo2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐAgrupacionTipo(ctx context.Context, v any) (*model.AgrupacionTipo, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(model.AgrupacionTipo)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOAgrupacionTipo2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐAgrupacionTipo(ctx context.Context, sel ast.SelectionSet, v *model.AgrupacionTipo) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v any) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -15098,6 +18355,14 @@ func (ec *executionContext) marshalOInt2ᚖint32(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) unmarshalOMetricasFilter2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐMetricasFilter(ctx context.Context, v any) (*model.MetricasFilter, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputMetricasFilter(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalOPagination2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPagination(ctx context.Context, v any) (*model.Pagination, error) {
 	if v == nil {
 		return nil, nil
@@ -15212,6 +18477,14 @@ func (ec *executionContext) marshalOProveedor2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5t
 		return graphql.Null
 	}
 	return ec._Proveedor(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOReporteFilter2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReporteFilter(ctx context.Context, v any) (*model.ReporteFilter, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputReporteFilter(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOReserva2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReservaᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Reserva) graphql.Marshaler {

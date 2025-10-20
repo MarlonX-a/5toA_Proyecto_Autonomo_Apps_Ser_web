@@ -1,98 +1,223 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🚀 WebSocket Server para Django API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este proyecto implementa un servidor WebSocket robusto en TypeScript que se conecta a tu API REST de Python Django, proporcionando funcionalidades de tiempo real para tu aplicación.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## ✨ Características
 
-## Description
+- **Dashboard en tiempo real** - Monitoreo de conexiones y eventos
+- **Gestión de conexiones** - Manejo avanzado de clientes con roles
+- **Sistema de salas/canales** - Organización por tipos de datos
+- **Emisión de eventos** - Notificaciones en tiempo real
+- **Integración con Django** - Sincronización con API REST
+- **Autenticación** - Verificación de tokens con Django
+- **Limpieza automática** - Gestión de conexiones inactivas
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🏗️ Arquitectura
 
-## Project setup
-
-```bash
-$ npm install
+```
+src/
+├── websocket/
+│   ├── websocket.gateway.ts      # Gateway principal de WebSocket
+│   ├── client-manager.service.ts # Gestión de clientes
+│   ├── room-manager.service.ts   # Gestión de salas
+│   └── event-emitter.service.ts  # Emisión de eventos
+├── dashboard/
+│   ├── dashboard.controller.ts   # API REST para dashboard
+│   └── dashboard.service.ts      # Lógica del dashboard
+├── services/
+│   └── django-api.service.ts     # Integración con Django
+├── test-clients/
+│   ├── websocket-client.ts        # Cliente de prueba
+│   └── test-runner.ts            # Ejecutor de pruebas
+└── config/
+    └── config.ts                 # Configuración
 ```
 
-## Compile and run the project
+## 🚀 Instalación y Uso
 
+### 1. Instalar dependencias
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cd Backend/TypeScript
+npm install
 ```
 
-## Run tests
+### 2. Configurar la API de Django
+Asegúrate de que tu API Django esté corriendo en `http://localhost:8000`
 
+### 3. Iniciar el servidor WebSocket
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:dev
 ```
 
-## Deployment
+El servidor se iniciará en `http://localhost:4000`
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### 4. Acceder al Dashboard
+Visita `http://localhost:4000/dashboard` para ver el dashboard en tiempo real
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### 5. Ejecutar clientes de prueba
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run test:clients
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 📡 API del Dashboard
 
-## Resources
+### Endpoints disponibles:
 
-Check out a few resources that may come in handy when working with NestJS:
+- `GET /dashboard` - Datos generales del dashboard
+- `GET /dashboard/clients` - Lista de clientes conectados
+- `GET /dashboard/rooms` - Lista de salas activas
+- `GET /dashboard/events` - Historial de eventos
+- `GET /dashboard/api-status` - Estado de conexión con Django
+- `GET /dashboard/stats` - Estadísticas en tiempo real
+- `POST /dashboard/cleanup` - Limpiar datos inactivos
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 🔌 Eventos WebSocket
 
-## Support
+### Eventos del Cliente:
+- `authenticate` - Autenticación con token
+- `join_room` - Unirse a una sala
+- `leave_room` - Salir de una sala
+- `reservation_created` - Crear reserva
+- `reservation_accepted` - Aceptar reserva
+- `payment_created` - Crear pago
+- `comment_created` - Crear comentario
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Eventos del Servidor:
+- `auth_success` - Autenticación exitosa
+- `auth_error` - Error de autenticación
+- `event` - Evento general
+- `room_joined` - Confirmación de unión a sala
+- `room_left` - Confirmación de salida de sala
 
-## Stay in touch
+## 🏠 Sistema de Salas
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Tipos de salas automáticas:
+- `cliente_{userId}` - Sala personal del cliente
+- `proveedor_{userId}` - Sala personal del proveedor
+- `all_clientes` - Sala general de clientes
+- `all_proveedores` - Sala general de proveedores
+- `admin_dashboard` - Sala de administradores
 
-## License
+### Salas específicas:
+- `service_{serviceId}` - Sala de un servicio específico
+- `location_{locationId}` - Sala de una ubicación específica
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## 🔐 Autenticación
+
+El sistema utiliza tokens de Django para autenticación:
+
+```typescript
+// Ejemplo de autenticación
+socket.emit('authenticate', {
+  token: 'tu_token_de_django',
+  userId: 'usuario_123',
+  role: 'cliente' // o 'proveedor' o 'admin'
+});
+```
+
+## 📊 Monitoreo
+
+### Métricas disponibles:
+- Conexiones activas por rol
+- Salas creadas y clientes por sala
+- Tiempo promedio de conexión
+- Eventos emitidos por minuto
+- Estado de la API de Django
+
+### Dashboard en tiempo real:
+- Actualización automática cada 5 segundos
+- Limpieza automática de datos inactivos
+- Estadísticas del sistema (memoria, uptime)
+- Logs de eventos en tiempo real
+
+## 🧪 Pruebas
+
+### Cliente de prueba incluido:
+```typescript
+import { createClient } from './test-clients/websocket-client';
+
+const client = createClient('usuario_1', 'cliente', 'token_123');
+client.createReservation({
+  clienteId: 'usuario_1',
+  proveedorId: 'proveedor_1',
+  servicioId: 'servicio_1',
+  fecha: new Date().toISOString(),
+  estado: 'pendiente'
+});
+```
+
+### Ejecutar pruebas:
+```bash
+# Ejecutar clientes de prueba
+npm run test:clients
+
+# Ejecutar tests unitarios
+npm test
+```
+
+## 🔧 Configuración
+
+Edita `src/config/config.ts` para personalizar:
+
+```typescript
+export const config = {
+  websocket: {
+    port: 4000,
+    cors: { /* configuración CORS */ }
+  },
+  django: {
+    baseUrl: 'http://localhost:8000/api/v1/',
+    timeout: 10000
+  },
+  // ... más configuraciones
+};
+```
+
+## 🚨 Solución de Problemas
+
+### Error de conexión con Django:
+1. Verifica que Django esté corriendo en el puerto 8000
+2. Revisa la configuración CORS en Django
+3. Verifica que el endpoint `/api/v1/profile/` esté disponible
+
+### Problemas de autenticación:
+1. Asegúrate de que el token sea válido
+2. Verifica que el usuario exista en Django
+3. Revisa los logs del servidor para errores específicos
+
+### Dashboard no carga:
+1. Verifica que el servidor esté corriendo en el puerto 4000
+2. Revisa la consola del navegador para errores
+3. Asegúrate de que el archivo `dashboard.html` esté en la carpeta `public`
+
+## 📝 Logs
+
+El sistema incluye logging detallado:
+- Conexiones y desconexiones de clientes
+- Eventos emitidos y recibidos
+- Errores de autenticación
+- Estado de la API de Django
+- Métricas del sistema
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit tus cambios (`git commit -am 'Agregar nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Crea un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+## 🆘 Soporte
+
+Si tienes problemas o preguntas:
+1. Revisa la documentación
+2. Busca en los issues existentes
+3. Crea un nuevo issue con detalles del problema
+
+---
+
+**¡Disfruta usando tu WebSocket server! 🚀**

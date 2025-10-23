@@ -45,7 +45,7 @@ Creé modelos de base de datos con campos de ID para las relaciones, separados d
 ```go
 func (r *queryResolver) Users(ctx context.Context, pagination *model.Pagination) ([]*model.User, error) {
 	var users []*model.User
-	query := "SELECT * FROM users"
+	query := "SELECT * FROM api_rest_users"
 	
 	// Aplicar paginación
 	if pagination != nil {
@@ -75,7 +75,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 		LastName:  input.LastName,
 		Rol:       input.Rol,
 	}
-	query := "INSERT INTO users (username,email,first_name,last_name,rol,created_at,updated_at) VALUES ($1,$2,$3,$4,$5,NOW(),NOW()) RETURNING id"
+	query := "INSERT INTO api_rest_users (username,email,first_name,last_name,rol,created_at,updated_at) VALUES ($1,$2,$3,$4,$5,NOW(),NOW()) RETURNING id"
 	err := r.DB.QueryRow(query, user.Username, user.Email, user.FirstName, user.LastName, user.Rol).Scan(&user.ID)
 	if err != nil {
 		return nil, err
@@ -88,7 +88,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 ```go
 func (r *queryResolver) Servicios(ctx context.Context, filter *model.ServicioFilter, pagination *model.Pagination) ([]*model.Servicio, error) {
 	var servicios []*model.Servicio
-	query := "SELECT s.* FROM servicios s"
+	query := "SELECT s.* FROM api_rest_servicios s"
 	args := []interface{}{}
 	argIndex := 1
 	
@@ -133,7 +133,7 @@ func (r *queryResolver) Servicios(ctx context.Context, filter *model.ServicioFil
 ```go
 func (r *userResolver) Cliente(ctx context.Context, obj *model.User) (*model.Cliente, error) {
 	var cliente model.Cliente
-	query := "SELECT * FROM clientes WHERE user_id = $1"
+	query := "SELECT * FROM api_rest_clientes WHERE user_id = $1"
 	err := r.DB.Get(&cliente, query, obj.ID)
 	if err != nil {
 		return nil, err
@@ -181,7 +181,7 @@ func (r *servicioResolver) Proveedor(ctx context.Context, obj *model.Servicio) (
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
 	// Validar email único
 	var count int
-	err := r.DB.Get(&count, "SELECT COUNT(*) FROM users WHERE email = $1", input.Email)
+	err := r.DB.Get(&count, "SELECT COUNT(*) FROM api_rest_users WHERE email = $1", input.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -198,7 +198,7 @@ func (r *mutationResolver) CreateServicio(ctx context.Context, input model.Servi
 	// Verificar que el usuario autenticado es el proveedor
 	userID := getUserIDFromContext(ctx)
 	var proveedorID string
-	err := r.DB.Get(&proveedorID, "SELECT id FROM proveedores WHERE user_id = $1", userID)
+		err := r.DB.Get(&proveedorID, "SELECT id FROM api_rest_proveedores WHERE user_id = $1", userID)
 	if err != nil {
 		return nil, errors.New("unauthorized")
 	}

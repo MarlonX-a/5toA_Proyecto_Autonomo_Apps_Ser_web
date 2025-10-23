@@ -1,29 +1,27 @@
-import { useForm, type SubmitHandler} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import type { Ilogin } from '../interfaces/login';
-import { login } from '../api/login';
-import { useState } from 'react';
+import { login as loginApi } from '../api/login';
+import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-
+import { AuthContext } from '../context/AuthContext';
 
 export function LoginPage() {
-
   const navigate = useNavigate();
   const [apiError, setApiError] = useState<string | null >(null);
 
-  
+  const { login: loginContext } = useContext(AuthContext);
+
   const { register, handleSubmit, formState: { errors } } = useForm<Ilogin>();
 
   const onSubmit: SubmitHandler<Ilogin> = async (data) => {
     try {
-        const loginData: Ilogin = {
-          username: data.username,
-          password: data.password
-        }
-        const res = await login(loginData);
-        console.log("Bienvenido: ", res.data);
-        navigate("/")
-    } catch (err: unknown) {
+        const res = await loginApi(data);
+        loginContext(res.data.token);
+
+        navigate("/");
+    } catch (err: any) {
       setApiError("Error al Iniciar Sesión, revisa tus datos");
+      console.log(err.response?.data)
       console.error(err);
     }
   };
@@ -38,7 +36,6 @@ export function LoginPage() {
           {errors.password && <span> {errors.password.message} </span>}
 
           <p><Link to='/singup'>¿No tienes cuenta? Registrate aquí</Link></p>
-
 
           {apiError && <p style={{ color: 'red' }}>{apiError}</p>}
           <button type='submit'>Iniciar Sesión</button>

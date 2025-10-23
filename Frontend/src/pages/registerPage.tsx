@@ -40,7 +40,8 @@ export function RegisterPage() {
             first_name: data.first_name,
             last_name: data.last_name,
             email: data.email,
-            password: data.password
+            password: data.password,
+            rol: 'cliente'
           },
           telefono: data.telefono || '',
           ubicacion: data.direccion ? {
@@ -60,7 +61,8 @@ export function RegisterPage() {
             first_name: data.first_name,
             last_name: data.last_name,
             email: data.email,
-            password: data.password
+            password: data.password,
+            rol: 'proveedor'
           },
           telefono: data.telefono || '',
           descripcion: data.descripcion!,
@@ -75,8 +77,9 @@ export function RegisterPage() {
         console.log('Proveedor registrado', res.data);
       }
       navigate('/login'); // Redirige después de registro
-    } catch (err: unknown) {
+    } catch (err: any) {
       setApiError('Error al registrar, revisa tus datos');
+      console.log(err.response?.data);
       console.error(err);
     }
   };

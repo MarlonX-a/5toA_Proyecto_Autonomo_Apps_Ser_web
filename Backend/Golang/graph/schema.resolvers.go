@@ -282,7 +282,7 @@ func (r *queryResolver) Calificaciones(ctx context.Context, pagination *model.Pa
 // Comentarios is the resolver for the comentarios field.
 func (r *queryResolver) Comentarios(ctx context.Context, pagination *model.Pagination) ([]*model.Comentario, error) {
 	var comentarios []*model.Comentario
-	query := "SELECT * FROM comentarios"
+	query := "SELECT * FROM api_rest_comentario"
 
 	// Aplicar paginación si se proporciona
 	if pagination != nil {
@@ -308,7 +308,7 @@ func (r *queryResolver) ReporteVentas(ctx context.Context, filter *model.Reporte
 			COUNT(r.id) as cantidad_reservas,
 			COALESCE(SUM(CAST(r.total_estimado AS DECIMAL)), 0) as total_ventas,
 			COALESCE(AVG(CAST(r.total_estimado AS DECIMAL)), 0) as promedio_por_reserva
-		FROM reservas r
+		FROM api_rest_reserva r
 		WHERE r.estado = 'completada'
 	`
 
@@ -374,8 +374,8 @@ func (r *queryResolver) ReporteSatisfaccion(ctx context.Context, filter *model.R
 			s.nombre_servicio,
 			AVG(c.puntuacion) as promedio_calificacion,
 			COUNT(c.id) as total_calificaciones
-		FROM servicios s
-		LEFT JOIN calificaciones c ON s.id = c.servicio_id
+		FROM api_rest_servicio s
+		LEFT JOIN api_rest_calificacion c ON s.id = c.servicio_id
 		WHERE c.id IS NOT NULL
 	`
 
@@ -451,11 +451,11 @@ func (r *queryResolver) ReporteProveedores(ctx context.Context, filter *model.Re
 			COALESCE(SUM(CAST(rs.subtotal AS DECIMAL)), 0) as ingresos_totales,
 			COALESCE(AVG(c.puntuacion), 0) as promedio_calificacion,
 			COUNT(DISTINCT CASE WHEN s.id IS NOT NULL THEN s.id END) as servicios_activos
-		FROM proveedores p
-		LEFT JOIN servicios s ON p.id = s.proveedor_id
-		LEFT JOIN reserva_servicios rs ON s.id = rs.servicio_id
-		LEFT JOIN reservas r ON rs.reserva_id = r.id AND r.estado = 'completada'
-		LEFT JOIN calificaciones c ON s.id = c.servicio_id
+		FROM api_rest_proveedor p
+		LEFT JOIN api_rest_servicio s ON p.id = s.proveedor_id
+		LEFT JOIN api_rest_reserva_servicio rs ON s.id = rs.servicio_id
+		LEFT JOIN api_rest_reserva r ON rs.reserva_id = r.id AND r.estado = 'completada'
+		LEFT JOIN api_rest_calificacion c ON s.id = c.servicio_id
 	`
 
 	args := []interface{}{}
@@ -529,8 +529,8 @@ func (r *queryResolver) ReporteClientes(ctx context.Context, filter *model.Repor
 			COALESCE(SUM(CAST(r.total_estimado AS DECIMAL)), 0) as gasto_total,
 			COALESCE(AVG(CAST(r.total_estimado AS DECIMAL)), 0) as promedio_por_reserva,
 			MAX(r.fecha) as ultima_reserva
-		FROM clientes c
-		LEFT JOIN reservas r ON c.id = r.cliente_id
+		FROM api_rest_cliente c
+		LEFT JOIN api_rest_reserva r ON c.id = r.cliente_id
 	`
 
 	args := []interface{}{}
@@ -596,42 +596,42 @@ func (r *queryResolver) ReporteClientes(ctx context.Context, filter *model.Repor
 func (r *queryResolver) MetricasGenerales(ctx context.Context, filter *model.MetricasFilter) (*model.MetricasGenerales, error) {
 	// Contar usuarios
 	var totalUsuarios int
-	err := r.DB.Get(&totalUsuarios, "SELECT COUNT(*) FROM users")
+	err := r.DB.Get(&totalUsuarios, "SELECT COUNT(*) FROM api_rest_user")
 	if err != nil {
 		return nil, err
 	}
 
 	// Contar proveedores
 	var totalProveedores int
-	err = r.DB.Get(&totalProveedores, "SELECT COUNT(*) FROM proveedores")
+	err = r.DB.Get(&totalProveedores, "SELECT COUNT(*) FROM api_rest_proveedor")
 	if err != nil {
 		return nil, err
 	}
 
 	// Contar servicios
 	var totalServicios int
-	err = r.DB.Get(&totalServicios, "SELECT COUNT(*) FROM servicios")
+	err = r.DB.Get(&totalServicios, "SELECT COUNT(*) FROM api_rest_servicio")
 	if err != nil {
 		return nil, err
 	}
 
 	// Contar reservas
 	var totalReservas int
-	err = r.DB.Get(&totalReservas, "SELECT COUNT(*) FROM reservas")
+	err = r.DB.Get(&totalReservas, "SELECT COUNT(*) FROM api_rest_reserva")
 	if err != nil {
 		return nil, err
 	}
 
 	// Calcular ingresos totales
 	var ingresosTotales string
-	err = r.DB.Get(&ingresosTotales, "SELECT COALESCE(SUM(CAST(total_estimado AS DECIMAL)), 0) FROM reservas WHERE estado = 'completada'")
+	err = r.DB.Get(&ingresosTotales, "SELECT COALESCE(SUM(CAST(total_estimado AS DECIMAL)), 0) FROM api_rest_reserva WHERE estado = 'completada'")
 	if err != nil {
 		return nil, err
 	}
 
 	// Calcular promedio de satisfacción
 	var promedioSatisfaccion float64
-	err = r.DB.Get(&promedioSatisfaccion, "SELECT COALESCE(AVG(puntuacion), 0) FROM calificaciones")
+	err = r.DB.Get(&promedioSatisfaccion, "SELECT COALESCE(AVG(puntuacion), 0) FROM api_rest_calificacion")
 	if err != nil {
 		return nil, err
 	}
@@ -661,7 +661,7 @@ func (r *queryResolver) ServiciosMasPopulares(ctx context.Context, limit *int32)
 			s.nombre_servicio,
 			COUNT(rs.id) as cantidad_vendida,
 			COALESCE(SUM(CAST(rs.subtotal AS DECIMAL)), 0) as ingresos_generados
-		FROM servicios s
+		FROM api_rest_servicio s
 		JOIN reserva_servicios rs ON s.id = rs.servicio_id
 		JOIN reservas r ON rs.reserva_id = r.id
 		WHERE r.estado = 'completada'
@@ -717,7 +717,7 @@ func (r *queryResolver) ProveedoresMejorCalificados(ctx context.Context, limit *
 			COALESCE(SUM(CAST(rs.subtotal AS DECIMAL)), 0) as ingresos_totales,
 			COALESCE(AVG(c.puntuacion), 0) as promedio_calificacion,
 			COUNT(DISTINCT CASE WHEN s.id IS NOT NULL THEN s.id END) as servicios_activos
-		FROM proveedores p
+		FROM api_rest_proveedor p
 		LEFT JOIN servicios s ON p.id = s.proveedor_id
 		LEFT JOIN reserva_servicios rs ON s.id = rs.servicio_id
 		LEFT JOIN reservas r ON rs.reserva_id = r.id AND r.estado = 'completada'
@@ -780,7 +780,7 @@ func (r *queryResolver) ClientesMasActivos(ctx context.Context, limit *int32) ([
 			COALESCE(SUM(CAST(r.total_estimado AS DECIMAL)), 0) as gasto_total,
 			COALESCE(AVG(CAST(r.total_estimado AS DECIMAL)), 0) as promedio_por_reserva,
 			MAX(r.fecha) as ultima_reserva
-		FROM clientes c
+		FROM api_rest_cliente c
 		LEFT JOIN reservas r ON c.id = r.cliente_id
 		GROUP BY c.id, c.telefono
 		ORDER BY total_reservas DESC
@@ -842,7 +842,7 @@ func (r *queryResolver) TendenciasVentas(ctx context.Context, filter *model.Metr
 		SELECT 
 			DATE_TRUNC('%s', r.fecha) as fecha,
 			SUM(CAST(r.total_estimado AS DECIMAL)) as valor
-		FROM reservas r
+		FROM api_rest_reserva r
 		WHERE r.estado = 'completada'
 	`, agrupacion)
 
@@ -912,7 +912,7 @@ func (r *queryResolver) TendenciasSatisfaccion(ctx context.Context, filter *mode
 		SELECT 
 			DATE_TRUNC('%s', c.fecha) as fecha,
 			AVG(c.puntuacion) as valor
-		FROM calificaciones c
+		FROM api_rest_calificacion c
 	`, agrupacion)
 
 	args := []interface{}{}
@@ -975,15 +975,15 @@ func (r *queryResolver) getServiciosMasVendidos(ctx context.Context, filter *mod
 			s.nombre_servicio,
 			COUNT(rs.id) as cantidad_vendida,
 			COALESCE(SUM(CAST(rs.subtotal AS DECIMAL)), 0) as ingresos_generados
-		FROM servicios s
+		FROM api_rest_servicio s
 		JOIN reserva_servicios rs ON s.id = rs.servicio_id
 		JOIN reservas r ON rs.reserva_id = r.id
 		WHERE r.estado = 'completada'
 	`
-	
+
 	args := []interface{}{}
 	argIndex := 1
-	
+
 	if filter != nil {
 		if filter.FechaDesde != nil {
 			query += fmt.Sprintf(" AND r.fecha >= $%d", argIndex)
@@ -1006,37 +1006,37 @@ func (r *queryResolver) getServiciosMasVendidos(ctx context.Context, filter *mod
 			argIndex++
 		}
 	}
-	
+
 	query += " GROUP BY s.id, s.nombre_servicio ORDER BY cantidad_vendida DESC LIMIT 10"
-	
+
 	var resultados []struct {
 		ServicioID        string `db:"id"`
 		NombreServicio    string `db:"nombre_servicio"`
 		CantidadVendida   int    `db:"cantidad_vendida"`
 		IngresosGenerados string `db:"ingresos_generados"`
 	}
-	
+
 	err := r.DB.Select(&resultados, query, args...)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	var serviciosVendidos []*model.ServicioVendido
 	for _, resultado := range resultados {
 		servicio := &model.Servicio{
 			ID:             resultado.ServicioID,
 			NombreServicio: resultado.NombreServicio,
 		}
-		
+
 		servicioVendido := &model.ServicioVendido{
 			Servicio:          servicio,
 			CantidadVendida:   int32(resultado.CantidadVendida),
 			IngresosGenerados: resultado.IngresosGenerados,
 		}
-		
+
 		serviciosVendidos = append(serviciosVendidos, servicioVendido)
 	}
-	
+
 	return serviciosVendidos, nil
 }
 
@@ -1046,43 +1046,43 @@ func (r *queryResolver) getDistribucionCalificaciones(ctx context.Context, servi
 		SELECT 
 			puntuacion,
 			COUNT(*) as cantidad
-		FROM calificaciones 
+		FROM api_rest_calificacion 
 		WHERE servicio_id = $1
 		GROUP BY puntuacion
 		ORDER BY puntuacion
 	`
-	
+
 	var resultados []struct {
 		Puntuacion int `db:"puntuacion"`
 		Cantidad   int `db:"cantidad"`
 	}
-	
+
 	err := r.DB.Select(&resultados, query, servicioID)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// Calcular total para porcentajes
 	total := 0
 	for _, resultado := range resultados {
 		total += resultado.Cantidad
 	}
-	
+
 	var distribucion []*model.DistribucionCalificacion
 	for _, resultado := range resultados {
 		var porcentaje float64
 		if total > 0 {
 			porcentaje = float64(resultado.Cantidad) / float64(total) * 100
 		}
-		
+
 		dist := &model.DistribucionCalificacion{
 			Puntuacion: int32(resultado.Puntuacion),
 			Cantidad:   int32(resultado.Cantidad),
 			Porcentaje: porcentaje,
 		}
-		
+
 		distribucion = append(distribucion, dist)
 	}
-	
+
 	return distribucion, nil
 }

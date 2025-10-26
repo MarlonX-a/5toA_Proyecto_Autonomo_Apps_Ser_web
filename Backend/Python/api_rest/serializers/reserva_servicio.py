@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from django.utils import timezone
+from datetime import time
 from .. import models
 from .reserva import ReservaSerializer
 from .servicio import ServicioSerializer
@@ -32,30 +34,29 @@ class ReservaServicioSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("El servicio no está disponible actualmente.")
             return value
         
-        def validate_cantidad(self, value):
-            if value <= 0:
-                raise serializers.ValidationError("La cantidad debe ser mayor que 0.")
-            return value
         
-        def validate_precio_unitario(self, value):
-            if value <= 0:
-                raise serializers.ValidationError("El precio unitario debe ser positivo.")
-            return value
-        
-        def validate(self, data):
-            reserva = data.get('reserva')
-            servicio = data.get('servicio')
-            cantidad = data.get('cantidad')
-            precio_unitario = data.get('precio_unitario')
+    def validate_fecha_servicio(self, value):
+        """No permitir fechas pasadas"""
+        today = timezone.localdate()
+        if value < today:
+            raise serializers.ValidationError("La fecha no puede ser pasada.")
+        return value
 
-            if models.ReservaServicio.objects.filter(reserva = reserva, servicio= servicio).exists():
-                raise serializers.ValidationError("El servicio no pertenece al mismo proveedor asociado a la reserva.")
-            
-            if hasattr(reserva, 'servicio') and servicio.proveedor != reserva.servicio.proveedor:
-                raise serializers.ValidationError("El servicio no pertenece al mismo proveedor asociado a la reserva.")
-            
-            total_calculado = cantidad * precio_unitario
-            if total_calculado <= 0:
-                raise serializers.ValidationError("El total calculado debe ser mayor a cero.")
-            
-            return data
+    def validate_hora_servicio(self, value):
+        """Validar hora según la fecha"""
+        fecha = self.initial_data.get("fecha_servicio")
+        if not fecha:
+            return value  # no validamos si no hay fecha
+        fecha = timezone.datetime.strptime(fecha, "%Y-%m-%d").date()
+        now = timezone.localtime()
+
+        if fecha == now.date():
+            if value <= now.time():
+                raise serializers.ValidationError("La hora no puede ser pasada para hoy.")
+        elif fecha == now.date() + timezone.timedelta(days=1):
+            # mañana permitido solo de 08:00 a 16:00
+            if not (time(8, 0) <= value <= time(16, 0)):
+                raise serializers.ValidationError("Para mañana la hora debe estar entre 08:00 y 16:00.")
+        # para días posteriores no hay restricción
+        return value
+        

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
+from decimal import Decimal
 
 class User(AbstractUser):
     ROLES = [
@@ -70,6 +71,7 @@ class Servicio(models.Model):
     descripcion = models.TextField(blank=True, null=True)
     duracion = models.DurationField(blank=True, null=True)
     rating_promedio = models.FloatField(default=0)
+    precio = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
     ubicaciones = models.ManyToManyField(Ubicacion, through='ServicioUbicacion', related_name="servicios")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -120,15 +122,10 @@ class Reserva(models.Model):
 class ReservaServicio(models.Model):
     reserva = models.ForeignKey(Reserva, on_delete=models.CASCADE, related_name="detalles")
     servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE, related_name="detalles_reserva")
-    cantidad = models.PositiveIntegerField(default=1)
-    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
+    fecha_servicio = models.DateField(default=timezone.now)
+    hora_servicio = models.TimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def save(self, *args, **kwargs):
-        self.subtotal = self.cantidad * self.precio_unitario
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.cantidad} x {self.servicio.nombre_servicio}"

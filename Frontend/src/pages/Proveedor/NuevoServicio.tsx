@@ -1,48 +1,61 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { getAllCategorias } from "../../api/categoria";
-import { createServicio } from "../../api/servicio";
+import {
+  getAllCategorias,
+} from "../../api/categoria";
+import {
+  createServicio,
+  getServicioById,
+  updateServicio,
+} from "../../api/servicio";
 import type { Icategoria } from "../../interfaces/categoria";
 import type { Iservicio } from "../../interfaces/servicio";
 import { useNavigate, useParams } from "react-router-dom";
 import { getUsers } from "../../api/usersApi";
 
-
 export default function NuevoServicio() {
   const [categorias, setCategorias] = useState<Icategoria[]>([]);
   const [proveedorId, setProveedorId] = useState<number | null>(null);
-  const [ token, setToken ] = useState<string | null>(null);
-  const params = useParams();
+  const [token, setToken] = useState<string | null>(null);
+  const [initialData, setInitialData] = useState<Partial<Iservicio>>({});
   const navigate = useNavigate();
+  const params = useParams<{ id?: string }>();
 
   const {
     register,
     handleSubmit,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm<Iservicio>();
 
+  // Cargar categorías
   useEffect(() => {
     async function loadCategorias() {
-      const respuesta = await getAllCategorias();
-      setCategorias(respuesta.data);
+      try {
+        const respuesta = await getAllCategorias();
+        setCategorias(respuesta.data);
+      } catch (err) {
+        console.error("Error cargando categorías:", err);
+      }
     }
     loadCategorias();
   }, []);
 
+  // Obtener proveedor autenticado
   useEffect(() => {
     const saveToken = localStorage.getItem("token");
-    if (!saveToken) {
-      return;
-    }
+    if (!saveToken) return;
     setToken(saveToken);
+
     async function loadProveedor() {
       try {
         const res = await getUsers(saveToken);
-        const data = (res.data);
+        const data = res.data;
         if (data.rol === "proveedor") {
           setProveedorId(data.id);
         } else {
-          alert("Solo los proveedores pueden crear servicios.");
+          navigate("/");
         }
       } catch (error) {
         console.error("Error obteniendo perfil:", error);
@@ -50,65 +63,138 @@ export default function NuevoServicio() {
     }
 
     loadProveedor();
-  }, []);
+  }, [navigate]);
 
+  // Si hay id, cargar los datos del servicio
+  useEffect(() => {
+    async function loadServicio() {
+      if (params.id && token) {
+        try {
+          const res = await getServicioById(Number(params.id), token);
+          const servicio = res.data;
+          setInitialData(servicio);
+          setValue("nombre_servicio", servicio.nombre_servicio);
+          setValue("descripcion", servicio.descripcion);
+          setValue("duracion", servicio.duracion);
+          setValue("precio", servicio.precio);
+          setValue("categoria", servicio.categoria_id);
+        } catch (error) {
+          console.error("Error cargando servicio:", error);
+        }
+      }
+    }
+
+    loadServicio();
+  }, [params.id, token, setValue]);
+
+  // Manejo del submit
   const onSubmit = handleSubmit(async (data) => {
-    if (!proveedorId) {
-      alert("No se pudo obtener el proveedor autenticado.");
+    if (!proveedorId || !token) {
+      alert("No se pudo obtener el proveedor autenticado o el token.");
       return;
     }
 
-    const body = {
-      nombre_servicio: data.nombre_servicio,
-      descripcion: data.descripcion,
-      duracion: data.duracion,
-      proveedor: proveedorId,
-      categoria: Number(data.categoria),
-    };
+    // ⚡ Solo enviar campos modificados
+    const modifiedData: Partial<Iservicio> = {};
+    Object.keys(data).forEach((key) => {
+      const k = key as keyof Iservicio;
+      if (data[k] !== initialData[k]) {
+        modifiedData[k] = k === "precio" ? Number(data[k]) : data[k];
+      }
+    });
+
+    // Agregar proveedor y rating si se está creando
+    if (!params.id) {
+      modifiedData.proveedor_id = proveedorId;
+      modifiedData.categoria_id = Number(data.categoria);
+      modifiedData.rating_promedio = 0;
+    }
 
     try {
-      await createServicio(body);
-      alert("✅ Servicio creado correctamente");
+      if (params.id) {
+        console.log("Data que se va a enviar:", modifiedData);
+        await updateServicio(Number(params.id), modifiedData, token);
+        alert("✅ Servicio actualizado correctamente");
+      } else {
+        const res = await createServicio(modifiedData, token);
+        alert("✅ Servicio creado correctamente");
+        navigate(`/crear-nuevo-servicio/ubicaciones/${res.data.id}`);
+        return;
+      }
+
+      navigate("/mis-servicios");
     } catch (error) {
-      console.error("Error al crear servicio:", error);
-      alert("❌ No se pudo crear el servicio");
+      console.error("Error al guardar servicio:", error);
+      alert("❌ No se pudo guardar el servicio");
     }
   });
 
   return (
-    <div>
+    <div style={{ maxWidth: "500px", margin: "2rem auto" }}>
+      <h2>{params.id ? "Editar Servicio" : "Nuevo Servicio"}</h2>
       <form onSubmit={onSubmit}>
-        <input
-          type="text"
-          placeholder="Nombre del servicio"
-          {...register("nombre_servicio", { required: true })}
-        />
-        {errors.nombre_servicio && <span>Es obligatorio ingresar el nombre</span>}
+        <div>
+          <input
+            type="text"
+            placeholder="Nombre del servicio"
+            {...register("nombre_servicio", { required: true, minLength: 5 })}
+          />
+          {errors.nombre_servicio && (
+            <span>Es obligatorio ingresar el nombre (mínimo 5 caracteres)</span>
+          )}
+        </div>
 
-        <textarea
-          placeholder="Descripción"
-          {...register("descripcion", { required: true })}
-        />
-        {errors.descripcion && <span>Es obligatorio ingresar la descripción</span>}
+        <div>
+          <textarea
+            placeholder="Descripción"
+            {...register("descripcion", { required: true, minLength: 10 })}
+          />
+          {errors.descripcion && (
+            <span>
+              Es obligatorio ingresar la descripción (mínimo 10 caracteres)
+            </span>
+          )}
+        </div>
 
-        <input
-          type="time"
-          placeholder="Duración"
-          {...register("duracion", { required: true })}
-        />
-        {errors.duracion && <span>Es obligatorio ingresar la duración</span>}
+        <div>
+          <input
+            type="time"
+            placeholder="Duración"
+            {...register("duracion", { required: true })}
+          />
+          {errors.duracion && <span>Es obligatorio ingresar la duración</span>}
+        </div>
 
-        <select {...register("categoria", { required: true })}>
-          <option value="">Seleccione una categoría</option>
-          {categorias.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.nombre}
-            </option>
-          ))}
-        </select>
-        {errors.categoria && <span>Debe seleccionar una categoría</span>}
+        <div>
+          <input
+            type="number"
+            placeholder="Precio del servicio"
+            step="0.01"
+            {...register("precio", {
+              required: true,
+              min: 0,
+            })}
+          />
+          {errors.precio && (
+            <span>Debe ingresar un precio válido mayor o igual a 0</span>
+          )}  
+        </div>
 
-        <button type="submit">Guardar</button>
+        <div>
+          <select {...register("categoria", { required: true })}>
+            <option value="">Seleccione una categoría</option>
+            {categorias.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.nombre}
+              </option>
+            ))}
+          </select>
+          {errors.categoria && <span>Debe seleccionar una categoría</span>}
+        </div>
+
+        <button type="submit" style={{ marginTop: "1rem" }}>
+          {params.id ? "Actualizar Servicio" : "Guardar y Agregar Ubicaciones"}
+        </button>
       </form>
     </div>
   );

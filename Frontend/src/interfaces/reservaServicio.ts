@@ -5,7 +5,6 @@ export interface IreservaServicio{
     id?: number;
     reserva: Ireserva;
     servicio: Iservicio;
-    cantidad: number;
-    precio_unitario: number;
-    subtotal: number;
+    fecha_servicio: string;
+    hora_servicio: string;
 }

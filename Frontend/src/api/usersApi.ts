@@ -17,9 +17,9 @@ const profileApi = axios.create({
 export const getUsers = (token: string) => profileApi.get("/", { headers: { Authorization: `Token ${token}` } });
 
 export const getCliente = (id: number) => clienteApi.get(`/${id}/`);
-export const updateCliente = (id: number, cliente: IclienteRegister, token: string) =>
-    clienteApi.put(`/${id}/`, cliente, { headers: { Authorization: `Token ${token}` } });
+export const updateCliente = (id: number, cliente: Partial<IclienteRegister>, token: string) =>
+    clienteApi.patch(`/${id}/`, cliente, { headers: { Authorization: `Token ${token}` } });
 
 export const getProveedor = (id: number) => proveedorApi.get(`/${id}/`);
-export const updateProveedor = (id: number, proveedor: IproveedorRegister, token: string) =>
-    proveedorApi.put(`/${id}/`, proveedor, { headers: { Authorization: `Token ${token}` } });
+export const updateProveedor = (id: number, proveedor: Partial<IproveedorRegister>, token: string) =>
+    proveedorApi.patch(`/${id}/`, proveedor, { headers: { Authorization: `Token ${token}` } });

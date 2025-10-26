@@ -1,10 +1,6 @@
-import type { Icliente } from "./cliente";
-import type { Iservicio } from "./servicio";
-
-export interface Icalificacion{
-    id?: number;
-    cliente: Icliente;
-    servicio: Iservicio;
-    fecha?: string;
-    puntuacion: number;
+export interface Icalificacion {
+  id?: number;
+  cliente_id: number;
+  servicio_id: number;
+  puntuacion: number;
 }

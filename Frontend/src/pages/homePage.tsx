@@ -1,8 +1,46 @@
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getUsers } from "../api/usersApi";
 
 export function HomePage() {
   const navigate = useNavigate();
-  const autenticado = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
+
+  const [rol, setRol] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    async function loadUser() {
+      try {
+        const res = await getUsers(token);
+        console.log("Usuario cargado:", res.data);
+        setRol(res.data.rol); // "cliente" o "proveedor"
+      } catch (err) {
+        console.error("Error cargando usuario:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadUser();
+  }, [token]);
+
+  if (loading) return <p>Cargando...</p>;
+
+  const handleMisTrabajos = () => {
+    if (rol === "proveedor") {
+      navigate("/mis-servicios");
+    } else if (rol === "cliente") {
+      navigate("/servicios/reserva-list/");
+    } else {
+      alert("Rol desconocido o no autorizado");
+    }
+  };
 
   return (
     <div className="homepage-container">
@@ -10,15 +48,20 @@ export function HomePage() {
         <h1>FindYourWork</h1>
         <p>Encuentra y contrata los mejores servicios profesionales cerca de ti.</p>
         <div className="banner-buttons">
-          {autenticado ? (
+          {token ? (
             <>
-              <button onClick={() => navigate('/work-list')}>Ver trabajos</button>
-              <button onClick={() => navigate('/work-form')}>Publicar trabajo</button>
+              <button onClick={() => navigate("/todos-servicios")}>
+                Ver trabajos
+              </button>
+
+              <button onClick={handleMisTrabajos}>
+                {rol === "proveedor" ? "Mis trabajos" : "Mis reservas"}
+              </button>
             </>
-          ): (
+          ) : (
             <>
-              <button onClick={() => navigate('/login')}>Iniciar sesión</button>
-              <button onClick={() => navigate('/singup')}>Registrarse</button>
+              <button onClick={() => navigate("/login")}>Iniciar sesión</button>
+              <button onClick={() => navigate("/singup")}>Registrarse</button>
             </>
           )}
         </div>
@@ -37,6 +80,3 @@ export function HomePage() {
     </div>
   );
 }
-
-
-

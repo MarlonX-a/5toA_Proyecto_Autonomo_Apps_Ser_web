@@ -39,7 +39,7 @@ class ReservaSerializer(serializers.ModelSerializer):
         return value
     
     def validate_total_estimado(self, value):
-        if value <= 0:
+        if value < 0:
             raise serializers.ValidationError("El total estimado debe ser un valor positivo.")
         return value
     

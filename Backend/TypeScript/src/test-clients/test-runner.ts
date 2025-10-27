@@ -1,4 +1,4 @@
-import { createTestClients, createClient } from './test-clients/websocket-client';
+import { createTestClients, createClient } from './websocket-client';
 
 console.log('🚀 Iniciando pruebas del WebSocket...');
 
@@ -41,7 +41,7 @@ setTimeout(() => {
 // Manejar cierre del proceso
 process.on('SIGINT', () => {
   console.log('\n🛑 Cerrando todas las conexiones...');
-  clients.forEach(client => client.disconnect());
+    clients.forEach((client: any) => client.disconnect());
   testClient.disconnect();
   process.exit(0);
 });

@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ClientManagerService } from '../websocket/client-manager.service';
 import { RoomManagerService } from '../websocket/room-manager.service';
 import { EventEmitterService } from '../websocket/event-emitter.service';
-import { DjangoApiService } from './django-api.service';
+import { DjangoApiService } from '../services/django-api.service';
 
 @Injectable()
 export class DashboardService {
@@ -110,11 +110,11 @@ export class DashboardService {
         lastCheck: new Date().toISOString(),
         responseTime: '< 100ms', // Podrías medir esto realmente
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         status: 'disconnected',
         lastCheck: new Date().toISOString(),
-        error: error.message,
+        error: error?.message || 'Unknown error',
       };
     }
   }

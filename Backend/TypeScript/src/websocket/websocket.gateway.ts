@@ -29,7 +29,7 @@ export interface AuthenticatedSocket extends Socket {
 })
 export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
-  server: Server;
+  server!: Server;
 
   private readonly logger = new Logger(WebsocketGateway.name);
 
@@ -96,6 +96,8 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
         role: data.role,
         socket: client,
         connectedAt: new Date(),
+        lastActivity: new Date(),
+        rooms: new Set<string>(),
       });
 
       // Unir a salas según el rol
@@ -134,6 +136,10 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
     }
 
     try {
+      if (!client.userId) {
+        client.emit('error', { message: 'Usuario no identificado' });
+        return;
+      }
       await this.roomManager.joinRoom(client.userId, data.roomName);
       client.emit('room_joined', { roomName: data.roomName });
       
@@ -154,6 +160,10 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
     }
 
     try {
+      if (!client.userId) {
+        client.emit('error', { message: 'Usuario no identificado' });
+        return;
+      }
       await this.roomManager.leaveRoom(client.userId, data.roomName);
       client.emit('room_left', { roomName: data.roomName });
       
@@ -269,6 +279,11 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
     const userId = client.userId;
     const role = client.userRole;
 
+    if (!userId || !role) {
+      this.logger.error('Usuario o rol no definido');
+      return;
+    }
+
     // Sala personal del usuario
     await this.roomManager.joinRoom(userId, `${role}_${userId}`);
 
@@ -283,7 +298,7 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
 
   // Métodos públicos para ser llamados desde otros servicios
   async emitToUser(userId: string, event: string, data: any) {
-    const client = await this.clientManager.getClientByUserId(userId);
+    const client = this.clientManager.getClientByUserId(userId);
     if (client && client.socket) {
       client.socket.emit(event, data);
     }

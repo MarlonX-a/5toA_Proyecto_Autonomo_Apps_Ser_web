@@ -14,7 +14,7 @@ export interface EventData {
 @Injectable()
 export class EventEmitterService {
   private readonly logger = new Logger(EventEmitterService.name);
-  private server: Server;
+  private server!: Server;
 
   constructor(
     private readonly clientManager: ClientManagerService,

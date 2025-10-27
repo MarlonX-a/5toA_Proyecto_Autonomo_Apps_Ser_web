@@ -116,42 +116,45 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateCalificacion    func(childComplexity int, input model.CalificacionInput) int
-		CreateCategoria       func(childComplexity int, input model.CategoriaInput) int
-		CreateCliente         func(childComplexity int, input model.ClienteInput) int
-		CreateComentario      func(childComplexity int, input model.ComentarioInput) int
-		CreateFotoServicio    func(childComplexity int, input model.FotoServicioInput) int
-		CreatePago            func(childComplexity int, input model.PagoInput) int
-		CreateProveedor       func(childComplexity int, input model.ProveedorInput) int
-		CreateReserva         func(childComplexity int, input model.ReservaInput) int
-		CreateReservaServicio func(childComplexity int, input model.ReservaServicioInput) int
-		CreateServicio        func(childComplexity int, input model.ServicioInput) int
-		CreateUbicacion       func(childComplexity int, input model.UbicacionInput) int
-		CreateUser            func(childComplexity int, input model.UserInput) int
-		DeleteCalificacion    func(childComplexity int, id string) int
-		DeleteCategoria       func(childComplexity int, id string) int
-		DeleteCliente         func(childComplexity int, id string) int
-		DeleteComentario      func(childComplexity int, id string) int
-		DeleteFotoServicio    func(childComplexity int, id string) int
-		DeletePago            func(childComplexity int, id string) int
-		DeleteProveedor       func(childComplexity int, id string) int
-		DeleteReserva         func(childComplexity int, id string) int
-		DeleteReservaServicio func(childComplexity int, id string) int
-		DeleteServicio        func(childComplexity int, id string) int
-		DeleteUbicacion       func(childComplexity int, id string) int
-		DeleteUser            func(childComplexity int, id string) int
-		UpdateCalificacion    func(childComplexity int, id string, input model.CalificacionInput) int
-		UpdateCategoria       func(childComplexity int, id string, input model.CategoriaInput) int
-		UpdateCliente         func(childComplexity int, id string, input model.ClienteInput) int
-		UpdateComentario      func(childComplexity int, id string, input model.ComentarioInput) int
-		UpdateFotoServicio    func(childComplexity int, id string, input model.FotoServicioInput) int
-		UpdatePago            func(childComplexity int, id string, input model.PagoInput) int
-		UpdateProveedor       func(childComplexity int, id string, input model.ProveedorInput) int
-		UpdateReserva         func(childComplexity int, id string, input model.ReservaInput) int
-		UpdateReservaServicio func(childComplexity int, id string, input model.ReservaServicioInput) int
-		UpdateServicio        func(childComplexity int, id string, input model.ServicioInput) int
-		UpdateUbicacion       func(childComplexity int, id string, input model.UbicacionInput) int
-		UpdateUser            func(childComplexity int, id string, input model.UserInput) int
+		CreateCalificacion      func(childComplexity int, input model.CalificacionInput) int
+		CreateCategoria         func(childComplexity int, input model.CategoriaInput) int
+		CreateCliente           func(childComplexity int, input model.ClienteInput) int
+		CreateComentario        func(childComplexity int, input model.ComentarioInput) int
+		CreateFotoServicio      func(childComplexity int, input model.FotoServicioInput) int
+		CreatePago              func(childComplexity int, input model.PagoInput) int
+		CreateProveedor         func(childComplexity int, input model.ProveedorInput) int
+		CreateReserva           func(childComplexity int, input model.ReservaInput) int
+		CreateReservaServicio   func(childComplexity int, input model.ReservaServicioInput) int
+		CreateServicio          func(childComplexity int, input model.ServicioInput) int
+		CreateServicioUbicacion func(childComplexity int, input model.ServicioUbicacionInput) int
+		CreateUbicacion         func(childComplexity int, input model.UbicacionInput) int
+		CreateUser              func(childComplexity int, input model.UserInput) int
+		DeleteCalificacion      func(childComplexity int, id string) int
+		DeleteCategoria         func(childComplexity int, id string) int
+		DeleteCliente           func(childComplexity int, id string) int
+		DeleteComentario        func(childComplexity int, id string) int
+		DeleteFotoServicio      func(childComplexity int, id string) int
+		DeletePago              func(childComplexity int, id string) int
+		DeleteProveedor         func(childComplexity int, id string) int
+		DeleteReserva           func(childComplexity int, id string) int
+		DeleteReservaServicio   func(childComplexity int, id string) int
+		DeleteServicio          func(childComplexity int, id string) int
+		DeleteServicioUbicacion func(childComplexity int, id string) int
+		DeleteUbicacion         func(childComplexity int, id string) int
+		DeleteUser              func(childComplexity int, id string) int
+		UpdateCalificacion      func(childComplexity int, id string, input model.CalificacionInput) int
+		UpdateCategoria         func(childComplexity int, id string, input model.CategoriaInput) int
+		UpdateCliente           func(childComplexity int, id string, input model.ClienteInput) int
+		UpdateComentario        func(childComplexity int, id string, input model.ComentarioInput) int
+		UpdateFotoServicio      func(childComplexity int, id string, input model.FotoServicioInput) int
+		UpdatePago              func(childComplexity int, id string, input model.PagoInput) int
+		UpdateProveedor         func(childComplexity int, id string, input model.ProveedorInput) int
+		UpdateReserva           func(childComplexity int, id string, input model.ReservaInput) int
+		UpdateReservaServicio   func(childComplexity int, id string, input model.ReservaServicioInput) int
+		UpdateServicio          func(childComplexity int, id string, input model.ServicioInput) int
+		UpdateServicioUbicacion func(childComplexity int, id string, input model.ServicioUbicacionInput) int
+		UpdateUbicacion         func(childComplexity int, id string, input model.UbicacionInput) int
+		UpdateUser              func(childComplexity int, id string, input model.UserInput) int
 	}
 
 	Pago struct {
@@ -177,6 +180,14 @@ type ComplexityRoot struct {
 		User        func(childComplexity int) int
 	}
 
+	ProveedorProfile struct {
+		IngresosTotales      func(childComplexity int) int
+		PromedioCalificacion func(childComplexity int) int
+		Proveedor            func(childComplexity int) int
+		TopServicios         func(childComplexity int) int
+		TotalServicios       func(childComplexity int) int
+	}
+
 	PuntoTendencia struct {
 		Etiqueta func(childComplexity int) int
 		Fecha    func(childComplexity int) int
@@ -195,6 +206,7 @@ type ComplexityRoot struct {
 		Pago                        func(childComplexity int, id string) int
 		Pagos                       func(childComplexity int, pagination *model.Pagination) int
 		Proveedor                   func(childComplexity int, id string) int
+		ProveedorPerfil             func(childComplexity int, id string) int
 		Proveedores                 func(childComplexity int, pagination *model.Pagination) int
 		ProveedoresMejorCalificados func(childComplexity int, limit *int32) int
 		ReporteClientes             func(childComplexity int, filter *model.ReporteFilter) int
@@ -203,8 +215,11 @@ type ComplexityRoot struct {
 		ReporteVentas               func(childComplexity int, filter *model.ReporteFilter) int
 		Reserva                     func(childComplexity int, id string) int
 		Reservas                    func(childComplexity int, filter *model.ReservaFilter, pagination *model.Pagination) int
+		ReservasPorProveedor        func(childComplexity int, proveedorID string, filter *model.ReservaFilter, pagination *model.Pagination) int
+		SearchServicios             func(childComplexity int, input *model.ServicioSearchInput, filter *model.ServicioFilter, pagination *model.Pagination, sort *model.ServicioSort) int
 		Servicio                    func(childComplexity int, id string) int
 		Servicios                   func(childComplexity int, filter *model.ServicioFilter, pagination *model.Pagination) int
+		ServiciosBusquedaAvanzada   func(childComplexity int, input *model.ServicioSearchInput, pagination *model.Pagination, sort *model.ServicioSort) int
 		ServiciosMasPopulares       func(childComplexity int, limit *int32) int
 		TendenciasSatisfaccion      func(childComplexity int, filter *model.MetricasFilter) int
 		TendenciasVentas            func(childComplexity int, filter *model.MetricasFilter) int
@@ -280,6 +295,7 @@ type ComplexityRoot struct {
 		Fotos           func(childComplexity int) int
 		ID              func(childComplexity int) int
 		NombreServicio  func(childComplexity int) int
+		Precio          func(childComplexity int) int
 		Proveedor       func(childComplexity int) int
 		RatingPromedio  func(childComplexity int) int
 		Ubicaciones     func(childComplexity int) int
@@ -364,6 +380,9 @@ type MutationResolver interface {
 	CreateComentario(ctx context.Context, input model.ComentarioInput) (*model.Comentario, error)
 	UpdateComentario(ctx context.Context, id string, input model.ComentarioInput) (*model.Comentario, error)
 	DeleteComentario(ctx context.Context, id string) (bool, error)
+	CreateServicioUbicacion(ctx context.Context, input model.ServicioUbicacionInput) (*model.ServicioUbicacion, error)
+	UpdateServicioUbicacion(ctx context.Context, id string, input model.ServicioUbicacionInput) (*model.ServicioUbicacion, error)
+	DeleteServicioUbicacion(ctx context.Context, id string) (bool, error)
 }
 type QueryResolver interface {
 	Users(ctx context.Context, pagination *model.Pagination) ([]*model.User, error)
@@ -394,6 +413,10 @@ type QueryResolver interface {
 	ClientesMasActivos(ctx context.Context, limit *int32) ([]*model.ReporteCliente, error)
 	TendenciasVentas(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error)
 	TendenciasSatisfaccion(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error)
+	SearchServicios(ctx context.Context, input *model.ServicioSearchInput, filter *model.ServicioFilter, pagination *model.Pagination, sort *model.ServicioSort) ([]*model.Servicio, error)
+	ServiciosBusquedaAvanzada(ctx context.Context, input *model.ServicioSearchInput, pagination *model.Pagination, sort *model.ServicioSort) ([]*model.Servicio, error)
+	ProveedorPerfil(ctx context.Context, id string) (*model.ProveedorProfile, error)
+	ReservasPorProveedor(ctx context.Context, proveedorID string, filter *model.ReservaFilter, pagination *model.Pagination) ([]*model.Reserva, error)
 }
 
 type executableSchema struct {
@@ -808,6 +831,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.CreateServicio(childComplexity, args["input"].(model.ServicioInput)), true
+	case "Mutation.createServicioUbicacion":
+		if e.complexity.Mutation.CreateServicioUbicacion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createServicioUbicacion_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateServicioUbicacion(childComplexity, args["input"].(model.ServicioUbicacionInput)), true
 	case "Mutation.createUbicacion":
 		if e.complexity.Mutation.CreateUbicacion == nil {
 			break
@@ -940,6 +974,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.DeleteServicio(childComplexity, args["id"].(string)), true
+	case "Mutation.deleteServicioUbicacion":
+		if e.complexity.Mutation.DeleteServicioUbicacion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteServicioUbicacion_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteServicioUbicacion(childComplexity, args["id"].(string)), true
 	case "Mutation.deleteUbicacion":
 		if e.complexity.Mutation.DeleteUbicacion == nil {
 			break
@@ -1072,6 +1117,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.UpdateServicio(childComplexity, args["id"].(string), args["input"].(model.ServicioInput)), true
+	case "Mutation.updateServicioUbicacion":
+		if e.complexity.Mutation.UpdateServicioUbicacion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateServicioUbicacion_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateServicioUbicacion(childComplexity, args["id"].(string), args["input"].(model.ServicioUbicacionInput)), true
 	case "Mutation.updateUbicacion":
 		if e.complexity.Mutation.UpdateUbicacion == nil {
 			break
@@ -1198,6 +1254,37 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Proveedor.User(childComplexity), true
+
+	case "ProveedorProfile.ingresosTotales":
+		if e.complexity.ProveedorProfile.IngresosTotales == nil {
+			break
+		}
+
+		return e.complexity.ProveedorProfile.IngresosTotales(childComplexity), true
+	case "ProveedorProfile.promedioCalificacion":
+		if e.complexity.ProveedorProfile.PromedioCalificacion == nil {
+			break
+		}
+
+		return e.complexity.ProveedorProfile.PromedioCalificacion(childComplexity), true
+	case "ProveedorProfile.proveedor":
+		if e.complexity.ProveedorProfile.Proveedor == nil {
+			break
+		}
+
+		return e.complexity.ProveedorProfile.Proveedor(childComplexity), true
+	case "ProveedorProfile.topServicios":
+		if e.complexity.ProveedorProfile.TopServicios == nil {
+			break
+		}
+
+		return e.complexity.ProveedorProfile.TopServicios(childComplexity), true
+	case "ProveedorProfile.totalServicios":
+		if e.complexity.ProveedorProfile.TotalServicios == nil {
+			break
+		}
+
+		return e.complexity.ProveedorProfile.TotalServicios(childComplexity), true
 
 	case "PuntoTendencia.etiqueta":
 		if e.complexity.PuntoTendencia.Etiqueta == nil {
@@ -1339,6 +1426,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.Proveedor(childComplexity, args["id"].(string)), true
+	case "Query.proveedorPerfil":
+		if e.complexity.Query.ProveedorPerfil == nil {
+			break
+		}
+
+		args, err := ec.field_Query_proveedorPerfil_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ProveedorPerfil(childComplexity, args["id"].(string)), true
 	case "Query.proveedores":
 		if e.complexity.Query.Proveedores == nil {
 			break
@@ -1427,6 +1525,28 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.Reservas(childComplexity, args["filter"].(*model.ReservaFilter), args["pagination"].(*model.Pagination)), true
+	case "Query.reservasPorProveedor":
+		if e.complexity.Query.ReservasPorProveedor == nil {
+			break
+		}
+
+		args, err := ec.field_Query_reservasPorProveedor_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ReservasPorProveedor(childComplexity, args["proveedorId"].(string), args["filter"].(*model.ReservaFilter), args["pagination"].(*model.Pagination)), true
+	case "Query.searchServicios":
+		if e.complexity.Query.SearchServicios == nil {
+			break
+		}
+
+		args, err := ec.field_Query_searchServicios_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.SearchServicios(childComplexity, args["input"].(*model.ServicioSearchInput), args["filter"].(*model.ServicioFilter), args["pagination"].(*model.Pagination), args["sort"].(*model.ServicioSort)), true
 	case "Query.servicio":
 		if e.complexity.Query.Servicio == nil {
 			break
@@ -1449,6 +1569,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.Servicios(childComplexity, args["filter"].(*model.ServicioFilter), args["pagination"].(*model.Pagination)), true
+	case "Query.serviciosBusquedaAvanzada":
+		if e.complexity.Query.ServiciosBusquedaAvanzada == nil {
+			break
+		}
+
+		args, err := ec.field_Query_serviciosBusquedaAvanzada_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ServiciosBusquedaAvanzada(childComplexity, args["input"].(*model.ServicioSearchInput), args["pagination"].(*model.Pagination), args["sort"].(*model.ServicioSort)), true
 	case "Query.serviciosMasPopulares":
 		if e.complexity.Query.ServiciosMasPopulares == nil {
 			break
@@ -1815,6 +1946,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Servicio.NombreServicio(childComplexity), true
+	case "Servicio.precio":
+		if e.complexity.Servicio.Precio == nil {
+			break
+		}
+
+		return e.complexity.Servicio.Precio(childComplexity), true
 	case "Servicio.proveedor":
 		if e.complexity.Servicio.Proveedor == nil {
 			break
@@ -2035,6 +2172,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputReservaServicioInput,
 		ec.unmarshalInputServicioFilter,
 		ec.unmarshalInputServicioInput,
+		ec.unmarshalInputServicioSearchInput,
+		ec.unmarshalInputServicioUbicacionInput,
 		ec.unmarshalInputUbicacionInput,
 		ec.unmarshalInputUserInput,
 	)
@@ -2252,6 +2391,17 @@ func (ec *executionContext) field_Mutation_createReserva_args(ctx context.Contex
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_createServicioUbicacion_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNServicioUbicacionInput2githubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioUbicacionInput)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_createServicio_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -2374,6 +2524,17 @@ func (ec *executionContext) field_Mutation_deleteReservaServicio_args(ctx contex
 }
 
 func (ec *executionContext) field_Mutation_deleteReserva_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteServicioUbicacion_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
@@ -2561,6 +2722,22 @@ func (ec *executionContext) field_Mutation_updateReserva_args(ctx context.Contex
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_updateServicioUbicacion_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNServicioUbicacionInput2githubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioUbicacionInput)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_updateServicio_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -2730,6 +2907,17 @@ func (ec *executionContext) field_Query_pagos_args(ctx context.Context, rawArgs 
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_proveedorPerfil_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_proveedor_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -2818,6 +3006,27 @@ func (ec *executionContext) field_Query_reserva_args(ctx context.Context, rawArg
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_reservasPorProveedor_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "proveedorId", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["proveedorId"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOReservaFilter2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReservaFilter)
+	if err != nil {
+		return nil, err
+	}
+	args["filter"] = arg1
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "pagination", ec.unmarshalOPagination2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPagination)
+	if err != nil {
+		return nil, err
+	}
+	args["pagination"] = arg2
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_reservas_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -2834,6 +3043,32 @@ func (ec *executionContext) field_Query_reservas_args(ctx context.Context, rawAr
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_searchServicios_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalOServicioSearchInput2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioSearchInput)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOServicioFilter2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioFilter)
+	if err != nil {
+		return nil, err
+	}
+	args["filter"] = arg1
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "pagination", ec.unmarshalOPagination2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPagination)
+	if err != nil {
+		return nil, err
+	}
+	args["pagination"] = arg2
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "sort", ec.unmarshalOServicioSort2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioSort)
+	if err != nil {
+		return nil, err
+	}
+	args["sort"] = arg3
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_servicio_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -2842,6 +3077,27 @@ func (ec *executionContext) field_Query_servicio_args(ctx context.Context, rawAr
 		return nil, err
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_serviciosBusquedaAvanzada_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalOServicioSearchInput2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioSearchInput)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "pagination", ec.unmarshalOPagination2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPagination)
+	if err != nil {
+		return nil, err
+	}
+	args["pagination"] = arg1
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "sort", ec.unmarshalOServicioSort2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioSort)
+	if err != nil {
+		return nil, err
+	}
+	args["sort"] = arg2
 	return args, nil
 }
 
@@ -3106,6 +3362,8 @@ func (ec *executionContext) fieldContext_Calificacion_servicio(_ context.Context
 				return ec.fieldContext_Servicio_duracion(ctx, field)
 			case "ratingPromedio":
 				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
 			case "ubicaciones":
 				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
 			case "fotos":
@@ -3426,6 +3684,8 @@ func (ec *executionContext) fieldContext_Categoria_servicios(_ context.Context, 
 				return ec.fieldContext_Servicio_duracion(ctx, field)
 			case "ratingPromedio":
 				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
 			case "ubicaciones":
 				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
 			case "fotos":
@@ -3926,6 +4186,8 @@ func (ec *executionContext) fieldContext_Comentario_servicio(_ context.Context, 
 				return ec.fieldContext_Servicio_duracion(ctx, field)
 			case "ratingPromedio":
 				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
 			case "ubicaciones":
 				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
 			case "fotos":
@@ -4275,6 +4537,8 @@ func (ec *executionContext) fieldContext_FotoServicio_servicio(_ context.Context
 				return ec.fieldContext_Servicio_duracion(ctx, field)
 			case "ratingPromedio":
 				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
 			case "ubicaciones":
 				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
 			case "fotos":
@@ -5432,6 +5696,8 @@ func (ec *executionContext) fieldContext_Mutation_createServicio(ctx context.Con
 				return ec.fieldContext_Servicio_duracion(ctx, field)
 			case "ratingPromedio":
 				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
 			case "ubicaciones":
 				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
 			case "fotos":
@@ -5503,6 +5769,8 @@ func (ec *executionContext) fieldContext_Mutation_updateServicio(ctx context.Con
 				return ec.fieldContext_Servicio_duracion(ctx, field)
 			case "ratingPromedio":
 				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
 			case "ubicaciones":
 				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
 			case "fotos":
@@ -6534,6 +6802,153 @@ func (ec *executionContext) fieldContext_Mutation_deleteComentario(ctx context.C
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_createServicioUbicacion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Mutation_createServicioUbicacion,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Mutation().CreateServicioUbicacion(ctx, fc.Args["input"].(model.ServicioUbicacionInput))
+		},
+		nil,
+		ec.marshalNServicioUbicacion2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioUbicacion,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createServicioUbicacion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServicioUbicacion_id(ctx, field)
+			case "servicio":
+				return ec.fieldContext_ServicioUbicacion_servicio(ctx, field)
+			case "ubicacion":
+				return ec.fieldContext_ServicioUbicacion_ubicacion(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServicioUbicacion_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServicioUbicacion_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServicioUbicacion", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createServicioUbicacion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateServicioUbicacion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Mutation_updateServicioUbicacion,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Mutation().UpdateServicioUbicacion(ctx, fc.Args["id"].(string), fc.Args["input"].(model.ServicioUbicacionInput))
+		},
+		nil,
+		ec.marshalNServicioUbicacion2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioUbicacion,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateServicioUbicacion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServicioUbicacion_id(ctx, field)
+			case "servicio":
+				return ec.fieldContext_ServicioUbicacion_servicio(ctx, field)
+			case "ubicacion":
+				return ec.fieldContext_ServicioUbicacion_ubicacion(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServicioUbicacion_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServicioUbicacion_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServicioUbicacion", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateServicioUbicacion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteServicioUbicacion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Mutation_deleteServicioUbicacion,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Mutation().DeleteServicioUbicacion(ctx, fc.Args["id"].(string))
+		},
+		nil,
+		ec.marshalNBoolean2bool,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteServicioUbicacion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteServicioUbicacion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Pago_id(ctx context.Context, field graphql.CollectedField, obj *model.Pago) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -7102,6 +7517,8 @@ func (ec *executionContext) fieldContext_Proveedor_servicios(_ context.Context, 
 				return ec.fieldContext_Servicio_duracion(ctx, field)
 			case "ratingPromedio":
 				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
 			case "ubicaciones":
 				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
 			case "fotos":
@@ -7118,6 +7535,177 @@ func (ec *executionContext) fieldContext_Proveedor_servicios(_ context.Context, 
 				return ec.fieldContext_Servicio_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Servicio", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ProveedorProfile_proveedor(ctx context.Context, field graphql.CollectedField, obj *model.ProveedorProfile) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ProveedorProfile_proveedor,
+		func(ctx context.Context) (any, error) {
+			return obj.Proveedor, nil
+		},
+		nil,
+		ec.marshalNProveedor2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐProveedor,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ProveedorProfile_proveedor(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ProveedorProfile",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Proveedor_id(ctx, field)
+			case "user":
+				return ec.fieldContext_Proveedor_user(ctx, field)
+			case "telefono":
+				return ec.fieldContext_Proveedor_telefono(ctx, field)
+			case "descripcion":
+				return ec.fieldContext_Proveedor_descripcion(ctx, field)
+			case "ubicacion":
+				return ec.fieldContext_Proveedor_ubicacion(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Proveedor_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Proveedor_updatedAt(ctx, field)
+			case "servicios":
+				return ec.fieldContext_Proveedor_servicios(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Proveedor", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ProveedorProfile_totalServicios(ctx context.Context, field graphql.CollectedField, obj *model.ProveedorProfile) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ProveedorProfile_totalServicios,
+		func(ctx context.Context) (any, error) {
+			return obj.TotalServicios, nil
+		},
+		nil,
+		ec.marshalNInt2int32,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ProveedorProfile_totalServicios(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ProveedorProfile",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ProveedorProfile_ingresosTotales(ctx context.Context, field graphql.CollectedField, obj *model.ProveedorProfile) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ProveedorProfile_ingresosTotales,
+		func(ctx context.Context) (any, error) {
+			return obj.IngresosTotales, nil
+		},
+		nil,
+		ec.marshalNDecimal2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ProveedorProfile_ingresosTotales(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ProveedorProfile",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Decimal does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ProveedorProfile_promedioCalificacion(ctx context.Context, field graphql.CollectedField, obj *model.ProveedorProfile) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ProveedorProfile_promedioCalificacion,
+		func(ctx context.Context) (any, error) {
+			return obj.PromedioCalificacion, nil
+		},
+		nil,
+		ec.marshalNFloat2float64,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ProveedorProfile_promedioCalificacion(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ProveedorProfile",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ProveedorProfile_topServicios(ctx context.Context, field graphql.CollectedField, obj *model.ProveedorProfile) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_ProveedorProfile_topServicios,
+		func(ctx context.Context) (any, error) {
+			return obj.TopServicios, nil
+		},
+		nil,
+		ec.marshalNServicioVendido2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioVendidoᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_ProveedorProfile_topServicios(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ProveedorProfile",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "servicio":
+				return ec.fieldContext_ServicioVendido_servicio(ctx, field)
+			case "cantidadVendida":
+				return ec.fieldContext_ServicioVendido_cantidadVendida(ctx, field)
+			case "ingresosGenerados":
+				return ec.fieldContext_ServicioVendido_ingresosGenerados(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServicioVendido", field.Name)
 		},
 	}
 	return fc, nil
@@ -7851,6 +8439,8 @@ func (ec *executionContext) fieldContext_Query_servicios(ctx context.Context, fi
 				return ec.fieldContext_Servicio_duracion(ctx, field)
 			case "ratingPromedio":
 				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
 			case "ubicaciones":
 				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
 			case "fotos":
@@ -7922,6 +8512,8 @@ func (ec *executionContext) fieldContext_Query_servicio(ctx context.Context, fie
 				return ec.fieldContext_Servicio_duracion(ctx, field)
 			case "ratingPromedio":
 				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
 			case "ubicaciones":
 				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
 			case "fotos":
@@ -8838,6 +9430,268 @@ func (ec *executionContext) fieldContext_Query_tendenciasSatisfaccion(ctx contex
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_searchServicios(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_searchServicios,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().SearchServicios(ctx, fc.Args["input"].(*model.ServicioSearchInput), fc.Args["filter"].(*model.ServicioFilter), fc.Args["pagination"].(*model.Pagination), fc.Args["sort"].(*model.ServicioSort))
+		},
+		nil,
+		ec.marshalNServicio2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_searchServicios(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Servicio_id(ctx, field)
+			case "proveedor":
+				return ec.fieldContext_Servicio_proveedor(ctx, field)
+			case "categoria":
+				return ec.fieldContext_Servicio_categoria(ctx, field)
+			case "nombreServicio":
+				return ec.fieldContext_Servicio_nombreServicio(ctx, field)
+			case "descripcion":
+				return ec.fieldContext_Servicio_descripcion(ctx, field)
+			case "duracion":
+				return ec.fieldContext_Servicio_duracion(ctx, field)
+			case "ratingPromedio":
+				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
+			case "ubicaciones":
+				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
+			case "fotos":
+				return ec.fieldContext_Servicio_fotos(ctx, field)
+			case "calificaciones":
+				return ec.fieldContext_Servicio_calificaciones(ctx, field)
+			case "comentarios":
+				return ec.fieldContext_Servicio_comentarios(ctx, field)
+			case "detallesReserva":
+				return ec.fieldContext_Servicio_detallesReserva(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Servicio_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Servicio_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Servicio", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_searchServicios_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_serviciosBusquedaAvanzada(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_serviciosBusquedaAvanzada,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().ServiciosBusquedaAvanzada(ctx, fc.Args["input"].(*model.ServicioSearchInput), fc.Args["pagination"].(*model.Pagination), fc.Args["sort"].(*model.ServicioSort))
+		},
+		nil,
+		ec.marshalNServicio2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_serviciosBusquedaAvanzada(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Servicio_id(ctx, field)
+			case "proveedor":
+				return ec.fieldContext_Servicio_proveedor(ctx, field)
+			case "categoria":
+				return ec.fieldContext_Servicio_categoria(ctx, field)
+			case "nombreServicio":
+				return ec.fieldContext_Servicio_nombreServicio(ctx, field)
+			case "descripcion":
+				return ec.fieldContext_Servicio_descripcion(ctx, field)
+			case "duracion":
+				return ec.fieldContext_Servicio_duracion(ctx, field)
+			case "ratingPromedio":
+				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
+			case "ubicaciones":
+				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
+			case "fotos":
+				return ec.fieldContext_Servicio_fotos(ctx, field)
+			case "calificaciones":
+				return ec.fieldContext_Servicio_calificaciones(ctx, field)
+			case "comentarios":
+				return ec.fieldContext_Servicio_comentarios(ctx, field)
+			case "detallesReserva":
+				return ec.fieldContext_Servicio_detallesReserva(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Servicio_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Servicio_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Servicio", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_serviciosBusquedaAvanzada_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_proveedorPerfil(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_proveedorPerfil,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().ProveedorPerfil(ctx, fc.Args["id"].(string))
+		},
+		nil,
+		ec.marshalNProveedorProfile2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐProveedorProfile,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_proveedorPerfil(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "proveedor":
+				return ec.fieldContext_ProveedorProfile_proveedor(ctx, field)
+			case "totalServicios":
+				return ec.fieldContext_ProveedorProfile_totalServicios(ctx, field)
+			case "ingresosTotales":
+				return ec.fieldContext_ProveedorProfile_ingresosTotales(ctx, field)
+			case "promedioCalificacion":
+				return ec.fieldContext_ProveedorProfile_promedioCalificacion(ctx, field)
+			case "topServicios":
+				return ec.fieldContext_ProveedorProfile_topServicios(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ProveedorProfile", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_proveedorPerfil_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_reservasPorProveedor(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_reservasPorProveedor,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().ReservasPorProveedor(ctx, fc.Args["proveedorId"].(string), fc.Args["filter"].(*model.ReservaFilter), fc.Args["pagination"].(*model.Pagination))
+		},
+		nil,
+		ec.marshalNReserva2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReservaᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_reservasPorProveedor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Reserva_id(ctx, field)
+			case "cliente":
+				return ec.fieldContext_Reserva_cliente(ctx, field)
+			case "fecha":
+				return ec.fieldContext_Reserva_fecha(ctx, field)
+			case "hora":
+				return ec.fieldContext_Reserva_hora(ctx, field)
+			case "estado":
+				return ec.fieldContext_Reserva_estado(ctx, field)
+			case "totalEstimado":
+				return ec.fieldContext_Reserva_totalEstimado(ctx, field)
+			case "detalles":
+				return ec.fieldContext_Reserva_detalles(ctx, field)
+			case "pagos":
+				return ec.fieldContext_Reserva_pagos(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Reserva_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Reserva_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Reserva", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_reservasPorProveedor_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -9312,6 +10166,8 @@ func (ec *executionContext) fieldContext_ReporteSatisfaccion_servicio(_ context.
 				return ec.fieldContext_Servicio_duracion(ctx, field)
 			case "ratingPromedio":
 				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
 			case "ubicaciones":
 				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
 			case "fotos":
@@ -10047,6 +10903,8 @@ func (ec *executionContext) fieldContext_ReservaServicio_servicio(_ context.Cont
 				return ec.fieldContext_Servicio_duracion(ctx, field)
 			case "ratingPromedio":
 				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
 			case "ubicaciones":
 				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
 			case "fotos":
@@ -10448,6 +11306,35 @@ func (ec *executionContext) fieldContext_Servicio_ratingPromedio(_ context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) _Servicio_precio(ctx context.Context, field graphql.CollectedField, obj *model.Servicio) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Servicio_precio,
+		func(ctx context.Context) (any, error) {
+			return obj.Precio, nil
+		},
+		nil,
+		ec.marshalNDecimal2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Servicio_precio(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Servicio",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Decimal does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Servicio_ubicaciones(ctx context.Context, field graphql.CollectedField, obj *model.Servicio) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -10808,6 +11695,8 @@ func (ec *executionContext) fieldContext_ServicioUbicacion_servicio(_ context.Co
 				return ec.fieldContext_Servicio_duracion(ctx, field)
 			case "ratingPromedio":
 				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
 			case "ubicaciones":
 				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
 			case "fotos":
@@ -10976,6 +11865,8 @@ func (ec *executionContext) fieldContext_ServicioVendido_servicio(_ context.Cont
 				return ec.fieldContext_Servicio_duracion(ctx, field)
 			case "ratingPromedio":
 				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
 			case "ubicaciones":
 				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
 			case "fotos":
@@ -11392,6 +12283,8 @@ func (ec *executionContext) fieldContext_Ubicacion_servicios(_ context.Context, 
 				return ec.fieldContext_Servicio_duracion(ctx, field)
 			case "ratingPromedio":
 				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
+			case "precio":
+				return ec.fieldContext_Servicio_precio(ctx, field)
 			case "ubicaciones":
 				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
 			case "fotos":
@@ -13804,7 +14697,7 @@ func (ec *executionContext) unmarshalInputServicioFilter(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"categoriaId", "proveedorId", "ciudad", "minRating"}
+	fieldsInOrder := [...]string{"categoriaId", "proveedorId", "ciudad", "minRating", "precioMin", "precioMax", "q"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -13839,6 +14732,27 @@ func (ec *executionContext) unmarshalInputServicioFilter(ctx context.Context, ob
 				return it, err
 			}
 			it.MinRating = data
+		case "precioMin":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("precioMin"))
+			data, err := ec.unmarshalODecimal2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PrecioMin = data
+		case "precioMax":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("precioMax"))
+			data, err := ec.unmarshalODecimal2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PrecioMax = data
+		case "q":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("q"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Q = data
 		}
 	}
 
@@ -13852,7 +14766,7 @@ func (ec *executionContext) unmarshalInputServicioInput(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"proveedorId", "categoriaId", "nombreServicio", "descripcion", "duracion", "ratingPromedio"}
+	fieldsInOrder := [...]string{"proveedorId", "categoriaId", "nombreServicio", "descripcion", "duracion", "ratingPromedio", "precio"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -13901,6 +14815,123 @@ func (ec *executionContext) unmarshalInputServicioInput(ctx context.Context, obj
 				return it, err
 			}
 			it.RatingPromedio = data
+		case "precio":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("precio"))
+			data, err := ec.unmarshalODecimal2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Precio = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServicioSearchInput(ctx context.Context, obj any) (model.ServicioSearchInput, error) {
+	var it model.ServicioSearchInput
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"q", "categoriaId", "proveedorId", "ciudad", "precioMin", "precioMax", "minRating", "tags"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "q":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("q"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Q = data
+		case "categoriaId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("categoriaId"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CategoriaID = data
+		case "proveedorId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("proveedorId"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProveedorID = data
+		case "ciudad":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ciudad"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Ciudad = data
+		case "precioMin":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("precioMin"))
+			data, err := ec.unmarshalODecimal2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PrecioMin = data
+		case "precioMax":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("precioMax"))
+			data, err := ec.unmarshalODecimal2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PrecioMax = data
+		case "minRating":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("minRating"))
+			data, err := ec.unmarshalOFloat2ᚖfloat64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MinRating = data
+		case "tags":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tags"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Tags = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServicioUbicacionInput(ctx context.Context, obj any) (model.ServicioUbicacionInput, error) {
+	var it model.ServicioUbicacionInput
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"servicioId", "ubicacionId"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "servicioId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("servicioId"))
+			data, err := ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ServicioID = data
+		case "ubicacionId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ubicacionId"))
+			data, err := ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UbicacionID = data
 		}
 	}
 
@@ -14733,6 +15764,27 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "createServicioUbicacion":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createServicioUbicacion(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updateServicioUbicacion":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateServicioUbicacion(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deleteServicioUbicacion":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteServicioUbicacion(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -14871,6 +15923,65 @@ func (ec *executionContext) _Proveedor(ctx context.Context, sel ast.SelectionSet
 			}
 		case "servicios":
 			out.Values[i] = ec._Proveedor_servicios(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var proveedorProfileImplementors = []string{"ProveedorProfile"}
+
+func (ec *executionContext) _ProveedorProfile(ctx context.Context, sel ast.SelectionSet, obj *model.ProveedorProfile) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, proveedorProfileImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ProveedorProfile")
+		case "proveedor":
+			out.Values[i] = ec._ProveedorProfile_proveedor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalServicios":
+			out.Values[i] = ec._ProveedorProfile_totalServicios(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "ingresosTotales":
+			out.Values[i] = ec._ProveedorProfile_ingresosTotales(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "promedioCalificacion":
+			out.Values[i] = ec._ProveedorProfile_promedioCalificacion(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "topServicios":
+			out.Values[i] = ec._ProveedorProfile_topServicios(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -15551,6 +16662,94 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "searchServicios":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_searchServicios(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "serviciosBusquedaAvanzada":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_serviciosBusquedaAvanzada(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "proveedorPerfil":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_proveedorPerfil(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "reservasPorProveedor":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_reservasPorProveedor(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -15999,6 +17198,11 @@ func (ec *executionContext) _Servicio(ctx context.Context, sel ast.SelectionSet,
 			out.Values[i] = ec._Servicio_duracion(ctx, field, obj)
 		case "ratingPromedio":
 			out.Values[i] = ec._Servicio_ratingPromedio(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "precio":
+			out.Values[i] = ec._Servicio_precio(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -17196,6 +18400,20 @@ func (ec *executionContext) unmarshalNProveedorInput2githubᚗcomᚋMarlonXᚑa�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalNProveedorProfile2githubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐProveedorProfile(ctx context.Context, sel ast.SelectionSet, v model.ProveedorProfile) graphql.Marshaler {
+	return ec._ProveedorProfile(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNProveedorProfile2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐProveedorProfile(ctx context.Context, sel ast.SelectionSet, v *model.ProveedorProfile) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ProveedorProfile(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNPuntoTendencia2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPuntoTendenciaᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.PuntoTendencia) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -17568,6 +18786,25 @@ func (ec *executionContext) marshalNServicio2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5to
 
 func (ec *executionContext) unmarshalNServicioInput2githubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioInput(ctx context.Context, v any) (model.ServicioInput, error) {
 	res, err := ec.unmarshalInputServicioInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServicioUbicacion2githubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioUbicacion(ctx context.Context, sel ast.SelectionSet, v model.ServicioUbicacion) graphql.Marshaler {
+	return ec._ServicioUbicacion(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServicioUbicacion2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioUbicacion(ctx context.Context, sel ast.SelectionSet, v *model.ServicioUbicacion) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServicioUbicacion(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServicioUbicacionInput2githubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioUbicacionInput(ctx context.Context, v any) (model.ServicioUbicacionInput, error) {
+	res, err := ec.unmarshalInputServicioUbicacionInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -18255,6 +19492,24 @@ func (ec *executionContext) marshalODate2ᚖstring(ctx context.Context, sel ast.
 	return res
 }
 
+func (ec *executionContext) unmarshalODecimal2ᚖstring(ctx context.Context, v any) (*string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalString(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalODecimal2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	_ = sel
+	_ = ctx
+	res := graphql.MarshalString(*v)
+	return res
+}
+
 func (ec *executionContext) unmarshalOFloat2ᚖfloat64(ctx context.Context, v any) (*float64, error) {
 	if v == nil {
 		return nil, nil
@@ -18656,6 +19911,66 @@ func (ec *executionContext) unmarshalOServicioFilter2ᚖgithubᚗcomᚋMarlonX�
 	}
 	res, err := ec.unmarshalInputServicioFilter(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOServicioSearchInput2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioSearchInput(ctx context.Context, v any) (*model.ServicioSearchInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServicioSearchInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOServicioSort2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioSort(ctx context.Context, v any) (*model.ServicioSort, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(model.ServicioSort)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOServicioSort2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioSort(ctx context.Context, sel ast.SelectionSet, v *model.ServicioSort) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) unmarshalOString2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNString2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOString2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v any) (*string, error) {

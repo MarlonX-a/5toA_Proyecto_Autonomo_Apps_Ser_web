@@ -1,3 +1,6 @@
+//go:build optimized
+// +build optimized
+
 package main
 
 import (
@@ -14,29 +17,29 @@ import (
 func main() {
 	// Conectar a la base de datos
 	graph.ConnectDB()
-	
+
 	// Crear resolver con servicios adicionales
 	resolver := &graph.Resolver{
 		DB:      graph.DB,
 		Cache:   graph.NewCacheService(),
 		Metrics: graph.NewMetricsCollector(),
 	}
-	
+
 	// Configurar DataLoaders
 	resolver.SetupDataLoaders()
-	
+
 	// Crear servidor GraphQL
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: resolver}))
-	
+
 	// Middleware de logging
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", LoggingMiddleware(srv))
-	
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
-	
+
 	log.Printf("🚀 Servidor GraphQL ejecutándose en puerto %s", port)
 	log.Printf("📊 Playground disponible en: http://localhost:%s/", port)
 	log.Printf("🔍 Endpoint GraphQL: http://localhost:%s/query", port)
@@ -47,10 +50,10 @@ func main() {
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		
+
 		// Ejecutar el handler
 		next.ServeHTTP(w, r)
-		
+
 		duration := time.Since(start)
 		log.Printf("📈 Consulta GraphQL ejecutada en %v", duration)
 	})

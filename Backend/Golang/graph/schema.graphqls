@@ -75,6 +75,7 @@ type Servicio {
   descripcion: String
   duracion: String
   ratingPromedio: Float!
+  precio: Decimal!
   ubicaciones: [Ubicacion!]
   fotos: [FotoServicio!]
   calificaciones: [Calificacion!]
@@ -207,6 +208,7 @@ input ServicioInput {
   descripcion: String
   duracion: String
   ratingPromedio: Float
+  precio: Decimal
 }
 
 input FotoServicioInput {
@@ -253,12 +255,20 @@ input ComentarioInput {
   respuesta: String
 }
 
+input ServicioUbicacionInput {
+  servicioId: ID!
+  ubicacionId: ID!
+}
+
 #Parte de los inputs para crear las categorias
 input ServicioFilter {
   categoriaId: ID
   proveedorId: ID
   ciudad: String
   minRating: Float
+  precioMin: Decimal
+  precioMax: Decimal
+  q: String # búsqueda de texto libre (nombre, descripción)
 }
 
 input ReservaFilter {
@@ -266,6 +276,35 @@ input ReservaFilter {
   estado: String
   fechaDesde: Date
   fechaHasta: Date
+}
+
+# Inputs y tipos para búsquedas avanzadas y ordenamiento
+input ServicioSearchInput {
+  q: String
+  categoriaId: ID
+  proveedorId: ID
+  ciudad: String
+  precioMin: Decimal
+  precioMax: Decimal
+  minRating: Float
+  tags: [String!]
+}
+
+enum ServicioSort {
+  RELEVANCIA
+  PRECIO_ASC
+  PRECIO_DESC
+  RATING_DESC
+  CREATED_AT_DESC
+}
+
+# Perfil de proveedor con métricas agregadas
+type ProveedorProfile {
+  proveedor: Proveedor!
+  totalServicios: Int!
+  ingresosTotales: Decimal!
+  promedioCalificacion: Float!
+  topServicios: [ServicioVendido!]!
 }
 
 input Pagination {
@@ -401,6 +440,17 @@ type Query {
   tendenciasSatisfaccion(filter: MetricasFilter): [PuntoTendencia!]!
 }
 
+# Consultas avanzadas: búsquedas combinadas, perfiles con métricas y reservas por proveedor
+extend type Query {
+  searchServicios(input: ServicioSearchInput, filter: ServicioFilter, pagination: Pagination, sort: ServicioSort): [Servicio!]!
+
+  serviciosBusquedaAvanzada(input: ServicioSearchInput, pagination: Pagination, sort: ServicioSort): [Servicio!]!
+
+  proveedorPerfil(id: ID!): ProveedorProfile!
+
+  reservasPorProveedor(proveedorId: ID!, filter: ReservaFilter, pagination: Pagination): [Reserva!]!
+}
+
 # Mutaciones para crear cada dato dentro de nuestro modelo
 type Mutation {
   createUser(input: UserInput!): User!
@@ -450,4 +500,8 @@ type Mutation {
   createComentario(input: ComentarioInput!): Comentario!
   updateComentario(id: ID!, input: ComentarioInput!): Comentario!
   deleteComentario(id: ID!): Boolean!
+
+  createServicioUbicacion(input: ServicioUbicacionInput!): ServicioUbicacion!
+  updateServicioUbicacion(id: ID!, input: ServicioUbicacionInput!): ServicioUbicacion!
+  deleteServicioUbicacion(id: ID!): Boolean!
 }

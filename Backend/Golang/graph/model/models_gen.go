@@ -161,6 +161,14 @@ type ProveedorInput struct {
 	UbicacionID *string `json:"ubicacionId,omitempty"`
 }
 
+type ProveedorProfile struct {
+	Proveedor            *Proveedor         `json:"proveedor"`
+	TotalServicios       int32              `json:"totalServicios"`
+	IngresosTotales      string             `json:"ingresosTotales"`
+	PromedioCalificacion float64            `json:"promedioCalificacion"`
+	TopServicios         []*ServicioVendido `json:"topServicios"`
+}
+
 type PuntoTendencia struct {
 	Fecha    string  `json:"fecha"`
 	Valor    float64 `json:"valor"`
@@ -264,6 +272,7 @@ type Servicio struct {
 	Descripcion     *string            `json:"descripcion,omitempty"`
 	Duracion        *string            `json:"duracion,omitempty"`
 	RatingPromedio  float64            `json:"ratingPromedio"`
+	Precio          string             `json:"precio"`
 	Ubicaciones     []*Ubicacion       `json:"ubicaciones,omitempty"`
 	Fotos           []*FotoServicio    `json:"fotos,omitempty"`
 	Calificaciones  []*Calificacion    `json:"calificaciones,omitempty"`
@@ -278,6 +287,9 @@ type ServicioFilter struct {
 	ProveedorID *string  `json:"proveedorId,omitempty"`
 	Ciudad      *string  `json:"ciudad,omitempty"`
 	MinRating   *float64 `json:"minRating,omitempty"`
+	PrecioMin   *string  `json:"precioMin,omitempty"`
+	PrecioMax   *string  `json:"precioMax,omitempty"`
+	Q           *string  `json:"q,omitempty"`
 }
 
 type ServicioInput struct {
@@ -287,6 +299,18 @@ type ServicioInput struct {
 	Descripcion    *string  `json:"descripcion,omitempty"`
 	Duracion       *string  `json:"duracion,omitempty"`
 	RatingPromedio *float64 `json:"ratingPromedio,omitempty"`
+	Precio         *string  `json:"precio,omitempty"`
+}
+
+type ServicioSearchInput struct {
+	Q           *string  `json:"q,omitempty"`
+	CategoriaID *string  `json:"categoriaId,omitempty"`
+	ProveedorID *string  `json:"proveedorId,omitempty"`
+	Ciudad      *string  `json:"ciudad,omitempty"`
+	PrecioMin   *string  `json:"precioMin,omitempty"`
+	PrecioMax   *string  `json:"precioMax,omitempty"`
+	MinRating   *float64 `json:"minRating,omitempty"`
+	Tags        []string `json:"tags,omitempty"`
 }
 
 type ServicioUbicacion struct {
@@ -295,6 +319,11 @@ type ServicioUbicacion struct {
 	Ubicacion *Ubicacion `json:"ubicacion"`
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
+}
+
+type ServicioUbicacionInput struct {
+	ServicioID  string `json:"servicioId"`
+	UbicacionID string `json:"ubicacionId"`
 }
 
 type ServicioVendido struct {
@@ -398,6 +427,67 @@ func (e *AgrupacionTipo) UnmarshalJSON(b []byte) error {
 }
 
 func (e AgrupacionTipo) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	e.MarshalGQL(&buf)
+	return buf.Bytes(), nil
+}
+
+type ServicioSort string
+
+const (
+	ServicioSortRelevancia    ServicioSort = "RELEVANCIA"
+	ServicioSortPrecioAsc     ServicioSort = "PRECIO_ASC"
+	ServicioSortPrecioDesc    ServicioSort = "PRECIO_DESC"
+	ServicioSortRatingDesc    ServicioSort = "RATING_DESC"
+	ServicioSortCreatedAtDesc ServicioSort = "CREATED_AT_DESC"
+)
+
+var AllServicioSort = []ServicioSort{
+	ServicioSortRelevancia,
+	ServicioSortPrecioAsc,
+	ServicioSortPrecioDesc,
+	ServicioSortRatingDesc,
+	ServicioSortCreatedAtDesc,
+}
+
+func (e ServicioSort) IsValid() bool {
+	switch e {
+	case ServicioSortRelevancia, ServicioSortPrecioAsc, ServicioSortPrecioDesc, ServicioSortRatingDesc, ServicioSortCreatedAtDesc:
+		return true
+	}
+	return false
+}
+
+func (e ServicioSort) String() string {
+	return string(e)
+}
+
+func (e *ServicioSort) UnmarshalGQL(v any) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ServicioSort(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ServicioSort", str)
+	}
+	return nil
+}
+
+func (e ServicioSort) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+func (e *ServicioSort) UnmarshalJSON(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	return e.UnmarshalGQL(s)
+}
+
+func (e ServicioSort) MarshalJSON() ([]byte, error) {
 	var buf bytes.Buffer
 	e.MarshalGQL(&buf)
 	return buf.Bytes(), nil

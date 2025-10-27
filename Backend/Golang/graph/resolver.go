@@ -21,6 +21,7 @@ type Resolver struct {
 	proveedorLoader *DataLoader
 	servicioLoader  *DataLoader
 	clienteLoader   *DataLoader
+	RESTClient      RestClient
 }
 
 // SetupDataLoaders configura los DataLoaders para optimizar consultas

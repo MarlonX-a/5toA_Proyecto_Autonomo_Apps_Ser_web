@@ -7,953 +7,443 @@ package graph
 import (
 	"context"
 	"fmt"
-	"strconv"
-	"strings"
-	"time"
 
 	"github.com/MarlonX-a/5toA_Proyecto_Autonomo_Apps_Ser_web/Golang/graph/model"
 )
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+	return r.RESTClient.CreateUser(ctx, input)
 }
 
 // UpdateUser is the resolver for the updateUser field.
 func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input model.UserInput) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: UpdateUser - updateUser"))
+	return r.RESTClient.UpdateUser(ctx, id, input)
 }
 
 // DeleteUser is the resolver for the deleteUser field.
 func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteUser - deleteUser"))
+	return r.RESTClient.DeleteUser(ctx, id)
 }
 
 // CreateUbicacion is the resolver for the createUbicacion field.
 func (r *mutationResolver) CreateUbicacion(ctx context.Context, input model.UbicacionInput) (*model.Ubicacion, error) {
-	panic(fmt.Errorf("not implemented: CreateUbicacion - createUbicacion"))
+	return r.RESTClient.CreateUbicacion(ctx, input)
 }
 
 // UpdateUbicacion is the resolver for the updateUbicacion field.
 func (r *mutationResolver) UpdateUbicacion(ctx context.Context, id string, input model.UbicacionInput) (*model.Ubicacion, error) {
-	panic(fmt.Errorf("not implemented: UpdateUbicacion - updateUbicacion"))
+	return r.RESTClient.UpdateUbicacion(ctx, id, input)
 }
 
 // DeleteUbicacion is the resolver for the deleteUbicacion field.
 func (r *mutationResolver) DeleteUbicacion(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteUbicacion - deleteUbicacion"))
+	return r.RESTClient.DeleteUbicacion(ctx, id)
 }
 
 // CreateCliente is the resolver for the createCliente field.
 func (r *mutationResolver) CreateCliente(ctx context.Context, input model.ClienteInput) (*model.Cliente, error) {
-	panic(fmt.Errorf("not implemented: CreateCliente - createCliente"))
+	return r.RESTClient.CreateCliente(ctx, input)
 }
 
 // UpdateCliente is the resolver for the updateCliente field.
 func (r *mutationResolver) UpdateCliente(ctx context.Context, id string, input model.ClienteInput) (*model.Cliente, error) {
-	panic(fmt.Errorf("not implemented: UpdateCliente - updateCliente"))
+	return r.RESTClient.UpdateCliente(ctx, id, input)
 }
 
 // DeleteCliente is the resolver for the deleteCliente field.
 func (r *mutationResolver) DeleteCliente(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteCliente - deleteCliente"))
+	return r.RESTClient.DeleteCliente(ctx, id)
 }
 
 // CreateProveedor is the resolver for the createProveedor field.
 func (r *mutationResolver) CreateProveedor(ctx context.Context, input model.ProveedorInput) (*model.Proveedor, error) {
-	panic(fmt.Errorf("not implemented: CreateProveedor - createProveedor"))
+	return r.RESTClient.CreateProveedor(ctx, input)
 }
 
 // UpdateProveedor is the resolver for the updateProveedor field.
 func (r *mutationResolver) UpdateProveedor(ctx context.Context, id string, input model.ProveedorInput) (*model.Proveedor, error) {
-	panic(fmt.Errorf("not implemented: UpdateProveedor - updateProveedor"))
+	return r.RESTClient.UpdateProveedor(ctx, id, input)
 }
 
 // DeleteProveedor is the resolver for the deleteProveedor field.
 func (r *mutationResolver) DeleteProveedor(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteProveedor - deleteProveedor"))
+	return r.RESTClient.DeleteProveedor(ctx, id)
 }
 
 // CreateCategoria is the resolver for the createCategoria field.
 func (r *mutationResolver) CreateCategoria(ctx context.Context, input model.CategoriaInput) (*model.Categoria, error) {
-	panic(fmt.Errorf("not implemented: CreateCategoria - createCategoria"))
+	return r.RESTClient.CreateCategoria(ctx, input)
 }
 
 // UpdateCategoria is the resolver for the updateCategoria field.
 func (r *mutationResolver) UpdateCategoria(ctx context.Context, id string, input model.CategoriaInput) (*model.Categoria, error) {
-	panic(fmt.Errorf("not implemented: UpdateCategoria - updateCategoria"))
+	return r.RESTClient.UpdateCategoria(ctx, id, input)
 }
 
 // DeleteCategoria is the resolver for the deleteCategoria field.
 func (r *mutationResolver) DeleteCategoria(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteCategoria - deleteCategoria"))
+	return r.RESTClient.DeleteCategoria(ctx, id)
 }
 
 // CreateServicio is the resolver for the createServicio field.
 func (r *mutationResolver) CreateServicio(ctx context.Context, input model.ServicioInput) (*model.Servicio, error) {
-	panic(fmt.Errorf("not implemented: CreateServicio - createServicio"))
+	return r.RESTClient.CreateServicio(ctx, input)
 }
 
 // UpdateServicio is the resolver for the updateServicio field.
 func (r *mutationResolver) UpdateServicio(ctx context.Context, id string, input model.ServicioInput) (*model.Servicio, error) {
-	panic(fmt.Errorf("not implemented: UpdateServicio - updateServicio"))
+	return r.RESTClient.UpdateServicio(ctx, id, input)
 }
 
 // DeleteServicio is the resolver for the deleteServicio field.
 func (r *mutationResolver) DeleteServicio(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteServicio - deleteServicio"))
+	return r.RESTClient.DeleteServicio(ctx, id)
 }
 
 // CreateFotoServicio is the resolver for the createFotoServicio field.
 func (r *mutationResolver) CreateFotoServicio(ctx context.Context, input model.FotoServicioInput) (*model.FotoServicio, error) {
-	panic(fmt.Errorf("not implemented: CreateFotoServicio - createFotoServicio"))
+	return r.RESTClient.CreateFotoServicio(ctx, input)
 }
 
 // UpdateFotoServicio is the resolver for the updateFotoServicio field.
 func (r *mutationResolver) UpdateFotoServicio(ctx context.Context, id string, input model.FotoServicioInput) (*model.FotoServicio, error) {
-	panic(fmt.Errorf("not implemented: UpdateFotoServicio - updateFotoServicio"))
+	return r.RESTClient.UpdateFotoServicio(ctx, id, input)
 }
 
 // DeleteFotoServicio is the resolver for the deleteFotoServicio field.
 func (r *mutationResolver) DeleteFotoServicio(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteFotoServicio - deleteFotoServicio"))
+	return r.RESTClient.DeleteFotoServicio(ctx, id)
 }
 
 // CreateReserva is the resolver for the createReserva field.
 func (r *mutationResolver) CreateReserva(ctx context.Context, input model.ReservaInput) (*model.Reserva, error) {
-	panic(fmt.Errorf("not implemented: CreateReserva - createReserva"))
+	return r.RESTClient.CreateReserva(ctx, input)
 }
 
 // UpdateReserva is the resolver for the updateReserva field.
 func (r *mutationResolver) UpdateReserva(ctx context.Context, id string, input model.ReservaInput) (*model.Reserva, error) {
-	panic(fmt.Errorf("not implemented: UpdateReserva - updateReserva"))
+	return r.RESTClient.UpdateReserva(ctx, id, input)
 }
 
 // DeleteReserva is the resolver for the deleteReserva field.
 func (r *mutationResolver) DeleteReserva(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteReserva - deleteReserva"))
+	return r.RESTClient.DeleteReserva(ctx, id)
 }
 
 // CreateReservaServicio is the resolver for the createReservaServicio field.
 func (r *mutationResolver) CreateReservaServicio(ctx context.Context, input model.ReservaServicioInput) (*model.ReservaServicio, error) {
-	panic(fmt.Errorf("not implemented: CreateReservaServicio - createReservaServicio"))
+	return r.RESTClient.CreateReservaServicio(ctx, input)
 }
 
 // UpdateReservaServicio is the resolver for the updateReservaServicio field.
 func (r *mutationResolver) UpdateReservaServicio(ctx context.Context, id string, input model.ReservaServicioInput) (*model.ReservaServicio, error) {
-	panic(fmt.Errorf("not implemented: UpdateReservaServicio - updateReservaServicio"))
+	return r.RESTClient.UpdateReservaServicio(ctx, id, input)
 }
 
 // DeleteReservaServicio is the resolver for the deleteReservaServicio field.
 func (r *mutationResolver) DeleteReservaServicio(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteReservaServicio - deleteReservaServicio"))
+	return r.RESTClient.DeleteReservaServicio(ctx, id)
 }
 
 // CreatePago is the resolver for the createPago field.
 func (r *mutationResolver) CreatePago(ctx context.Context, input model.PagoInput) (*model.Pago, error) {
-	panic(fmt.Errorf("not implemented: CreatePago - createPago"))
+	return r.RESTClient.CreatePago(ctx, input)
 }
 
 // UpdatePago is the resolver for the updatePago field.
 func (r *mutationResolver) UpdatePago(ctx context.Context, id string, input model.PagoInput) (*model.Pago, error) {
-	panic(fmt.Errorf("not implemented: UpdatePago - updatePago"))
+	return r.RESTClient.UpdatePago(ctx, id, input)
 }
 
 // DeletePago is the resolver for the deletePago field.
 func (r *mutationResolver) DeletePago(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeletePago - deletePago"))
+	return r.RESTClient.DeletePago(ctx, id)
 }
 
 // CreateCalificacion is the resolver for the createCalificacion field.
 func (r *mutationResolver) CreateCalificacion(ctx context.Context, input model.CalificacionInput) (*model.Calificacion, error) {
-	panic(fmt.Errorf("not implemented: CreateCalificacion - createCalificacion"))
+	return r.RESTClient.CreateCalificacion(ctx, input)
 }
 
 // UpdateCalificacion is the resolver for the updateCalificacion field.
 func (r *mutationResolver) UpdateCalificacion(ctx context.Context, id string, input model.CalificacionInput) (*model.Calificacion, error) {
-	panic(fmt.Errorf("not implemented: UpdateCalificacion - updateCalificacion"))
+	return r.RESTClient.UpdateCalificacion(ctx, id, input)
 }
 
 // DeleteCalificacion is the resolver for the deleteCalificacion field.
 func (r *mutationResolver) DeleteCalificacion(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteCalificacion - deleteCalificacion"))
+	return r.RESTClient.DeleteCalificacion(ctx, id)
 }
 
 // CreateComentario is the resolver for the createComentario field.
 func (r *mutationResolver) CreateComentario(ctx context.Context, input model.ComentarioInput) (*model.Comentario, error) {
-	panic(fmt.Errorf("not implemented: CreateComentario - createComentario"))
+	return r.RESTClient.CreateComentario(ctx, input)
 }
 
 // UpdateComentario is the resolver for the updateComentario field.
 func (r *mutationResolver) UpdateComentario(ctx context.Context, id string, input model.ComentarioInput) (*model.Comentario, error) {
-	panic(fmt.Errorf("not implemented: UpdateComentario - updateComentario"))
+	return r.RESTClient.UpdateComentario(ctx, id, input)
 }
 
 // DeleteComentario is the resolver for the deleteComentario field.
 func (r *mutationResolver) DeleteComentario(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteComentario - deleteComentario"))
+	return r.RESTClient.DeleteComentario(ctx, id)
+}
+
+// CreateServicioUbicacion is the resolver for the createServicioUbicacion field.
+func (r *mutationResolver) CreateServicioUbicacion(ctx context.Context, input model.ServicioUbicacionInput) (*model.ServicioUbicacion, error) {
+	panic(fmt.Errorf("not implemented: CreateServicioUbicacion - createServicioUbicacion"))
+}
+
+// UpdateServicioUbicacion is the resolver for the updateServicioUbicacion field.
+func (r *mutationResolver) UpdateServicioUbicacion(ctx context.Context, id string, input model.ServicioUbicacionInput) (*model.ServicioUbicacion, error) {
+	panic(fmt.Errorf("not implemented: UpdateServicioUbicacion - updateServicioUbicacion"))
+}
+
+// DeleteServicioUbicacion is the resolver for the deleteServicioUbicacion field.
+func (r *mutationResolver) DeleteServicioUbicacion(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteServicioUbicacion - deleteServicioUbicacion"))
 }
 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context, pagination *model.Pagination) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented: Users - users"))
+	return r.RESTClient.ListUsers(ctx, pagination)
 }
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: User - user"))
+	return r.RESTClient.GetUser(ctx, id)
 }
 
 // Ubicaciones is the resolver for the ubicaciones field.
 func (r *queryResolver) Ubicaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Ubicacion, error) {
-	panic(fmt.Errorf("not implemented: Ubicaciones - ubicaciones"))
+	return r.RESTClient.ListUbicaciones(ctx, pagination)
 }
 
 // Ubicacion is the resolver for the ubicacion field.
 func (r *queryResolver) Ubicacion(ctx context.Context, id string) (*model.Ubicacion, error) {
-	panic(fmt.Errorf("not implemented: Ubicacion - ubicacion"))
+	return r.RESTClient.GetUbicacion(ctx, id)
 }
 
 // Clientes is the resolver for the clientes field.
 func (r *queryResolver) Clientes(ctx context.Context, pagination *model.Pagination) ([]*model.Cliente, error) {
-	panic(fmt.Errorf("not implemented: Clientes - clientes"))
+	return r.RESTClient.ListClientes(ctx, pagination)
 }
 
 // Cliente is the resolver for the cliente field.
 func (r *queryResolver) Cliente(ctx context.Context, id string) (*model.Cliente, error) {
-	panic(fmt.Errorf("not implemented: Cliente - cliente"))
+	return r.RESTClient.GetCliente(ctx, id)
 }
 
 // Proveedores is the resolver for the proveedores field.
 func (r *queryResolver) Proveedores(ctx context.Context, pagination *model.Pagination) ([]*model.Proveedor, error) {
-	panic(fmt.Errorf("not implemented: Proveedores - proveedores"))
+	return r.RESTClient.ListProveedores(ctx, pagination)
 }
 
 // Proveedor is the resolver for the proveedor field.
 func (r *queryResolver) Proveedor(ctx context.Context, id string) (*model.Proveedor, error) {
-	panic(fmt.Errorf("not implemented: Proveedor - proveedor"))
+	return r.RESTClient.GetProveedor(ctx, id)
 }
 
 // Categorias is the resolver for the categorias field.
 func (r *queryResolver) Categorias(ctx context.Context, pagination *model.Pagination) ([]*model.Categoria, error) {
-	panic(fmt.Errorf("not implemented: Categorias - categorias"))
+	return r.RESTClient.ListCategorias(ctx, pagination)
 }
 
 // Categoria is the resolver for the categoria field.
 func (r *queryResolver) Categoria(ctx context.Context, id string) (*model.Categoria, error) {
-	panic(fmt.Errorf("not implemented: Categoria - categoria"))
+	return r.RESTClient.GetCategoria(ctx, id)
 }
 
 // Servicios is the resolver for the servicios field.
 func (r *queryResolver) Servicios(ctx context.Context, filter *model.ServicioFilter, pagination *model.Pagination) ([]*model.Servicio, error) {
-	panic(fmt.Errorf("not implemented: Servicios - servicios"))
+	return r.RESTClient.ListServicios(ctx, filter, pagination)
 }
 
 // Servicio is the resolver for the servicio field.
 func (r *queryResolver) Servicio(ctx context.Context, id string) (*model.Servicio, error) {
-	panic(fmt.Errorf("not implemented: Servicio - servicio"))
+	return r.RESTClient.GetServicio(ctx, id)
 }
 
 // Reservas is the resolver for the reservas field.
 func (r *queryResolver) Reservas(ctx context.Context, filter *model.ReservaFilter, pagination *model.Pagination) ([]*model.Reserva, error) {
-	panic(fmt.Errorf("not implemented: Reservas - reservas"))
+	return r.RESTClient.ListReservas(ctx, filter, pagination)
 }
 
 // Reserva is the resolver for the reserva field.
 func (r *queryResolver) Reserva(ctx context.Context, id string) (*model.Reserva, error) {
-	panic(fmt.Errorf("not implemented: Reserva - reserva"))
+	return r.RESTClient.GetReserva(ctx, id)
 }
 
 // Pagos is the resolver for the pagos field.
 func (r *queryResolver) Pagos(ctx context.Context, pagination *model.Pagination) ([]*model.Pago, error) {
-	panic(fmt.Errorf("not implemented: Pagos - pagos"))
+	return r.RESTClient.ListPagos(ctx, pagination)
 }
 
 // Pago is the resolver for the pago field.
 func (r *queryResolver) Pago(ctx context.Context, id string) (*model.Pago, error) {
-	panic(fmt.Errorf("not implemented: Pago - pago"))
+	return r.RESTClient.GetPago(ctx, id)
 }
 
 // Calificaciones is the resolver for the calificaciones field.
 func (r *queryResolver) Calificaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Calificacion, error) {
-	panic(fmt.Errorf("not implemented: Calificaciones - calificaciones"))
+	return r.RESTClient.ListCalificaciones(ctx, pagination)
 }
 
 // Comentarios is the resolver for the comentarios field.
 func (r *queryResolver) Comentarios(ctx context.Context, pagination *model.Pagination) ([]*model.Comentario, error) {
-	var comentarios []*model.Comentario
-	query := "SELECT * FROM api_rest_comentario"
-
-	// Aplicar paginación si se proporciona
-	if pagination != nil {
-		if pagination.Limit != nil {
-			query += fmt.Sprintf(" LIMIT %d", *pagination.Limit)
-		}
-		if pagination.Offset != nil {
-			query += fmt.Sprintf(" OFFSET %d", *pagination.Offset)
-		}
-	}
-
-	err := r.DB.Select(&comentarios, query)
-	if err != nil {
-		return nil, err
-	}
-	return comentarios, nil
+	return r.RESTClient.ListComentarios(ctx, pagination)
 }
 
-// ReporteVentas resolver
+// ReporteVentas is the resolver for the reporteVentas field.
 func (r *queryResolver) ReporteVentas(ctx context.Context, filter *model.ReporteFilter) (*model.ReporteVentas, error) {
-	query := `
-		SELECT 
-			COUNT(r.id) as cantidad_reservas,
-			COALESCE(SUM(CAST(r.total_estimado AS DECIMAL)), 0) as total_ventas,
-			COALESCE(AVG(CAST(r.total_estimado AS DECIMAL)), 0) as promedio_por_reserva
-		FROM api_rest_reserva r
-		WHERE r.estado = 'completada'
-	`
-
-	args := []interface{}{}
-	argIndex := 1
-
-	if filter != nil {
-		if filter.FechaDesde != nil {
-			query += fmt.Sprintf(" AND r.fecha >= $%d", argIndex)
-			args = append(args, *filter.FechaDesde)
-			argIndex++
-		}
-		if filter.FechaHasta != nil {
-			query += fmt.Sprintf(" AND r.fecha <= $%d", argIndex)
-			args = append(args, *filter.FechaHasta)
-			argIndex++
-		}
-		if filter.EstadoReserva != nil {
-			query += fmt.Sprintf(" AND r.estado = $%d", argIndex)
-			args = append(args, *filter.EstadoReserva)
-			argIndex++
-		}
-	}
-
-	var result struct {
-		CantidadReservas   int    `db:"cantidad_reservas"`
-		TotalVentas        string `db:"total_ventas"`
-		PromedioPorReserva string `db:"promedio_por_reserva"`
-	}
-
-	err := r.DB.Get(&result, query, args...)
-	if err != nil {
-		return nil, err
-	}
-
-	// Obtener servicios más vendidos
-	serviciosVendidos, err := r.getServiciosMasVendidos(ctx, filter)
-	if err != nil {
-		return nil, err
-	}
-
-	periodo := "Período analizado"
-	if filter != nil && filter.FechaDesde != nil && filter.FechaHasta != nil {
-		periodo = fmt.Sprintf("Del %s al %s", *filter.FechaDesde, *filter.FechaHasta)
-	}
-
-	reporte := &model.ReporteVentas{
-		Periodo:              periodo,
-		TotalVentas:          result.TotalVentas,
-		CantidadReservas:     int32(result.CantidadReservas),
-		PromedioPorReserva:   result.PromedioPorReserva,
-		ServiciosMasVendidos: serviciosVendidos,
-	}
-
-	return reporte, nil
+	return r.RESTClient.ReporteVentas(ctx, filter)
 }
 
-// Reporte de satisfacción
+// ReporteSatisfaccion is the resolver for the reporteSatisfaccion field.
 func (r *queryResolver) ReporteSatisfaccion(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteSatisfaccion, error) {
-	query := `
-		SELECT 
-			s.id,
-			s.nombre_servicio,
-			AVG(c.puntuacion) as promedio_calificacion,
-			COUNT(c.id) as total_calificaciones
-		FROM api_rest_servicio s
-		LEFT JOIN api_rest_calificacion c ON s.id = c.servicio_id
-		WHERE c.id IS NOT NULL
-	`
-
-	args := []interface{}{}
-	argIndex := 1
-
-	if filter != nil {
-		if filter.FechaDesde != nil {
-			query += fmt.Sprintf(" AND c.fecha >= $%d", argIndex)
-			args = append(args, *filter.FechaDesde)
-			argIndex++
-		}
-		if filter.FechaHasta != nil {
-			query += fmt.Sprintf(" AND c.fecha <= $%d", argIndex)
-			args = append(args, *filter.FechaHasta)
-			argIndex++
-		}
-		if filter.CategoriaID != nil {
-			query += fmt.Sprintf(" AND s.categoria_id = $%d", argIndex)
-			args = append(args, *filter.CategoriaID)
-			argIndex++
-		}
-	}
-
-	query += " GROUP BY s.id, s.nombre_servicio ORDER BY promedio_calificacion DESC"
-
-	var resultados []struct {
-		ServicioID           string  `db:"id"`
-		NombreServicio       string  `db:"nombre_servicio"`
-		PromedioCalificacion float64 `db:"promedio_calificacion"`
-		TotalCalificaciones  int     `db:"total_calificaciones"`
-	}
-
-	err := r.DB.Select(&resultados, query, args...)
-	if err != nil {
-		return nil, err
-	}
-
-	var reportesSatisfaccion []*model.ReporteSatisfaccion
-	for _, resultado := range resultados {
-		servicio := &model.Servicio{
-			ID:             resultado.ServicioID,
-			NombreServicio: resultado.NombreServicio,
-		}
-
-		// Obtener distribución de calificaciones
-		distribucion, err := r.getDistribucionCalificaciones(ctx, resultado.ServicioID)
-		if err != nil {
-			return nil, err
-		}
-
-		reporte := &model.ReporteSatisfaccion{
-			Servicio:                   servicio,
-			PromedioCalificacion:       resultado.PromedioCalificacion,
-			TotalCalificaciones:        int32(resultado.TotalCalificaciones),
-			DistribucionCalificaciones: distribucion,
-		}
-
-		reportesSatisfaccion = append(reportesSatisfaccion, reporte)
-	}
-
-	return reportesSatisfaccion, nil
+	return r.RESTClient.ReporteSatisfaccion(ctx, filter)
 }
 
-// Reporte de proveedores
+// ReporteProveedores is the resolver for the reporteProveedores field.
 func (r *queryResolver) ReporteProveedores(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteProveedor, error) {
-	query := `
-		SELECT 
-			p.id,
-			p.telefono,
-			p.descripcion,
-			COUNT(DISTINCT s.id) as total_servicios,
-			COALESCE(SUM(CAST(rs.subtotal AS DECIMAL)), 0) as ingresos_totales,
-			COALESCE(AVG(c.puntuacion), 0) as promedio_calificacion,
-			COUNT(DISTINCT CASE WHEN s.id IS NOT NULL THEN s.id END) as servicios_activos
-		FROM api_rest_proveedor p
-		LEFT JOIN api_rest_servicio s ON p.id = s.proveedor_id
-		LEFT JOIN api_rest_reserva_servicio rs ON s.id = rs.servicio_id
-		LEFT JOIN api_rest_reserva r ON rs.reserva_id = r.id AND r.estado = 'completada'
-		LEFT JOIN api_rest_calificacion c ON s.id = c.servicio_id
-	`
-
-	args := []interface{}{}
-	argIndex := 1
-
-	if filter != nil {
-		whereClauses := []string{}
-
-		if filter.FechaDesde != nil {
-			whereClauses = append(whereClauses, fmt.Sprintf("r.fecha >= $%d", argIndex))
-			args = append(args, *filter.FechaDesde)
-			argIndex++
-		}
-		if filter.FechaHasta != nil {
-			whereClauses = append(whereClauses, fmt.Sprintf("r.fecha <= $%d", argIndex))
-			args = append(args, *filter.FechaHasta)
-			argIndex++
-		}
-
-		if len(whereClauses) > 0 {
-			query += " WHERE " + strings.Join(whereClauses, " AND ")
-		}
-	}
-
-	query += " GROUP BY p.id, p.telefono, p.descripcion ORDER BY ingresos_totales DESC"
-
-	var resultados []struct {
-		ProveedorID          string  `db:"id"`
-		Telefono             string  `db:"telefono"`
-		Descripcion          *string `db:"descripcion"`
-		TotalServicios       int     `db:"total_servicios"`
-		IngresosTotales      string  `db:"ingresos_totales"`
-		PromedioCalificacion float64 `db:"promedio_calificacion"`
-		ServiciosActivos     int     `db:"servicios_activos"`
-	}
-
-	err := r.DB.Select(&resultados, query, args...)
-	if err != nil {
-		return nil, err
-	}
-
-	var reportesProveedores []*model.ReporteProveedor
-	for _, resultado := range resultados {
-		proveedor := &model.Proveedor{
-			ID:          resultado.ProveedorID,
-			Telefono:    resultado.Telefono,
-			Descripcion: resultado.Descripcion,
-		}
-
-		reporte := &model.ReporteProveedor{
-			Proveedor:            proveedor,
-			TotalServicios:       int32(resultado.TotalServicios),
-			IngresosTotales:      resultado.IngresosTotales,
-			PromedioCalificacion: resultado.PromedioCalificacion,
-			ServiciosActivos:     int32(resultado.ServiciosActivos),
-		}
-
-		reportesProveedores = append(reportesProveedores, reporte)
-	}
-
-	return reportesProveedores, nil
+	return r.RESTClient.ReporteProveedores(ctx, filter)
 }
 
-// Reporte de clientes
+// ReporteClientes is the resolver for the reporteClientes field.
 func (r *queryResolver) ReporteClientes(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteCliente, error) {
-	query := `
-		SELECT 
-			c.id,
-			c.telefono,
-			COUNT(r.id) as total_reservas,
-			COALESCE(SUM(CAST(r.total_estimado AS DECIMAL)), 0) as gasto_total,
-			COALESCE(AVG(CAST(r.total_estimado AS DECIMAL)), 0) as promedio_por_reserva,
-			MAX(r.fecha) as ultima_reserva
-		FROM api_rest_cliente c
-		LEFT JOIN api_rest_reserva r ON c.id = r.cliente_id
-	`
-
-	args := []interface{}{}
-	argIndex := 1
-
-	if filter != nil {
-		whereClauses := []string{}
-
-		if filter.FechaDesde != nil {
-			whereClauses = append(whereClauses, fmt.Sprintf("r.fecha >= $%d", argIndex))
-			args = append(args, *filter.FechaDesde)
-			argIndex++
-		}
-		if filter.FechaHasta != nil {
-			whereClauses = append(whereClauses, fmt.Sprintf("r.fecha <= $%d", argIndex))
-			args = append(args, *filter.FechaHasta)
-			argIndex++
-		}
-
-		if len(whereClauses) > 0 {
-			query += " WHERE " + strings.Join(whereClauses, " AND ")
-		}
-	}
-
-	query += " GROUP BY c.id, c.telefono ORDER BY gasto_total DESC"
-
-	var resultados []struct {
-		ClienteID          string  `db:"id"`
-		Telefono           string  `db:"telefono"`
-		TotalReservas      int     `db:"total_reservas"`
-		GastoTotal         string  `db:"gasto_total"`
-		PromedioPorReserva string  `db:"promedio_por_reserva"`
-		UltimaReserva      *string `db:"ultima_reserva"`
-	}
-
-	err := r.DB.Select(&resultados, query, args...)
-	if err != nil {
-		return nil, err
-	}
-
-	var reportesClientes []*model.ReporteCliente
-	for _, resultado := range resultados {
-		cliente := &model.Cliente{
-			ID:       resultado.ClienteID,
-			Telefono: resultado.Telefono,
-		}
-
-		reporte := &model.ReporteCliente{
-			Cliente:            cliente,
-			TotalReservas:      int32(resultado.TotalReservas),
-			GastoTotal:         resultado.GastoTotal,
-			PromedioPorReserva: resultado.PromedioPorReserva,
-			UltimaReserva:      resultado.UltimaReserva,
-		}
-
-		reportesClientes = append(reportesClientes, reporte)
-	}
-
-	return reportesClientes, nil
+	return r.RESTClient.ReporteClientes(ctx, filter)
 }
 
-// Métricas generales
+// MetricasGenerales is the resolver for the metricasGenerales field.
 func (r *queryResolver) MetricasGenerales(ctx context.Context, filter *model.MetricasFilter) (*model.MetricasGenerales, error) {
-	// Contar usuarios
-	var totalUsuarios int
-	err := r.DB.Get(&totalUsuarios, "SELECT COUNT(*) FROM api_rest_user")
-	if err != nil {
-		return nil, err
-	}
-
-	// Contar proveedores
-	var totalProveedores int
-	err = r.DB.Get(&totalProveedores, "SELECT COUNT(*) FROM api_rest_proveedor")
-	if err != nil {
-		return nil, err
-	}
-
-	// Contar servicios
-	var totalServicios int
-	err = r.DB.Get(&totalServicios, "SELECT COUNT(*) FROM api_rest_servicio")
-	if err != nil {
-		return nil, err
-	}
-
-	// Contar reservas
-	var totalReservas int
-	err = r.DB.Get(&totalReservas, "SELECT COUNT(*) FROM api_rest_reserva")
-	if err != nil {
-		return nil, err
-	}
-
-	// Calcular ingresos totales
-	var ingresosTotales string
-	err = r.DB.Get(&ingresosTotales, "SELECT COALESCE(SUM(CAST(total_estimado AS DECIMAL)), 0) FROM api_rest_reserva WHERE estado = 'completada'")
-	if err != nil {
-		return nil, err
-	}
-
-	// Calcular promedio de satisfacción
-	var promedioSatisfaccion float64
-	err = r.DB.Get(&promedioSatisfaccion, "SELECT COALESCE(AVG(puntuacion), 0) FROM api_rest_calificacion")
-	if err != nil {
-		return nil, err
-	}
-
-	metricas := &model.MetricasGenerales{
-		TotalUsuarios:        int32(totalUsuarios),
-		TotalProveedores:     int32(totalProveedores),
-		TotalServicios:       int32(totalServicios),
-		TotalReservas:        int32(totalReservas),
-		IngresosTotales:      ingresosTotales,
-		PromedioSatisfaccion: promedioSatisfaccion,
-	}
-
-	return metricas, nil
+	return r.RESTClient.MetricasGenerales(ctx, filter)
 }
 
-// Servicios más populares
+// ServiciosMasPopulares is the resolver for the serviciosMasPopulares field.
 func (r *queryResolver) ServiciosMasPopulares(ctx context.Context, limit *int32) ([]*model.ServicioVendido, error) {
-	limite := 10
-	if limit != nil {
-		limite = int(*limit)
-	}
-
-	query := fmt.Sprintf(`
-		SELECT 
-			s.id,
-			s.nombre_servicio,
-			COUNT(rs.id) as cantidad_vendida,
-			COALESCE(SUM(CAST(rs.subtotal AS DECIMAL)), 0) as ingresos_generados
-		FROM api_rest_servicio s
-		JOIN reserva_servicios rs ON s.id = rs.servicio_id
-		JOIN reservas r ON rs.reserva_id = r.id
-		WHERE r.estado = 'completada'
-		GROUP BY s.id, s.nombre_servicio
-		ORDER BY cantidad_vendida DESC
-		LIMIT %d
-	`, limite)
-
-	var resultados []struct {
-		ServicioID        string `db:"id"`
-		NombreServicio    string `db:"nombre_servicio"`
-		CantidadVendida   int    `db:"cantidad_vendida"`
-		IngresosGenerados string `db:"ingresos_generados"`
-	}
-
-	err := r.DB.Select(&resultados, query)
-	if err != nil {
-		return nil, err
-	}
-
-	var serviciosVendidos []*model.ServicioVendido
-	for _, resultado := range resultados {
-		servicio := &model.Servicio{
-			ID:             resultado.ServicioID,
-			NombreServicio: resultado.NombreServicio,
-		}
-
-		servicioVendido := &model.ServicioVendido{
-			Servicio:          servicio,
-			CantidadVendida:   int32(resultado.CantidadVendida),
-			IngresosGenerados: resultado.IngresosGenerados,
-		}
-
-		serviciosVendidos = append(serviciosVendidos, servicioVendido)
-	}
-
-	return serviciosVendidos, nil
+	return r.RESTClient.ServiciosMasPopulares(ctx, limit)
 }
 
-// Proveedores mejor calificados
+// ProveedoresMejorCalificados is the resolver for the proveedoresMejorCalificados field.
 func (r *queryResolver) ProveedoresMejorCalificados(ctx context.Context, limit *int32) ([]*model.ReporteProveedor, error) {
-	limite := 10
-	if limit != nil {
-		limite = int(*limit)
-	}
-
-	query := fmt.Sprintf(`
-		SELECT 
-			p.id,
-			p.telefono,
-			p.descripcion,
-			COUNT(DISTINCT s.id) as total_servicios,
-			COALESCE(SUM(CAST(rs.subtotal AS DECIMAL)), 0) as ingresos_totales,
-			COALESCE(AVG(c.puntuacion), 0) as promedio_calificacion,
-			COUNT(DISTINCT CASE WHEN s.id IS NOT NULL THEN s.id END) as servicios_activos
-		FROM api_rest_proveedor p
-		LEFT JOIN servicios s ON p.id = s.proveedor_id
-		LEFT JOIN reserva_servicios rs ON s.id = rs.servicio_id
-		LEFT JOIN reservas r ON rs.reserva_id = r.id AND r.estado = 'completada'
-		LEFT JOIN calificaciones c ON s.id = c.servicio_id
-		GROUP BY p.id, p.telefono, p.descripcion
-		HAVING AVG(c.puntuacion) > 0
-		ORDER BY promedio_calificacion DESC
-		LIMIT %d
-	`, limite)
-
-	var resultados []struct {
-		ProveedorID          string  `db:"id"`
-		Telefono             string  `db:"telefono"`
-		Descripcion          *string `db:"descripcion"`
-		TotalServicios       int     `db:"total_servicios"`
-		IngresosTotales      string  `db:"ingresos_totales"`
-		PromedioCalificacion float64 `db:"promedio_calificacion"`
-		ServiciosActivos     int     `db:"servicios_activos"`
-	}
-
-	err := r.DB.Select(&resultados, query)
-	if err != nil {
-		return nil, err
-	}
-
-	var reportesProveedores []*model.ReporteProveedor
-	for _, resultado := range resultados {
-		proveedor := &model.Proveedor{
-			ID:          resultado.ProveedorID,
-			Telefono:    resultado.Telefono,
-			Descripcion: resultado.Descripcion,
-		}
-
-		reporte := &model.ReporteProveedor{
-			Proveedor:            proveedor,
-			TotalServicios:       int32(resultado.TotalServicios),
-			IngresosTotales:      resultado.IngresosTotales,
-			PromedioCalificacion: resultado.PromedioCalificacion,
-			ServiciosActivos:     int32(resultado.ServiciosActivos),
-		}
-
-		reportesProveedores = append(reportesProveedores, reporte)
-	}
-
-	return reportesProveedores, nil
+	return r.RESTClient.ProveedoresMejorCalificados(ctx, limit)
 }
 
-// Clientes más activos
+// ClientesMasActivos is the resolver for the clientesMasActivos field.
 func (r *queryResolver) ClientesMasActivos(ctx context.Context, limit *int32) ([]*model.ReporteCliente, error) {
-	limite := 10
-	if limit != nil {
-		limite = int(*limit)
-	}
-
-	query := fmt.Sprintf(`
-		SELECT 
-			c.id,
-			c.telefono,
-			COUNT(r.id) as total_reservas,
-			COALESCE(SUM(CAST(r.total_estimado AS DECIMAL)), 0) as gasto_total,
-			COALESCE(AVG(CAST(r.total_estimado AS DECIMAL)), 0) as promedio_por_reserva,
-			MAX(r.fecha) as ultima_reserva
-		FROM api_rest_cliente c
-		LEFT JOIN reservas r ON c.id = r.cliente_id
-		GROUP BY c.id, c.telefono
-		ORDER BY total_reservas DESC
-		LIMIT %d
-	`, limite)
-
-	var resultados []struct {
-		ClienteID          string  `db:"id"`
-		Telefono           string  `db:"telefono"`
-		TotalReservas      int     `db:"total_reservas"`
-		GastoTotal         string  `db:"gasto_total"`
-		PromedioPorReserva string  `db:"promedio_por_reserva"`
-		UltimaReserva      *string `db:"ultima_reserva"`
-	}
-
-	err := r.DB.Select(&resultados, query)
-	if err != nil {
-		return nil, err
-	}
-
-	var reportesClientes []*model.ReporteCliente
-	for _, resultado := range resultados {
-		cliente := &model.Cliente{
-			ID:       resultado.ClienteID,
-			Telefono: resultado.Telefono,
-		}
-
-		reporte := &model.ReporteCliente{
-			Cliente:            cliente,
-			TotalReservas:      int32(resultado.TotalReservas),
-			GastoTotal:         resultado.GastoTotal,
-			PromedioPorReserva: resultado.PromedioPorReserva,
-			UltimaReserva:      resultado.UltimaReserva,
-		}
-
-		reportesClientes = append(reportesClientes, reporte)
-	}
-
-	return reportesClientes, nil
+	return r.RESTClient.ClientesMasActivos(ctx, limit)
 }
 
-// Tendencias de ventas
+// TendenciasVentas is the resolver for the tendenciasVentas field.
 func (r *queryResolver) TendenciasVentas(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error) {
-	agrupacion := "MONTH"
-	if filter != nil && filter.AgruparPor != nil {
-		switch *filter.AgruparPor {
-		case model.AgrupacionTipoDia:
-			agrupacion = "DAY"
-		case model.AgrupacionTipoSemana:
-			agrupacion = "WEEK"
-		case model.AgrupacionTipoMes:
-			agrupacion = "MONTH"
-		case model.AgrupacionTipoAno:
-			agrupacion = "YEAR"
-		}
-	}
-
-	query := fmt.Sprintf(`
-		SELECT 
-			DATE_TRUNC('%s', r.fecha) as fecha,
-			SUM(CAST(r.total_estimado AS DECIMAL)) as valor
-		FROM api_rest_reserva r
-		WHERE r.estado = 'completada'
-	`, agrupacion)
-
-	args := []interface{}{}
-	argIndex := 1
-
-	if filter != nil {
-		if filter.FechaDesde != nil {
-			query += fmt.Sprintf(" AND r.fecha >= $%d", argIndex)
-			args = append(args, *filter.FechaDesde)
-			argIndex++
-		}
-		if filter.FechaHasta != nil {
-			query += fmt.Sprintf(" AND r.fecha <= $%d", argIndex)
-			args = append(args, *filter.FechaHasta)
-			argIndex++
-		}
-	}
-
-	query += " GROUP BY DATE_TRUNC('" + agrupacion + "', r.fecha) ORDER BY fecha"
-
-	var resultados []struct {
-		Fecha time.Time `db:"fecha"`
-		Valor string    `db:"valor"`
-	}
-
-	err := r.DB.Select(&resultados, query, args...)
-	if err != nil {
-		return nil, err
-	}
-
-	var tendencias []*model.PuntoTendencia
-	for _, resultado := range resultados {
-		valorFloat, err := strconv.ParseFloat(resultado.Valor, 64)
-		if err != nil {
-			valorFloat = 0
-		}
-
-		punto := &model.PuntoTendencia{
-			Fecha: resultado.Fecha.Format("2006-01-02"),
-			Valor: valorFloat,
-		}
-
-		tendencias = append(tendencias, punto)
-	}
-
-	return tendencias, nil
+	return r.RESTClient.TendenciasVentas(ctx, filter)
 }
 
-// Tendencias de satisfacción
+// TendenciasSatisfaccion is the resolver for the tendenciasSatisfaccion field.
 func (r *queryResolver) TendenciasSatisfaccion(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error) {
-	agrupacion := "MONTH"
-	if filter != nil && filter.AgruparPor != nil {
-		switch *filter.AgruparPor {
-		case model.AgrupacionTipoDia:
-			agrupacion = "DAY"
-		case model.AgrupacionTipoSemana:
-			agrupacion = "WEEK"
-		case model.AgrupacionTipoMes:
-			agrupacion = "MONTH"
-		case model.AgrupacionTipoAno:
-			agrupacion = "YEAR"
+	return r.RESTClient.TendenciasSatisfaccion(ctx, filter)
+}
+
+// SearchServicios is the resolver for the searchServicios field.
+func (r *queryResolver) SearchServicios(ctx context.Context, input *model.ServicioSearchInput, filter *model.ServicioFilter, pagination *model.Pagination, sort *model.ServicioSort) ([]*model.Servicio, error) {
+	// Merge input into filter and reuse ListServicios
+	if filter == nil {
+		filter = &model.ServicioFilter{}
+	}
+	if input != nil {
+		if input.CategoriaID != nil {
+			filter.CategoriaID = input.CategoriaID
+		}
+		if input.ProveedorID != nil {
+			filter.ProveedorID = input.ProveedorID
+		}
+		if input.Ciudad != nil {
+			filter.Ciudad = input.Ciudad
+		}
+		if input.MinRating != nil {
+			filter.MinRating = input.MinRating
+		}
+		if input.Q != nil {
+			filter.Q = input.Q
 		}
 	}
+	// sort is not directly mapped to REST query in this dummy client; backend may support order param
+	return r.RESTClient.ListServicios(ctx, filter, pagination)
+}
 
-	query := fmt.Sprintf(`
-		SELECT 
-			DATE_TRUNC('%s', c.fecha) as fecha,
-			AVG(c.puntuacion) as valor
-		FROM api_rest_calificacion c
-	`, agrupacion)
-
-	args := []interface{}{}
-	argIndex := 1
-
-	if filter != nil {
-		if filter.FechaDesde != nil {
-			query += fmt.Sprintf(" WHERE c.fecha >= $%d", argIndex)
-			args = append(args, *filter.FechaDesde)
-			argIndex++
-		}
-		if filter.FechaHasta != nil {
-			query += fmt.Sprintf(" AND c.fecha <= $%d", argIndex)
-			args = append(args, *filter.FechaHasta)
-			argIndex++
+// ServiciosBusquedaAvanzada is the resolver for the serviciosBusquedaAvanzada field.
+func (r *queryResolver) ServiciosBusquedaAvanzada(ctx context.Context, input *model.ServicioSearchInput, pagination *model.Pagination, sort *model.ServicioSort) ([]*model.Servicio, error) {
+	// Build filter from search input
+	var filter model.ServicioFilter
+	if input != nil {
+		filter = model.ServicioFilter{
+			CategoriaID: input.CategoriaID,
+			ProveedorID: input.ProveedorID,
+			Ciudad:      input.Ciudad,
+			MinRating:   input.MinRating,
+			PrecioMin:   input.PrecioMin,
+			PrecioMax:   input.PrecioMax,
+			Q:           input.Q,
 		}
 	}
+	return r.RESTClient.ListServicios(ctx, &filter, pagination)
+}
 
-	query += " GROUP BY DATE_TRUNC('" + agrupacion + "', c.fecha) ORDER BY fecha"
-
-	var resultados []struct {
-		Fecha time.Time `db:"fecha"`
-		Valor float64   `db:"valor"`
-	}
-
-	err := r.DB.Select(&resultados, query, args...)
+// ProveedorPerfil is the resolver for the proveedorPerfil field.
+func (r *queryResolver) ProveedorPerfil(ctx context.Context, id string) (*model.ProveedorProfile, error) {
+	// Best-effort: fetch proveedor and compute simple aggregates
+	p, err := r.RESTClient.GetProveedor(ctx, id)
 	if err != nil {
 		return nil, err
 	}
-
-	var tendencias []*model.PuntoTendencia
-	for _, resultado := range resultados {
-		punto := &model.PuntoTendencia{
-			Fecha: resultado.Fecha.Format("2006-01-02"),
-			Valor: resultado.Valor,
+	profile := &model.ProveedorProfile{Proveedor: p}
+	if p != nil && p.Servicios != nil {
+		profile.TotalServicios = int32(len(p.Servicios))
+		// promedio de ratings
+		var sum float64
+		var count int
+		for _, s := range p.Servicios {
+			if s != nil {
+				sum += s.RatingPromedio
+				count++
+			}
 		}
-
-		tendencias = append(tendencias, punto)
+		if count > 0 {
+			profile.PromedioCalificacion = sum / float64(count)
+		}
 	}
+	// IngresosTotales and TopServicios require report endpoints; leave zero/empty for now
+	profile.IngresosTotales = "0"
+	profile.TopServicios = []*model.ServicioVendido{}
+	return profile, nil
+}
 
-	return tendencias, nil
+// ReservasPorProveedor is the resolver for the reservasPorProveedor field.
+func (r *queryResolver) ReservasPorProveedor(ctx context.Context, proveedorID string, filter *model.ReservaFilter, pagination *model.Pagination) ([]*model.Reserva, error) {
+	// Get all reservas and filter those that include servicios of the proveedor
+	reservas, err := r.RESTClient.ListReservas(ctx, filter, pagination)
+	if err != nil {
+		return nil, err
+	}
+	var out []*model.Reserva
+	for _, rsv := range reservas {
+		if rsv == nil {
+			continue
+		}
+		matched := false
+		for _, det := range rsv.Detalles {
+			if det != nil && det.Servicio != nil && det.Servicio.Proveedor != nil && det.Servicio.Proveedor.ID == proveedorID {
+				matched = true
+				break
+			}
+		}
+		if matched {
+			out = append(out, rsv)
+		}
+	}
+	return out, nil
 }
 
 // Mutation returns MutationResolver implementation.
@@ -964,125 +454,3 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
-
-// Métodos auxiliares para reportes
-
-// getServiciosMasVendidos obtiene los servicios más vendidos
-func (r *queryResolver) getServiciosMasVendidos(ctx context.Context, filter *model.ReporteFilter) ([]*model.ServicioVendido, error) {
-	query := `
-		SELECT 
-			s.id,
-			s.nombre_servicio,
-			COUNT(rs.id) as cantidad_vendida,
-			COALESCE(SUM(CAST(rs.subtotal AS DECIMAL)), 0) as ingresos_generados
-		FROM api_rest_servicio s
-		JOIN reserva_servicios rs ON s.id = rs.servicio_id
-		JOIN reservas r ON rs.reserva_id = r.id
-		WHERE r.estado = 'completada'
-	`
-
-	args := []interface{}{}
-	argIndex := 1
-
-	if filter != nil {
-		if filter.FechaDesde != nil {
-			query += fmt.Sprintf(" AND r.fecha >= $%d", argIndex)
-			args = append(args, *filter.FechaDesde)
-			argIndex++
-		}
-		if filter.FechaHasta != nil {
-			query += fmt.Sprintf(" AND r.fecha <= $%d", argIndex)
-			args = append(args, *filter.FechaHasta)
-			argIndex++
-		}
-		if filter.CategoriaID != nil {
-			query += fmt.Sprintf(" AND s.categoria_id = $%d", argIndex)
-			args = append(args, *filter.CategoriaID)
-			argIndex++
-		}
-		if filter.ProveedorID != nil {
-			query += fmt.Sprintf(" AND s.proveedor_id = $%d", argIndex)
-			args = append(args, *filter.ProveedorID)
-			argIndex++
-		}
-	}
-
-	query += " GROUP BY s.id, s.nombre_servicio ORDER BY cantidad_vendida DESC LIMIT 10"
-
-	var resultados []struct {
-		ServicioID        string `db:"id"`
-		NombreServicio    string `db:"nombre_servicio"`
-		CantidadVendida   int    `db:"cantidad_vendida"`
-		IngresosGenerados string `db:"ingresos_generados"`
-	}
-
-	err := r.DB.Select(&resultados, query, args...)
-	if err != nil {
-		return nil, err
-	}
-
-	var serviciosVendidos []*model.ServicioVendido
-	for _, resultado := range resultados {
-		servicio := &model.Servicio{
-			ID:             resultado.ServicioID,
-			NombreServicio: resultado.NombreServicio,
-		}
-
-		servicioVendido := &model.ServicioVendido{
-			Servicio:          servicio,
-			CantidadVendida:   int32(resultado.CantidadVendida),
-			IngresosGenerados: resultado.IngresosGenerados,
-		}
-
-		serviciosVendidos = append(serviciosVendidos, servicioVendido)
-	}
-
-	return serviciosVendidos, nil
-}
-
-// getDistribucionCalificaciones obtiene la distribución de calificaciones para un servicio
-func (r *queryResolver) getDistribucionCalificaciones(ctx context.Context, servicioID string) ([]*model.DistribucionCalificacion, error) {
-	query := `
-		SELECT 
-			puntuacion,
-			COUNT(*) as cantidad
-		FROM api_rest_calificacion 
-		WHERE servicio_id = $1
-		GROUP BY puntuacion
-		ORDER BY puntuacion
-	`
-
-	var resultados []struct {
-		Puntuacion int `db:"puntuacion"`
-		Cantidad   int `db:"cantidad"`
-	}
-
-	err := r.DB.Select(&resultados, query, servicioID)
-	if err != nil {
-		return nil, err
-	}
-
-	// Calcular total para porcentajes
-	total := 0
-	for _, resultado := range resultados {
-		total += resultado.Cantidad
-	}
-
-	var distribucion []*model.DistribucionCalificacion
-	for _, resultado := range resultados {
-		var porcentaje float64
-		if total > 0 {
-			porcentaje = float64(resultado.Cantidad) / float64(total) * 100
-		}
-
-		dist := &model.DistribucionCalificacion{
-			Puntuacion: int32(resultado.Puntuacion),
-			Cantidad:   int32(resultado.Cantidad),
-			Porcentaje: porcentaje,
-		}
-
-		distribucion = append(distribucion, dist)
-	}
-
-	return distribucion, nil
-}

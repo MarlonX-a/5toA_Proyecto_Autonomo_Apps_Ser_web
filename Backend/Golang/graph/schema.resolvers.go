@@ -11,14 +11,439 @@ import (
 	"github.com/MarlonX-a/5toA_Proyecto_Autonomo_Apps_Ser_web/Golang/graph/model"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+// CreateUser is the resolver for the createUser field.
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
+	return r.RESTClient.CreateUser(ctx, input)
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
+// UpdateUser is the resolver for the updateUser field.
+func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input model.UserInput) (*model.User, error) {
+	return r.RESTClient.UpdateUser(ctx, id, input)
+}
+
+// DeleteUser is the resolver for the deleteUser field.
+func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (bool, error) {
+	return r.RESTClient.DeleteUser(ctx, id)
+}
+
+// CreateUbicacion is the resolver for the createUbicacion field.
+func (r *mutationResolver) CreateUbicacion(ctx context.Context, input model.UbicacionInput) (*model.Ubicacion, error) {
+	return r.RESTClient.CreateUbicacion(ctx, input)
+}
+
+// UpdateUbicacion is the resolver for the updateUbicacion field.
+func (r *mutationResolver) UpdateUbicacion(ctx context.Context, id string, input model.UbicacionInput) (*model.Ubicacion, error) {
+	return r.RESTClient.UpdateUbicacion(ctx, id, input)
+}
+
+// DeleteUbicacion is the resolver for the deleteUbicacion field.
+func (r *mutationResolver) DeleteUbicacion(ctx context.Context, id string) (bool, error) {
+	return r.RESTClient.DeleteUbicacion(ctx, id)
+}
+
+// CreateCliente is the resolver for the createCliente field.
+func (r *mutationResolver) CreateCliente(ctx context.Context, input model.ClienteInput) (*model.Cliente, error) {
+	return r.RESTClient.CreateCliente(ctx, input)
+}
+
+// UpdateCliente is the resolver for the updateCliente field.
+func (r *mutationResolver) UpdateCliente(ctx context.Context, id string, input model.ClienteInput) (*model.Cliente, error) {
+	return r.RESTClient.UpdateCliente(ctx, id, input)
+}
+
+// DeleteCliente is the resolver for the deleteCliente field.
+func (r *mutationResolver) DeleteCliente(ctx context.Context, id string) (bool, error) {
+	return r.RESTClient.DeleteCliente(ctx, id)
+}
+
+// CreateProveedor is the resolver for the createProveedor field.
+func (r *mutationResolver) CreateProveedor(ctx context.Context, input model.ProveedorInput) (*model.Proveedor, error) {
+	return r.RESTClient.CreateProveedor(ctx, input)
+}
+
+// UpdateProveedor is the resolver for the updateProveedor field.
+func (r *mutationResolver) UpdateProveedor(ctx context.Context, id string, input model.ProveedorInput) (*model.Proveedor, error) {
+	return r.RESTClient.UpdateProveedor(ctx, id, input)
+}
+
+// DeleteProveedor is the resolver for the deleteProveedor field.
+func (r *mutationResolver) DeleteProveedor(ctx context.Context, id string) (bool, error) {
+	return r.RESTClient.DeleteProveedor(ctx, id)
+}
+
+// CreateCategoria is the resolver for the createCategoria field.
+func (r *mutationResolver) CreateCategoria(ctx context.Context, input model.CategoriaInput) (*model.Categoria, error) {
+	return r.RESTClient.CreateCategoria(ctx, input)
+}
+
+// UpdateCategoria is the resolver for the updateCategoria field.
+func (r *mutationResolver) UpdateCategoria(ctx context.Context, id string, input model.CategoriaInput) (*model.Categoria, error) {
+	return r.RESTClient.UpdateCategoria(ctx, id, input)
+}
+
+// DeleteCategoria is the resolver for the deleteCategoria field.
+func (r *mutationResolver) DeleteCategoria(ctx context.Context, id string) (bool, error) {
+	return r.RESTClient.DeleteCategoria(ctx, id)
+}
+
+// CreateServicio is the resolver for the createServicio field.
+func (r *mutationResolver) CreateServicio(ctx context.Context, input model.ServicioInput) (*model.Servicio, error) {
+	return r.RESTClient.CreateServicio(ctx, input)
+}
+
+// UpdateServicio is the resolver for the updateServicio field.
+func (r *mutationResolver) UpdateServicio(ctx context.Context, id string, input model.ServicioInput) (*model.Servicio, error) {
+	return r.RESTClient.UpdateServicio(ctx, id, input)
+}
+
+// DeleteServicio is the resolver for the deleteServicio field.
+func (r *mutationResolver) DeleteServicio(ctx context.Context, id string) (bool, error) {
+	return r.RESTClient.DeleteServicio(ctx, id)
+}
+
+// CreateFotoServicio is the resolver for the createFotoServicio field.
+func (r *mutationResolver) CreateFotoServicio(ctx context.Context, input model.FotoServicioInput) (*model.FotoServicio, error) {
+	return r.RESTClient.CreateFotoServicio(ctx, input)
+}
+
+// UpdateFotoServicio is the resolver for the updateFotoServicio field.
+func (r *mutationResolver) UpdateFotoServicio(ctx context.Context, id string, input model.FotoServicioInput) (*model.FotoServicio, error) {
+	return r.RESTClient.UpdateFotoServicio(ctx, id, input)
+}
+
+// DeleteFotoServicio is the resolver for the deleteFotoServicio field.
+func (r *mutationResolver) DeleteFotoServicio(ctx context.Context, id string) (bool, error) {
+	return r.RESTClient.DeleteFotoServicio(ctx, id)
+}
+
+// CreateReserva is the resolver for the createReserva field.
+func (r *mutationResolver) CreateReserva(ctx context.Context, input model.ReservaInput) (*model.Reserva, error) {
+	return r.RESTClient.CreateReserva(ctx, input)
+}
+
+// UpdateReserva is the resolver for the updateReserva field.
+func (r *mutationResolver) UpdateReserva(ctx context.Context, id string, input model.ReservaInput) (*model.Reserva, error) {
+	return r.RESTClient.UpdateReserva(ctx, id, input)
+}
+
+// DeleteReserva is the resolver for the deleteReserva field.
+func (r *mutationResolver) DeleteReserva(ctx context.Context, id string) (bool, error) {
+	return r.RESTClient.DeleteReserva(ctx, id)
+}
+
+// CreateReservaServicio is the resolver for the createReservaServicio field.
+func (r *mutationResolver) CreateReservaServicio(ctx context.Context, input model.ReservaServicioInput) (*model.ReservaServicio, error) {
+	return r.RESTClient.CreateReservaServicio(ctx, input)
+}
+
+// UpdateReservaServicio is the resolver for the updateReservaServicio field.
+func (r *mutationResolver) UpdateReservaServicio(ctx context.Context, id string, input model.ReservaServicioInput) (*model.ReservaServicio, error) {
+	return r.RESTClient.UpdateReservaServicio(ctx, id, input)
+}
+
+// DeleteReservaServicio is the resolver for the deleteReservaServicio field.
+func (r *mutationResolver) DeleteReservaServicio(ctx context.Context, id string) (bool, error) {
+	return r.RESTClient.DeleteReservaServicio(ctx, id)
+}
+
+// CreatePago is the resolver for the createPago field.
+func (r *mutationResolver) CreatePago(ctx context.Context, input model.PagoInput) (*model.Pago, error) {
+	return r.RESTClient.CreatePago(ctx, input)
+}
+
+// UpdatePago is the resolver for the updatePago field.
+func (r *mutationResolver) UpdatePago(ctx context.Context, id string, input model.PagoInput) (*model.Pago, error) {
+	return r.RESTClient.UpdatePago(ctx, id, input)
+}
+
+// DeletePago is the resolver for the deletePago field.
+func (r *mutationResolver) DeletePago(ctx context.Context, id string) (bool, error) {
+	return r.RESTClient.DeletePago(ctx, id)
+}
+
+// CreateCalificacion is the resolver for the createCalificacion field.
+func (r *mutationResolver) CreateCalificacion(ctx context.Context, input model.CalificacionInput) (*model.Calificacion, error) {
+	return r.RESTClient.CreateCalificacion(ctx, input)
+}
+
+// UpdateCalificacion is the resolver for the updateCalificacion field.
+func (r *mutationResolver) UpdateCalificacion(ctx context.Context, id string, input model.CalificacionInput) (*model.Calificacion, error) {
+	return r.RESTClient.UpdateCalificacion(ctx, id, input)
+}
+
+// DeleteCalificacion is the resolver for the deleteCalificacion field.
+func (r *mutationResolver) DeleteCalificacion(ctx context.Context, id string) (bool, error) {
+	return r.RESTClient.DeleteCalificacion(ctx, id)
+}
+
+// CreateComentario is the resolver for the createComentario field.
+func (r *mutationResolver) CreateComentario(ctx context.Context, input model.ComentarioInput) (*model.Comentario, error) {
+	return r.RESTClient.CreateComentario(ctx, input)
+}
+
+// UpdateComentario is the resolver for the updateComentario field.
+func (r *mutationResolver) UpdateComentario(ctx context.Context, id string, input model.ComentarioInput) (*model.Comentario, error) {
+	return r.RESTClient.UpdateComentario(ctx, id, input)
+}
+
+// DeleteComentario is the resolver for the deleteComentario field.
+func (r *mutationResolver) DeleteComentario(ctx context.Context, id string) (bool, error) {
+	return r.RESTClient.DeleteComentario(ctx, id)
+}
+
+// CreateServicioUbicacion is the resolver for the createServicioUbicacion field.
+func (r *mutationResolver) CreateServicioUbicacion(ctx context.Context, input model.ServicioUbicacionInput) (*model.ServicioUbicacion, error) {
+	panic(fmt.Errorf("not implemented: CreateServicioUbicacion - createServicioUbicacion"))
+}
+
+// UpdateServicioUbicacion is the resolver for the updateServicioUbicacion field.
+func (r *mutationResolver) UpdateServicioUbicacion(ctx context.Context, id string, input model.ServicioUbicacionInput) (*model.ServicioUbicacion, error) {
+	panic(fmt.Errorf("not implemented: UpdateServicioUbicacion - updateServicioUbicacion"))
+}
+
+// DeleteServicioUbicacion is the resolver for the deleteServicioUbicacion field.
+func (r *mutationResolver) DeleteServicioUbicacion(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteServicioUbicacion - deleteServicioUbicacion"))
+}
+
+// Users is the resolver for the users field.
+func (r *queryResolver) Users(ctx context.Context, pagination *model.Pagination) ([]*model.User, error) {
+	return r.RESTClient.ListUsers(ctx, pagination)
+}
+
+// User is the resolver for the user field.
+func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
+	return r.RESTClient.GetUser(ctx, id)
+}
+
+// Ubicaciones is the resolver for the ubicaciones field.
+func (r *queryResolver) Ubicaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Ubicacion, error) {
+	return r.RESTClient.ListUbicaciones(ctx, pagination)
+}
+
+// Ubicacion is the resolver for the ubicacion field.
+func (r *queryResolver) Ubicacion(ctx context.Context, id string) (*model.Ubicacion, error) {
+	return r.RESTClient.GetUbicacion(ctx, id)
+}
+
+// Clientes is the resolver for the clientes field.
+func (r *queryResolver) Clientes(ctx context.Context, pagination *model.Pagination) ([]*model.Cliente, error) {
+	return r.RESTClient.ListClientes(ctx, pagination)
+}
+
+// Cliente is the resolver for the cliente field.
+func (r *queryResolver) Cliente(ctx context.Context, id string) (*model.Cliente, error) {
+	return r.RESTClient.GetCliente(ctx, id)
+}
+
+// Proveedores is the resolver for the proveedores field.
+func (r *queryResolver) Proveedores(ctx context.Context, pagination *model.Pagination) ([]*model.Proveedor, error) {
+	return r.RESTClient.ListProveedores(ctx, pagination)
+}
+
+// Proveedor is the resolver for the proveedor field.
+func (r *queryResolver) Proveedor(ctx context.Context, id string) (*model.Proveedor, error) {
+	return r.RESTClient.GetProveedor(ctx, id)
+}
+
+// Categorias is the resolver for the categorias field.
+func (r *queryResolver) Categorias(ctx context.Context, pagination *model.Pagination) ([]*model.Categoria, error) {
+	return r.RESTClient.ListCategorias(ctx, pagination)
+}
+
+// Categoria is the resolver for the categoria field.
+func (r *queryResolver) Categoria(ctx context.Context, id string) (*model.Categoria, error) {
+	return r.RESTClient.GetCategoria(ctx, id)
+}
+
+// Servicios is the resolver for the servicios field.
+func (r *queryResolver) Servicios(ctx context.Context, filter *model.ServicioFilter, pagination *model.Pagination) ([]*model.Servicio, error) {
+	return r.RESTClient.ListServicios(ctx, filter, pagination)
+}
+
+// Servicio is the resolver for the servicio field.
+func (r *queryResolver) Servicio(ctx context.Context, id string) (*model.Servicio, error) {
+	return r.RESTClient.GetServicio(ctx, id)
+}
+
+// Reservas is the resolver for the reservas field.
+func (r *queryResolver) Reservas(ctx context.Context, filter *model.ReservaFilter, pagination *model.Pagination) ([]*model.Reserva, error) {
+	return r.RESTClient.ListReservas(ctx, filter, pagination)
+}
+
+// Reserva is the resolver for the reserva field.
+func (r *queryResolver) Reserva(ctx context.Context, id string) (*model.Reserva, error) {
+	return r.RESTClient.GetReserva(ctx, id)
+}
+
+// Pagos is the resolver for the pagos field.
+func (r *queryResolver) Pagos(ctx context.Context, pagination *model.Pagination) ([]*model.Pago, error) {
+	return r.RESTClient.ListPagos(ctx, pagination)
+}
+
+// Pago is the resolver for the pago field.
+func (r *queryResolver) Pago(ctx context.Context, id string) (*model.Pago, error) {
+	return r.RESTClient.GetPago(ctx, id)
+}
+
+// Calificaciones is the resolver for the calificaciones field.
+func (r *queryResolver) Calificaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Calificacion, error) {
+	return r.RESTClient.ListCalificaciones(ctx, pagination)
+}
+
+// Comentarios is the resolver for the comentarios field.
+func (r *queryResolver) Comentarios(ctx context.Context, pagination *model.Pagination) ([]*model.Comentario, error) {
+	return r.RESTClient.ListComentarios(ctx, pagination)
+}
+
+// ReporteVentas is the resolver for the reporteVentas field.
+func (r *queryResolver) ReporteVentas(ctx context.Context, filter *model.ReporteFilter) (*model.ReporteVentas, error) {
+	return r.RESTClient.ReporteVentas(ctx, filter)
+}
+
+// ReporteSatisfaccion is the resolver for the reporteSatisfaccion field.
+func (r *queryResolver) ReporteSatisfaccion(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteSatisfaccion, error) {
+	return r.RESTClient.ReporteSatisfaccion(ctx, filter)
+}
+
+// ReporteProveedores is the resolver for the reporteProveedores field.
+func (r *queryResolver) ReporteProveedores(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteProveedor, error) {
+	return r.RESTClient.ReporteProveedores(ctx, filter)
+}
+
+// ReporteClientes is the resolver for the reporteClientes field.
+func (r *queryResolver) ReporteClientes(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteCliente, error) {
+	return r.RESTClient.ReporteClientes(ctx, filter)
+}
+
+// MetricasGenerales is the resolver for the metricasGenerales field.
+func (r *queryResolver) MetricasGenerales(ctx context.Context, filter *model.MetricasFilter) (*model.MetricasGenerales, error) {
+	return r.RESTClient.MetricasGenerales(ctx, filter)
+}
+
+// ServiciosMasPopulares is the resolver for the serviciosMasPopulares field.
+func (r *queryResolver) ServiciosMasPopulares(ctx context.Context, limit *int32) ([]*model.ServicioVendido, error) {
+	return r.RESTClient.ServiciosMasPopulares(ctx, limit)
+}
+
+// ProveedoresMejorCalificados is the resolver for the proveedoresMejorCalificados field.
+func (r *queryResolver) ProveedoresMejorCalificados(ctx context.Context, limit *int32) ([]*model.ReporteProveedor, error) {
+	return r.RESTClient.ProveedoresMejorCalificados(ctx, limit)
+}
+
+// ClientesMasActivos is the resolver for the clientesMasActivos field.
+func (r *queryResolver) ClientesMasActivos(ctx context.Context, limit *int32) ([]*model.ReporteCliente, error) {
+	return r.RESTClient.ClientesMasActivos(ctx, limit)
+}
+
+// TendenciasVentas is the resolver for the tendenciasVentas field.
+func (r *queryResolver) TendenciasVentas(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error) {
+	return r.RESTClient.TendenciasVentas(ctx, filter)
+}
+
+// TendenciasSatisfaccion is the resolver for the tendenciasSatisfaccion field.
+func (r *queryResolver) TendenciasSatisfaccion(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error) {
+	return r.RESTClient.TendenciasSatisfaccion(ctx, filter)
+}
+
+// SearchServicios is the resolver for the searchServicios field.
+func (r *queryResolver) SearchServicios(ctx context.Context, input *model.ServicioSearchInput, filter *model.ServicioFilter, pagination *model.Pagination, sort *model.ServicioSort) ([]*model.Servicio, error) {
+	// Merge input into filter and reuse ListServicios
+	if filter == nil {
+		filter = &model.ServicioFilter{}
+	}
+	if input != nil {
+		if input.CategoriaID != nil {
+			filter.CategoriaID = input.CategoriaID
+		}
+		if input.ProveedorID != nil {
+			filter.ProveedorID = input.ProveedorID
+		}
+		if input.Ciudad != nil {
+			filter.Ciudad = input.Ciudad
+		}
+		if input.MinRating != nil {
+			filter.MinRating = input.MinRating
+		}
+		if input.Q != nil {
+			filter.Q = input.Q
+		}
+	}
+	// sort is not directly mapped to REST query in this dummy client; backend may support order param
+	return r.RESTClient.ListServicios(ctx, filter, pagination)
+}
+
+// ServiciosBusquedaAvanzada is the resolver for the serviciosBusquedaAvanzada field.
+func (r *queryResolver) ServiciosBusquedaAvanzada(ctx context.Context, input *model.ServicioSearchInput, pagination *model.Pagination, sort *model.ServicioSort) ([]*model.Servicio, error) {
+	// Build filter from search input
+	var filter model.ServicioFilter
+	if input != nil {
+		filter = model.ServicioFilter{
+			CategoriaID: input.CategoriaID,
+			ProveedorID: input.ProveedorID,
+			Ciudad:      input.Ciudad,
+			MinRating:   input.MinRating,
+			PrecioMin:   input.PrecioMin,
+			PrecioMax:   input.PrecioMax,
+			Q:           input.Q,
+		}
+	}
+	return r.RESTClient.ListServicios(ctx, &filter, pagination)
+}
+
+// ProveedorPerfil is the resolver for the proveedorPerfil field.
+func (r *queryResolver) ProveedorPerfil(ctx context.Context, id string) (*model.ProveedorProfile, error) {
+	// Best-effort: fetch proveedor and compute simple aggregates
+	p, err := r.RESTClient.GetProveedor(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	profile := &model.ProveedorProfile{Proveedor: p}
+	if p != nil && p.Servicios != nil {
+		profile.TotalServicios = int32(len(p.Servicios))
+		// promedio de ratings
+		var sum float64
+		var count int
+		for _, s := range p.Servicios {
+			if s != nil {
+				sum += s.RatingPromedio
+				count++
+			}
+		}
+		if count > 0 {
+			profile.PromedioCalificacion = sum / float64(count)
+		}
+	}
+	// IngresosTotales and TopServicios require report endpoints; leave zero/empty for now
+	profile.IngresosTotales = "0"
+	profile.TopServicios = []*model.ServicioVendido{}
+	return profile, nil
+}
+
+// ReservasPorProveedor is the resolver for the reservasPorProveedor field.
+func (r *queryResolver) ReservasPorProveedor(ctx context.Context, proveedorID string, filter *model.ReservaFilter, pagination *model.Pagination) ([]*model.Reserva, error) {
+	// Get all reservas and filter those that include servicios of the proveedor
+	reservas, err := r.RESTClient.ListReservas(ctx, filter, pagination)
+	if err != nil {
+		return nil, err
+	}
+	var out []*model.Reserva
+	for _, rsv := range reservas {
+		if rsv == nil {
+			continue
+		}
+		matched := false
+		for _, det := range rsv.Detalles {
+			if det != nil && det.Servicio != nil && det.Servicio.Proveedor != nil && det.Servicio.Proveedor.ID == proveedorID {
+				matched = true
+				break
+			}
+		}
+		if matched {
+			out = append(out, rsv)
+		}
+	}
+	return out, nil
 }
 
 // Mutation returns MutationResolver implementation.

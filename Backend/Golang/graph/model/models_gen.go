@@ -2,25 +2,493 @@
 
 package model
 
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"strconv"
+	"time"
+)
+
+type Calificacion struct {
+	ID         string    `json:"id"`
+	Cliente    *Cliente  `json:"cliente"`
+	Servicio   *Servicio `json:"servicio"`
+	Fecha      time.Time `json:"fecha"`
+	Puntuacion int32     `json:"puntuacion"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
+}
+
+type CalificacionInput struct {
+	ClienteID  string `json:"clienteId"`
+	ServicioID string `json:"servicioId"`
+	Puntuacion int32  `json:"puntuacion"`
+}
+
+type Categoria struct {
+	ID          string      `json:"id"`
+	Nombre      string      `json:"nombre"`
+	Descripcion *string     `json:"descripcion,omitempty"`
+	CreatedAt   time.Time   `json:"createdAt"`
+	UpdatedAt   time.Time   `json:"updatedAt"`
+	Servicios   []*Servicio `json:"servicios,omitempty"`
+}
+
+type CategoriaInput struct {
+	Nombre      string  `json:"nombre"`
+	Descripcion *string `json:"descripcion,omitempty"`
+}
+
+type Cliente struct {
+	ID             string          `json:"id"`
+	User           *User           `json:"user"`
+	Telefono       string          `json:"telefono"`
+	Ubicacion      *Ubicacion      `json:"ubicacion,omitempty"`
+	CreatedAt      time.Time       `json:"createdAt"`
+	UpdatedAt      time.Time       `json:"updatedAt"`
+	Reservas       []*Reserva      `json:"reservas,omitempty"`
+	Calificaciones []*Calificacion `json:"calificaciones,omitempty"`
+	Comentarios    []*Comentario   `json:"comentarios,omitempty"`
+}
+
+type ClienteInput struct {
+	UserID      string  `json:"userId"`
+	Telefono    string  `json:"telefono"`
+	UbicacionID *string `json:"ubicacionId,omitempty"`
+}
+
+type Comentario struct {
+	ID        string    `json:"id"`
+	Cliente   *Cliente  `json:"cliente"`
+	Servicio  *Servicio `json:"servicio"`
+	Titulo    string    `json:"titulo"`
+	Texto     string    `json:"texto"`
+	Respuesta *string   `json:"respuesta,omitempty"`
+	Fecha     time.Time `json:"fecha"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type ComentarioInput struct {
+	ClienteID  string  `json:"clienteId"`
+	ServicioID string  `json:"servicioId"`
+	Titulo     string  `json:"titulo"`
+	Texto      string  `json:"texto"`
+	Respuesta  *string `json:"respuesta,omitempty"`
+}
+
+type DistribucionCalificacion struct {
+	Puntuacion int32   `json:"puntuacion"`
+	Cantidad   int32   `json:"cantidad"`
+	Porcentaje float64 `json:"porcentaje"`
+}
+
+type FotoServicio struct {
+	ID          string    `json:"id"`
+	Servicio    *Servicio `json:"servicio"`
+	URLFoto     string    `json:"urlFoto"`
+	Descripcion *string   `json:"descripcion,omitempty"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
+}
+
+type FotoServicioInput struct {
+	ServicioID  string  `json:"servicioId"`
+	URLFoto     string  `json:"urlFoto"`
+	Descripcion *string `json:"descripcion,omitempty"`
+}
+
+type MetricasFilter struct {
+	FechaDesde *string         `json:"fechaDesde,omitempty"`
+	FechaHasta *string         `json:"fechaHasta,omitempty"`
+	AgruparPor *AgrupacionTipo `json:"agruparPor,omitempty"`
+}
+
+type MetricasGenerales struct {
+	TotalUsuarios        int32   `json:"totalUsuarios"`
+	TotalProveedores     int32   `json:"totalProveedores"`
+	TotalServicios       int32   `json:"totalServicios"`
+	TotalReservas        int32   `json:"totalReservas"`
+	IngresosTotales      string  `json:"ingresosTotales"`
+	PromedioSatisfaccion float64 `json:"promedioSatisfaccion"`
+}
+
 type Mutation struct {
 }
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type Pagination struct {
+	Limit  *int32 `json:"limit,omitempty"`
+	Offset *int32 `json:"offset,omitempty"`
+}
+
+type Pago struct {
+	ID         string     `json:"id"`
+	Reserva    *Reserva   `json:"reserva"`
+	MetodoPago string     `json:"metodoPago"`
+	Monto      string     `json:"monto"`
+	Estado     string     `json:"estado"`
+	Referencia *string    `json:"referencia,omitempty"`
+	FechaPago  *time.Time `json:"fechaPago,omitempty"`
+	CreatedAt  time.Time  `json:"createdAt"`
+	UpdatedAt  time.Time  `json:"updatedAt"`
+}
+
+type PagoInput struct {
+	ReservaID  string     `json:"reservaId"`
+	MetodoPago string     `json:"metodoPago"`
+	Monto      string     `json:"monto"`
+	Estado     string     `json:"estado"`
+	Referencia *string    `json:"referencia,omitempty"`
+	FechaPago  *time.Time `json:"fechaPago,omitempty"`
+}
+
+type Proveedor struct {
+	ID          string      `json:"id"`
+	User        *User       `json:"user"`
+	Telefono    string      `json:"telefono"`
+	Descripcion *string     `json:"descripcion,omitempty"`
+	Ubicacion   *Ubicacion  `json:"ubicacion,omitempty"`
+	CreatedAt   time.Time   `json:"createdAt"`
+	UpdatedAt   time.Time   `json:"updatedAt"`
+	Servicios   []*Servicio `json:"servicios,omitempty"`
+}
+
+type ProveedorInput struct {
+	UserID      string  `json:"userId"`
+	Telefono    string  `json:"telefono"`
+	Descripcion *string `json:"descripcion,omitempty"`
+	UbicacionID *string `json:"ubicacionId,omitempty"`
+}
+
+type ProveedorProfile struct {
+	Proveedor            *Proveedor         `json:"proveedor"`
+	TotalServicios       int32              `json:"totalServicios"`
+	IngresosTotales      string             `json:"ingresosTotales"`
+	PromedioCalificacion float64            `json:"promedioCalificacion"`
+	TopServicios         []*ServicioVendido `json:"topServicios"`
+}
+
+type PuntoTendencia struct {
+	Fecha    string  `json:"fecha"`
+	Valor    float64 `json:"valor"`
+	Etiqueta *string `json:"etiqueta,omitempty"`
 }
 
 type Query struct {
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+type ReporteCliente struct {
+	Cliente            *Cliente `json:"cliente"`
+	TotalReservas      int32    `json:"totalReservas"`
+	GastoTotal         string   `json:"gastoTotal"`
+	PromedioPorReserva string   `json:"promedioPorReserva"`
+	UltimaReserva      *string  `json:"ultimaReserva,omitempty"`
+}
+
+type ReporteFilter struct {
+	FechaDesde    *string `json:"fechaDesde,omitempty"`
+	FechaHasta    *string `json:"fechaHasta,omitempty"`
+	CategoriaID   *string `json:"categoriaId,omitempty"`
+	ProveedorID   *string `json:"proveedorId,omitempty"`
+	Ciudad        *string `json:"ciudad,omitempty"`
+	EstadoReserva *string `json:"estadoReserva,omitempty"`
+}
+
+type ReporteProveedor struct {
+	Proveedor            *Proveedor `json:"proveedor"`
+	TotalServicios       int32      `json:"totalServicios"`
+	IngresosTotales      string     `json:"ingresosTotales"`
+	PromedioCalificacion float64    `json:"promedioCalificacion"`
+	ServiciosActivos     int32      `json:"serviciosActivos"`
+}
+
+type ReporteSatisfaccion struct {
+	Servicio                   *Servicio                   `json:"servicio"`
+	PromedioCalificacion       float64                     `json:"promedioCalificacion"`
+	TotalCalificaciones        int32                       `json:"totalCalificaciones"`
+	DistribucionCalificaciones []*DistribucionCalificacion `json:"distribucionCalificaciones"`
+}
+
+type ReporteVentas struct {
+	Periodo              string             `json:"periodo"`
+	TotalVentas          string             `json:"totalVentas"`
+	CantidadReservas     int32              `json:"cantidadReservas"`
+	PromedioPorReserva   string             `json:"promedioPorReserva"`
+	ServiciosMasVendidos []*ServicioVendido `json:"serviciosMasVendidos"`
+}
+
+type Reserva struct {
+	ID            string             `json:"id"`
+	Cliente       *Cliente           `json:"cliente"`
+	Fecha         string             `json:"fecha"`
+	Hora          string             `json:"hora"`
+	Estado        string             `json:"estado"`
+	TotalEstimado string             `json:"totalEstimado"`
+	Detalles      []*ReservaServicio `json:"detalles,omitempty"`
+	Pagos         []*Pago            `json:"pagos,omitempty"`
+	CreatedAt     time.Time          `json:"createdAt"`
+	UpdatedAt     time.Time          `json:"updatedAt"`
+}
+
+type ReservaFilter struct {
+	ClienteID  *string `json:"clienteId,omitempty"`
+	Estado     *string `json:"estado,omitempty"`
+	FechaDesde *string `json:"fechaDesde,omitempty"`
+	FechaHasta *string `json:"fechaHasta,omitempty"`
+}
+
+type ReservaInput struct {
+	ClienteID     string `json:"clienteId"`
+	Fecha         string `json:"fecha"`
+	Hora          string `json:"hora"`
+	Estado        string `json:"estado"`
+	TotalEstimado string `json:"totalEstimado"`
+}
+
+type ReservaServicio struct {
+	ID             string    `json:"id"`
+	Reserva        *Reserva  `json:"reserva"`
+	Servicio       *Servicio `json:"servicio"`
+	Cantidad       int32     `json:"cantidad"`
+	PrecioUnitario string    `json:"precioUnitario"`
+	Subtotal       string    `json:"subtotal"`
+	CreatedAt      time.Time `json:"createdAt"`
+	UpdatedAt      time.Time `json:"updatedAt"`
+}
+
+type ReservaServicioInput struct {
+	ReservaID      string `json:"reservaId"`
+	ServicioID     string `json:"servicioId"`
+	Cantidad       int32  `json:"cantidad"`
+	PrecioUnitario string `json:"precioUnitario"`
+}
+
+type Servicio struct {
+	ID              string             `json:"id"`
+	Proveedor       *Proveedor         `json:"proveedor"`
+	Categoria       *Categoria         `json:"categoria"`
+	NombreServicio  string             `json:"nombreServicio"`
+	Descripcion     *string            `json:"descripcion,omitempty"`
+	Duracion        *string            `json:"duracion,omitempty"`
+	RatingPromedio  float64            `json:"ratingPromedio"`
+	Precio          string             `json:"precio"`
+	Ubicaciones     []*Ubicacion       `json:"ubicaciones,omitempty"`
+	Fotos           []*FotoServicio    `json:"fotos,omitempty"`
+	Calificaciones  []*Calificacion    `json:"calificaciones,omitempty"`
+	Comentarios     []*Comentario      `json:"comentarios,omitempty"`
+	DetallesReserva []*ReservaServicio `json:"detallesReserva,omitempty"`
+	CreatedAt       time.Time          `json:"createdAt"`
+	UpdatedAt       time.Time          `json:"updatedAt"`
+}
+
+type ServicioFilter struct {
+	CategoriaID *string  `json:"categoriaId,omitempty"`
+	ProveedorID *string  `json:"proveedorId,omitempty"`
+	Ciudad      *string  `json:"ciudad,omitempty"`
+	MinRating   *float64 `json:"minRating,omitempty"`
+	PrecioMin   *string  `json:"precioMin,omitempty"`
+	PrecioMax   *string  `json:"precioMax,omitempty"`
+	Q           *string  `json:"q,omitempty"`
+}
+
+type ServicioInput struct {
+	ProveedorID    string   `json:"proveedorId"`
+	CategoriaID    string   `json:"categoriaId"`
+	NombreServicio string   `json:"nombreServicio"`
+	Descripcion    *string  `json:"descripcion,omitempty"`
+	Duracion       *string  `json:"duracion,omitempty"`
+	RatingPromedio *float64 `json:"ratingPromedio,omitempty"`
+	Precio         *string  `json:"precio,omitempty"`
+}
+
+type ServicioSearchInput struct {
+	Q           *string  `json:"q,omitempty"`
+	CategoriaID *string  `json:"categoriaId,omitempty"`
+	ProveedorID *string  `json:"proveedorId,omitempty"`
+	Ciudad      *string  `json:"ciudad,omitempty"`
+	PrecioMin   *string  `json:"precioMin,omitempty"`
+	PrecioMax   *string  `json:"precioMax,omitempty"`
+	MinRating   *float64 `json:"minRating,omitempty"`
+	Tags        []string `json:"tags,omitempty"`
+}
+
+type ServicioUbicacion struct {
+	ID        string     `json:"id"`
+	Servicio  *Servicio  `json:"servicio"`
+	Ubicacion *Ubicacion `json:"ubicacion"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+}
+
+type ServicioUbicacionInput struct {
+	ServicioID  string `json:"servicioId"`
+	UbicacionID string `json:"ubicacionId"`
+}
+
+type ServicioVendido struct {
+	Servicio          *Servicio `json:"servicio"`
+	CantidadVendida   int32     `json:"cantidadVendida"`
+	IngresosGenerados string    `json:"ingresosGenerados"`
+}
+
+type Ubicacion struct {
+	ID          string       `json:"id"`
+	Direccion   string       `json:"direccion"`
+	Ciudad      string       `json:"ciudad"`
+	Provincia   string       `json:"provincia"`
+	Pais        string       `json:"pais"`
+	CreatedAt   time.Time    `json:"createdAt"`
+	UpdatedAt   time.Time    `json:"updatedAt"`
+	Clientes    []*Cliente   `json:"clientes,omitempty"`
+	Proveedores []*Proveedor `json:"proveedores,omitempty"`
+	Servicios   []*Servicio  `json:"servicios,omitempty"`
+}
+
+type UbicacionInput struct {
+	Direccion string `json:"direccion"`
+	Ciudad    string `json:"ciudad"`
+	Provincia string `json:"provincia"`
+	Pais      string `json:"pais"`
 }
 
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID        string     `json:"id"`
+	Username  string     `json:"username"`
+	Email     string     `json:"email"`
+	FirstName *string    `json:"firstName,omitempty"`
+	LastName  *string    `json:"lastName,omitempty"`
+	Rol       string     `json:"rol"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	Cliente   *Cliente   `json:"cliente,omitempty"`
+	Proveedor *Proveedor `json:"proveedor,omitempty"`
+}
+
+type UserInput struct {
+	Username  string  `json:"username"`
+	Email     string  `json:"email"`
+	FirstName *string `json:"firstName,omitempty"`
+	LastName  *string `json:"lastName,omitempty"`
+	Rol       string  `json:"rol"`
+}
+
+type AgrupacionTipo string
+
+const (
+	AgrupacionTipoDia    AgrupacionTipo = "DIA"
+	AgrupacionTipoSemana AgrupacionTipo = "SEMANA"
+	AgrupacionTipoMes    AgrupacionTipo = "MES"
+	AgrupacionTipoAno    AgrupacionTipo = "ANO"
+)
+
+var AllAgrupacionTipo = []AgrupacionTipo{
+	AgrupacionTipoDia,
+	AgrupacionTipoSemana,
+	AgrupacionTipoMes,
+	AgrupacionTipoAno,
+}
+
+func (e AgrupacionTipo) IsValid() bool {
+	switch e {
+	case AgrupacionTipoDia, AgrupacionTipoSemana, AgrupacionTipoMes, AgrupacionTipoAno:
+		return true
+	}
+	return false
+}
+
+func (e AgrupacionTipo) String() string {
+	return string(e)
+}
+
+func (e *AgrupacionTipo) UnmarshalGQL(v any) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = AgrupacionTipo(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid AgrupacionTipo", str)
+	}
+	return nil
+}
+
+func (e AgrupacionTipo) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+func (e *AgrupacionTipo) UnmarshalJSON(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	return e.UnmarshalGQL(s)
+}
+
+func (e AgrupacionTipo) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	e.MarshalGQL(&buf)
+	return buf.Bytes(), nil
+}
+
+type ServicioSort string
+
+const (
+	ServicioSortRelevancia    ServicioSort = "RELEVANCIA"
+	ServicioSortPrecioAsc     ServicioSort = "PRECIO_ASC"
+	ServicioSortPrecioDesc    ServicioSort = "PRECIO_DESC"
+	ServicioSortRatingDesc    ServicioSort = "RATING_DESC"
+	ServicioSortCreatedAtDesc ServicioSort = "CREATED_AT_DESC"
+)
+
+var AllServicioSort = []ServicioSort{
+	ServicioSortRelevancia,
+	ServicioSortPrecioAsc,
+	ServicioSortPrecioDesc,
+	ServicioSortRatingDesc,
+	ServicioSortCreatedAtDesc,
+}
+
+func (e ServicioSort) IsValid() bool {
+	switch e {
+	case ServicioSortRelevancia, ServicioSortPrecioAsc, ServicioSortPrecioDesc, ServicioSortRatingDesc, ServicioSortCreatedAtDesc:
+		return true
+	}
+	return false
+}
+
+func (e ServicioSort) String() string {
+	return string(e)
+}
+
+func (e *ServicioSort) UnmarshalGQL(v any) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ServicioSort(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ServicioSort", str)
+	}
+	return nil
+}
+
+func (e ServicioSort) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+func (e *ServicioSort) UnmarshalJSON(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	return e.UnmarshalGQL(s)
+}
+
+func (e ServicioSort) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	e.MarshalGQL(&buf)
+	return buf.Bytes(), nil
 }

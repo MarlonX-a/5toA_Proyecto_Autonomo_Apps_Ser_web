@@ -1,191 +1,507 @@
-
-scalar Date
+#Variables que no están establecidas de forma normal para el modelo
 scalar Time
-scalar UUID
-scalar Float
-scalar Int
+scalar Date
+scalar Decimal
 
-# -----------------------------
-# User
-# -----------------------------
+#Creacion de la tabla user
 type User {
-  id: UUID!
+  id: ID!
   username: String!
-  password: String!
   email: String!
+  firstName: String
+  lastName: String
   rol: String!
+  createdAt: Time!
+  updatedAt: Time!
   cliente: Cliente
   proveedor: Proveedor
 }
 
-# -----------------------------
-# Cliente
-# -----------------------------
-type Cliente {
-  id: UUID!
-  telefono: Float!
-  user: User!
-  calificaciones: [Calificacion!]
-  comentarios: [Comentario!]
-  reservas: [Reserva!]
-}
-
-# -----------------------------
-# Proveedor
-# -----------------------------
-type Proveedor {
-  id: UUID!
-  descripcion: String!
-  telefono: Float!
-  user: User
-  servicios: [Servicio!]
-}
-
-# -----------------------------
-# Categoria
-# -----------------------------
-type Categoria {
-  id: UUID!
-  nombre: String!
-  descripcion: String!
-  servicios: [Servicio!]
-}
-
-# -----------------------------
-# Servicio
-# -----------------------------
-type Servicio {
-  id: UUID!
-  proveedor: Proveedor!
-  categoria: Categoria!
-  nombre_servicio: String!
-  descripcion: String!
-  duracion: String!
-  calificaciones: [Calificacion!]
-  comentarios: [Comentario!]
-  fotos: [FotoServicio!]
-  ubicaciones: [ServicioUbicacion!]
-  reservas: [ReservaServicio!]
-}
-
-# -----------------------------
-# Calificacion
-# -----------------------------
-type Calificacion {
-  id: UUID!
-  cliente: Cliente!
-  servicio: Servicio!
-  fecha: Date!
-  puntuacion: Int!
-  comentario_extra: String
-}
-
-# -----------------------------
-# Comentario
-# -----------------------------
-type Comentario {
-  id: UUID!
-  cliente: Cliente!
-  servicio: Servicio!
-  titulo: String!
-  texto: String!
-  fecha: Date!
-}
-
-# -----------------------------
-# FotoServicio
-# -----------------------------
-type FotoServicio {
-  id: UUID!
-  servicio: Servicio!
-  url_foto: String!
-  descripcion: String
-}
-
-# -----------------------------
-# Reserva
-# -----------------------------
-type Reserva {
-  id: UUID!
-  cliente: Cliente!
-  fecha: Date!
-  hora: Time!
-  estado: String!
-  total_estimado: Float!
-  pagos: [Pago!]
-  reservaServicios: [ReservaServicio!]
-}
-
-# -----------------------------
-# ReservaServicio
-# -----------------------------
-type ReservaServicio {
-  id: UUID!
-  reserva: Reserva!
-  servicio: Servicio!
-  cantidad: Int!
-  precio_unitario: Float!
-  subtotal: Float!
-}
-
-# -----------------------------
-# Pago
-# -----------------------------
-type Pago {
-  id: UUID!
-  reserva: Reserva!
-  monto: Float!
-  metodo_pago: String!
-  estado: String!
-  referencia: String!
-  fecha_pago: Date!
-}
-
-# -----------------------------
-# Ubicacion
-# -----------------------------
+#Creacion de la tabla Ubicacion
 type Ubicacion {
-  id: UUID!
+  id: ID!
   direccion: String!
   ciudad: String!
   provincia: String!
   pais: String!
-  servicios: [ServicioUbicacion!]
-}
-
-# -----------------------------
-# ServicioUbicacion
-# -----------------------------
-type ServicioUbicacion {
-  id: UUID!
-  servicio: Servicio!
-  ubicacion: Ubicacion!
-}
-
-# -----------------------------
-# Queries y Mutations
-# -----------------------------
-type Query {
-  users: [User!]
+  createdAt: Time!
+  updatedAt: Time!
   clientes: [Cliente!]
   proveedores: [Proveedor!]
-  categorias: [Categoria!]
   servicios: [Servicio!]
-  calificaciones: [Calificacion!]
-  comentarios: [Comentario!]
-  fotosServicios: [FotoServicio!]
-  reservas: [Reserva!]
-  reservaServicios: [ReservaServicio!]
-  pagos: [Pago!]
-  ubicaciones: [Ubicacion!]
-  servicioUbicaciones: [ServicioUbicacion!]
 }
 
+#Creacion de la tabla Cliente
+type Cliente {
+  id: ID!
+  user: User!
+  telefono: String!
+  ubicacion: Ubicacion
+  createdAt: Time!
+  updatedAt: Time!
+  reservas: [Reserva!]
+  calificaciones: [Calificacion!]
+  comentarios: [Comentario!]
+}
+
+#Creacion de la tabla proveedor
+type Proveedor {
+  id: ID!
+  user: User!
+  telefono: String!
+  descripcion: String
+  ubicacion: Ubicacion
+  createdAt: Time!
+  updatedAt: Time!
+  servicios: [Servicio!]
+}
+
+#Creacion de la tabla categoria
+type Categoria {
+  id: ID!
+  nombre: String!
+  descripcion: String
+  createdAt: Time!
+  updatedAt: Time!
+  servicios: [Servicio!]
+}
+
+#Creacion de la tabla Servicio
+type Servicio {
+  id: ID!
+  proveedor: Proveedor!
+  categoria: Categoria!
+  nombreServicio: String!
+  descripcion: String
+  duracion: String
+  ratingPromedio: Float!
+  precio: Decimal!
+  ubicaciones: [Ubicacion!]
+  fotos: [FotoServicio!]
+  calificaciones: [Calificacion!]
+  comentarios: [Comentario!]
+  detallesReserva: [ReservaServicio!]
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+#Creacion de la tabla transaccional de Servicio y ubicacion
+type ServicioUbicacion {
+  id: ID!
+  servicio: Servicio!
+  ubicacion: Ubicacion!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+#Creacion de la tabla para la foto de los servicios
+type FotoServicio {
+  id: ID!
+  servicio: Servicio!
+  urlFoto: String!
+  descripcion: String
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+#Creacion de la tabla reserva
+type Reserva {
+  id: ID!
+  cliente: Cliente!
+  fecha: Date!
+  hora: String!
+  estado: String!
+  totalEstimado: Decimal!
+  detalles: [ReservaServicio!]
+  pagos: [Pago!]
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+#Creacion de la tabla transaccional de Reserva con Servicio
+type ReservaServicio {
+  id: ID!
+  reserva: Reserva!
+  servicio: Servicio!
+  cantidad: Int!
+  precioUnitario: Decimal!
+  subtotal: Decimal!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+#Creacion de la tabla Pago
+type Pago {
+  id: ID!
+  reserva: Reserva!
+  metodoPago: String!
+  monto: Decimal!
+  estado: String!
+  referencia: String
+  fechaPago: Time
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+#Creacion de la tabla Calificacion
+type Calificacion {
+  id: ID!
+  cliente: Cliente!
+  servicio: Servicio!
+  fecha: Time!
+  puntuacion: Int!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+#Creacion de la tabla Comentario
+type Comentario {
+  id: ID!
+  cliente: Cliente!
+  servicio: Servicio!
+  titulo: String!
+  texto: String!
+  respuesta: String
+  fecha: Time!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+# Parte de los inputs para los ingresos de cada tabla
+input UserInput {
+  username: String!
+  email: String!
+  firstName: String
+  lastName: String
+  rol: String!
+}
+
+input UbicacionInput {
+  direccion: String!
+  ciudad: String!
+  provincia: String!
+  pais: String!
+}
+
+input ClienteInput {
+  userId: ID!
+  telefono: String!
+  ubicacionId: ID
+}
+
+input ProveedorInput {
+  userId: ID!
+  telefono: String!
+  descripcion: String
+  ubicacionId: ID
+}
+
+input CategoriaInput {
+  nombre: String!
+  descripcion: String
+}
+
+input ServicioInput {
+  proveedorId: ID!
+  categoriaId: ID!
+  nombreServicio: String!
+  descripcion: String
+  duracion: String
+  ratingPromedio: Float
+  precio: Decimal
+}
+
+input FotoServicioInput {
+  servicioId: ID!
+  urlFoto: String!
+  descripcion: String
+}
+
+input ReservaInput {
+  clienteId: ID!
+  fecha: Date!
+  hora: String!
+  estado: String!
+  totalEstimado: Decimal!
+}
+
+input ReservaServicioInput {
+  reservaId: ID!
+  servicioId: ID!
+  cantidad: Int!
+  precioUnitario: Decimal!
+}
+
+input PagoInput {
+  reservaId: ID!
+  metodoPago: String!
+  monto: Decimal!
+  estado: String!
+  referencia: String
+  fechaPago: Time
+}
+
+input CalificacionInput {
+  clienteId: ID!
+  servicioId: ID!
+  puntuacion: Int!
+}
+
+input ComentarioInput {
+  clienteId: ID!
+  servicioId: ID!
+  titulo: String!
+  texto: String!
+  respuesta: String
+}
+
+input ServicioUbicacionInput {
+  servicioId: ID!
+  ubicacionId: ID!
+}
+
+#Parte de los inputs para crear las categorias
+input ServicioFilter {
+  categoriaId: ID
+  proveedorId: ID
+  ciudad: String
+  minRating: Float
+  precioMin: Decimal
+  precioMax: Decimal
+  q: String # búsqueda de texto libre (nombre, descripción)
+}
+
+input ReservaFilter {
+  clienteId: ID
+  estado: String
+  fechaDesde: Date
+  fechaHasta: Date
+}
+
+# Inputs y tipos para búsquedas avanzadas y ordenamiento
+input ServicioSearchInput {
+  q: String
+  categoriaId: ID
+  proveedorId: ID
+  ciudad: String
+  precioMin: Decimal
+  precioMax: Decimal
+  minRating: Float
+  tags: [String!]
+}
+
+enum ServicioSort {
+  RELEVANCIA
+  PRECIO_ASC
+  PRECIO_DESC
+  RATING_DESC
+  CREATED_AT_DESC
+}
+
+# Perfil de proveedor con métricas agregadas
+type ProveedorProfile {
+  proveedor: Proveedor!
+  totalServicios: Int!
+  ingresosTotales: Decimal!
+  promedioCalificacion: Float!
+  topServicios: [ServicioVendido!]!
+}
+
+input Pagination {
+  limit: Int
+  offset: Int
+}
+
+# Tipos para reportes analíticos
+type ReporteVentas {
+  periodo: String!
+  totalVentas: Decimal!
+  cantidadReservas: Int!
+  promedioPorReserva: Decimal!
+  serviciosMasVendidos: [ServicioVendido!]!
+}
+
+type ServicioVendido {
+  servicio: Servicio!
+  cantidadVendida: Int!
+  ingresosGenerados: Decimal!
+}
+
+type ReporteSatisfaccion {
+  servicio: Servicio!
+  promedioCalificacion: Float!
+  totalCalificaciones: Int!
+  distribucionCalificaciones: [DistribucionCalificacion!]!
+}
+
+type DistribucionCalificacion {
+  puntuacion: Int!
+  cantidad: Int!
+  porcentaje: Float!
+}
+
+type ReporteProveedor {
+  proveedor: Proveedor!
+  totalServicios: Int!
+  ingresosTotales: Decimal!
+  promedioCalificacion: Float!
+  serviciosActivos: Int!
+}
+
+type ReporteCliente {
+  cliente: Cliente!
+  totalReservas: Int!
+  gastoTotal: Decimal!
+  promedioPorReserva: Decimal!
+  ultimaReserva: Date
+}
+
+type MetricasGenerales {
+  totalUsuarios: Int!
+  totalProveedores: Int!
+  totalServicios: Int!
+  totalReservas: Int!
+  ingresosTotales: Decimal!
+  promedioSatisfaccion: Float!
+}
+
+# Filtros para reportes
+input ReporteFilter {
+  fechaDesde: Date
+  fechaHasta: Date
+  categoriaId: ID
+  proveedorId: ID
+  ciudad: String
+  estadoReserva: String
+}
+
+input MetricasFilter {
+  fechaDesde: Date
+  fechaHasta: Date
+  agruparPor: AgrupacionTipo
+}
+
+enum AgrupacionTipo {
+  DIA
+  SEMANA
+  MES
+  ANO
+}
+
+type PuntoTendencia {
+  fecha: String!
+  valor: Float!
+  etiqueta: String
+}
+
+# Query con la clase de limitacion que se creo antes para el limite
+type Query {
+  users(pagination: Pagination): [User!]!
+  user(id: ID!): User
+
+  ubicaciones(pagination: Pagination): [Ubicacion!]!
+  ubicacion(id: ID!): Ubicacion
+
+  clientes(pagination: Pagination): [Cliente!]!
+  cliente(id: ID!): Cliente
+
+  proveedores(pagination: Pagination): [Proveedor!]!
+  proveedor(id: ID!): Proveedor
+
+  categorias(pagination: Pagination): [Categoria!]!
+  categoria(id: ID!): Categoria
+
+  servicios(filter: ServicioFilter, pagination: Pagination): [Servicio!]!
+  servicio(id: ID!): Servicio
+
+  reservas(filter: ReservaFilter, pagination: Pagination): [Reserva!]!
+  reserva(id: ID!): Reserva
+
+  pagos(pagination: Pagination): [Pago!]!
+  pago(id: ID!): Pago
+
+  calificaciones(pagination: Pagination): [Calificacion!]!
+  comentarios(pagination: Pagination): [Comentario!]!
+
+  # Reportes analíticos
+  reporteVentas(filter: ReporteFilter): ReporteVentas!
+  reporteSatisfaccion(filter: ReporteFilter): [ReporteSatisfaccion!]!
+  reporteProveedores(filter: ReporteFilter): [ReporteProveedor!]!
+  reporteClientes(filter: ReporteFilter): [ReporteCliente!]!
+  metricasGenerales(filter: MetricasFilter): MetricasGenerales!
+  
+  # Consultas optimizadas
+  serviciosMasPopulares(limit: Int): [ServicioVendido!]!
+  proveedoresMejorCalificados(limit: Int): [ReporteProveedor!]!
+  clientesMasActivos(limit: Int): [ReporteCliente!]!
+  
+  # Análisis de tendencias
+  tendenciasVentas(filter: MetricasFilter): [PuntoTendencia!]!
+  tendenciasSatisfaccion(filter: MetricasFilter): [PuntoTendencia!]!
+}
+
+# Consultas avanzadas: búsquedas combinadas, perfiles con métricas y reservas por proveedor
+extend type Query {
+  searchServicios(input: ServicioSearchInput, filter: ServicioFilter, pagination: Pagination, sort: ServicioSort): [Servicio!]!
+
+  serviciosBusquedaAvanzada(input: ServicioSearchInput, pagination: Pagination, sort: ServicioSort): [Servicio!]!
+
+  proveedorPerfil(id: ID!): ProveedorProfile!
+
+  reservasPorProveedor(proveedorId: ID!, filter: ReservaFilter, pagination: Pagination): [Reserva!]!
+}
+
+# Mutaciones para crear cada dato dentro de nuestro modelo
 type Mutation {
-  # Ejemplo de mutations básicas
-  createUser(username: String!, password: String!, email: String!, rol: String!): User!
-  createCliente(user_id: UUID!, telefono: Float!): Cliente!
-  createProveedor(user_id: UUID, descripcion: String!, telefono: Float!): Proveedor!
-  createCategoria(nombre: String!, descripcion: String!): Categoria!
-  createServicio(proveedor_id: UUID!, categoria_id: UUID!, nombre_servicio: String!, descripcion: String!, duracion: String!): Servicio!
+  createUser(input: UserInput!): User!
+  updateUser(id: ID!, input: UserInput!): User!
+  deleteUser(id: ID!): Boolean!
+
+  createUbicacion(input: UbicacionInput!): Ubicacion!
+  updateUbicacion(id: ID!, input: UbicacionInput!): Ubicacion!
+  deleteUbicacion(id: ID!): Boolean!
+
+  createCliente(input: ClienteInput!): Cliente!
+  updateCliente(id: ID!, input: ClienteInput!): Cliente!
+  deleteCliente(id: ID!): Boolean!
+
+  createProveedor(input: ProveedorInput!): Proveedor!
+  updateProveedor(id: ID!, input: ProveedorInput!): Proveedor!
+  deleteProveedor(id: ID!): Boolean!
+
+  createCategoria(input: CategoriaInput!): Categoria!
+  updateCategoria(id: ID!, input: CategoriaInput!): Categoria!
+  deleteCategoria(id: ID!): Boolean!
+
+  createServicio(input: ServicioInput!): Servicio!
+  updateServicio(id: ID!, input: ServicioInput!): Servicio!
+  deleteServicio(id: ID!): Boolean!
+
+  createFotoServicio(input: FotoServicioInput!): FotoServicio!
+  updateFotoServicio(id: ID!, input: FotoServicioInput!): FotoServicio!
+  deleteFotoServicio(id: ID!): Boolean!
+
+  createReserva(input: ReservaInput!): Reserva!
+  updateReserva(id: ID!, input: ReservaInput!): Reserva!
+  deleteReserva(id: ID!): Boolean!
+
+  createReservaServicio(input: ReservaServicioInput!): ReservaServicio!
+  updateReservaServicio(id: ID!, input: ReservaServicioInput!): ReservaServicio!
+  deleteReservaServicio(id: ID!): Boolean!
+
+  createPago(input: PagoInput!): Pago!
+  updatePago(id: ID!, input: PagoInput!): Pago!
+  deletePago(id: ID!): Boolean!
+
+  createCalificacion(input: CalificacionInput!): Calificacion!
+  updateCalificacion(id: ID!, input: CalificacionInput!): Calificacion!
+  deleteCalificacion(id: ID!): Boolean!
+
+  createComentario(input: ComentarioInput!): Comentario!
+  updateComentario(id: ID!, input: ComentarioInput!): Comentario!
+  deleteComentario(id: ID!): Boolean!
+
+  createServicioUbicacion(input: ServicioUbicacionInput!): ServicioUbicacion!
+  updateServicioUbicacion(id: ID!, input: ServicioUbicacionInput!): ServicioUbicacion!
+  deleteServicioUbicacion(id: ID!): Boolean!
 }

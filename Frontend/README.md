@@ -1,69 +1,31 @@
-# React + TypeScript + Vite
+# Frontend – React + Vite (lo que yo hago para correrlo)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Qué hace
+- Inicia sesión contra la API de Django.
+- Almacena el token en localStorage y consume endpoints protegidos.
+- (Opcional) Se puede conectar al WebSocket para recibir notificaciones en tiempo real.
 
-Currently, two official plugins are available:
+## Requisitos
+- Node 18+ recomendado
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Arranque
+```bash
+cd Frontend
+npm install
+npm run dev
 ```
+- Abrir: `http://localhost:5173`
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Flujo de uso
+1) Me registro o hago login → obtengo `token`.
+2) El frontend guarda `token` en localStorage.
+3) Con ese `token` consumo endpoints (ej: reservas, servicios).
+4) (Opcional) Activo el cliente WebSocket para recibir eventos (reservas/pagos/comentarios).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Activar WebSocket (opcional)
+- Crear `src/context/SocketProvider.tsx` con una conexión via `socket.io-client` que:
+  - Envíe `authenticate` con `{ token, userId, role }`
+  - Escuche `event` y muestre notificaciones del navegador.
+- Envolver la app con `<SocketProvider>` en `src/main.tsx`.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Con eso el frontend queda “escuchando” lo que re-emite NestJS cuando Django dispara señales.

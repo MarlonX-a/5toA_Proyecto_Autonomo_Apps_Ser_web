@@ -10,7 +10,7 @@ export const config = {
 
   // Configuración de la API de Django
   django: {
-    baseUrl: 'http://localhost:8000/api/v1/',
+    baseUrl: 'http://localhost:8000/api_rest/',
     timeout: 10000,
   },
 

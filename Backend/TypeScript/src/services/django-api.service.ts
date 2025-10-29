@@ -8,7 +8,7 @@ export class DjangoApiService {
 
   constructor() {
     this.apiClient = axios.create({
-      baseURL: 'http://localhost:8000/api/v1/', // URL de tu API Django
+      baseURL: 'http://localhost:8000/api_rest/', // URL de tu API Django
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',

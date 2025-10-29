@@ -21,5 +21,5 @@ urlpatterns = [
     re_path('login/', views.LoginView.as_view()),
     re_path('register/', views.RegisterView.as_view()),
     re_path('profile/', views.ProfileView.as_view()),
-    path('api/v1/', include(routers.urls)),
+    path('', include(routers.urls)),
  ]

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUsers } from "../../api/usersApi";
-import { deleteServicio, getServicioByProveedor } from "../../api/servicio";
+import { deleteServicio } from "../../api/servicio";
 import type { Iservicio } from "../../interfaces/servicio";
+import { graphQLRequest } from "../../api/graphql";
+import { QUERY_SERVICIOS } from "../../api/graphqlQueries";
 
 export function ServiciosProveedor() {
   const [servicios, setServicios] = useState<Iservicio[]>([]);
@@ -29,9 +31,22 @@ export function ServiciosProveedor() {
         }
         const proveedorId = perfilRes.data.id;
 
-        // Obtener servicios del proveedor
-        const serviciosRes = await getServicioByProveedor(proveedorId, token);
-        setServicios(serviciosRes.data);
+        // Obtener servicios del proveedor via GraphQL
+        const data = await graphQLRequest<{ servicios: any[] }>({
+          query: QUERY_SERVICIOS,
+          variables: { filter: { proveedorId }, pagination: { limit: 50, offset: 0 } },
+          token,
+        });
+        const mapped: Iservicio[] = (data.servicios || []).map((s) => ({
+          id: s.id,
+          categoria: { id: s.categoria?.id, nombre: s.categoria?.nombre },
+          nombre_servicio: s.nombreServicio,
+          descripcion: s.descripcion ?? null,
+          duracion: s.duracion ?? null,
+          rating_promedio: s.ratingPromedio ?? 0,
+          precio: Number(s.precio ?? 0),
+        }));
+        setServicios(mapped);
       } catch (err) {
         console.error("Error al cargar los servicios: ", err);
         setError("No se pudieron cargar los servicios");

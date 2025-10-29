@@ -19,6 +19,7 @@ import { Calificaciones } from './pages/Cliente/Calificaciones';
 import { Ubicaciones } from './pages/Proveedor/Ubicaciones';
 import { ReservaServicio } from './pages/Cliente/ReservaServicio';
 import { ServicioReservaList } from './pages/Cliente/ServicioReservaList';
+import { CategoriasCliente } from './pages/Cliente/Categorias';
 
 function App() {
 
@@ -47,6 +48,7 @@ function App() {
           <Route path='/todos-servicios/:servicio_id/calificaciones' element={<Calificaciones />} />
           <Route path='/todos-servicios/:servicio_id/reservaServicio' element={<ReservaServicio />} />
           <Route path='/servicios/reserva-list/reservados/:reserva_id/:id' element={<ReservaServicio />} />
+          <Route path="/categorias" element={<CategoriasCliente />} />
 
         </Routes>
         

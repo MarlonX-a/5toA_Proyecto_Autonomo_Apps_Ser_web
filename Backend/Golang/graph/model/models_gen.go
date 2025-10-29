@@ -11,7 +11,7 @@ import (
 )
 
 type Calificacion struct {
-	ID         string    `json:"id"`
+	ID         int32     `json:"id"`
 	Cliente    *Cliente  `json:"cliente"`
 	Servicio   *Servicio `json:"servicio"`
 	Fecha      time.Time `json:"fecha"`
@@ -21,13 +21,13 @@ type Calificacion struct {
 }
 
 type CalificacionInput struct {
-	ClienteID  string `json:"clienteId"`
-	ServicioID string `json:"servicioId"`
-	Puntuacion int32  `json:"puntuacion"`
+	ClienteID  int32 `json:"clienteId"`
+	ServicioID int32 `json:"servicioId"`
+	Puntuacion int32 `json:"puntuacion"`
 }
 
 type Categoria struct {
-	ID          string      `json:"id"`
+	ID          int32       `json:"id"`
 	Nombre      string      `json:"nombre"`
 	Descripcion *string     `json:"descripcion,omitempty"`
 	CreatedAt   time.Time   `json:"createdAt"`
@@ -41,7 +41,7 @@ type CategoriaInput struct {
 }
 
 type Cliente struct {
-	ID             string          `json:"id"`
+	ID             int32           `json:"id"`
 	User           *User           `json:"user"`
 	Telefono       string          `json:"telefono"`
 	Ubicacion      *Ubicacion      `json:"ubicacion,omitempty"`
@@ -53,13 +53,13 @@ type Cliente struct {
 }
 
 type ClienteInput struct {
-	UserID      string  `json:"userId"`
-	Telefono    string  `json:"telefono"`
-	UbicacionID *string `json:"ubicacionId,omitempty"`
+	UserID      int32  `json:"userId"`
+	Telefono    string `json:"telefono"`
+	UbicacionID *int32 `json:"ubicacionId,omitempty"`
 }
 
 type Comentario struct {
-	ID        string    `json:"id"`
+	ID        int32     `json:"id"`
 	Cliente   *Cliente  `json:"cliente"`
 	Servicio  *Servicio `json:"servicio"`
 	Titulo    string    `json:"titulo"`
@@ -71,8 +71,8 @@ type Comentario struct {
 }
 
 type ComentarioInput struct {
-	ClienteID  string  `json:"clienteId"`
-	ServicioID string  `json:"servicioId"`
+	ClienteID  int32   `json:"clienteId"`
+	ServicioID int32   `json:"servicioId"`
 	Titulo     string  `json:"titulo"`
 	Texto      string  `json:"texto"`
 	Respuesta  *string `json:"respuesta,omitempty"`
@@ -85,7 +85,7 @@ type DistribucionCalificacion struct {
 }
 
 type FotoServicio struct {
-	ID          string    `json:"id"`
+	ID          int32     `json:"id"`
 	Servicio    *Servicio `json:"servicio"`
 	URLFoto     string    `json:"urlFoto"`
 	Descripcion *string   `json:"descripcion,omitempty"`
@@ -94,7 +94,7 @@ type FotoServicio struct {
 }
 
 type FotoServicioInput struct {
-	ServicioID  string  `json:"servicioId"`
+	ServicioID  int32   `json:"servicioId"`
 	URLFoto     string  `json:"urlFoto"`
 	Descripcion *string `json:"descripcion,omitempty"`
 }
@@ -123,7 +123,7 @@ type Pagination struct {
 }
 
 type Pago struct {
-	ID         string     `json:"id"`
+	ID         int32      `json:"id"`
 	Reserva    *Reserva   `json:"reserva"`
 	MetodoPago string     `json:"metodoPago"`
 	Monto      string     `json:"monto"`
@@ -135,7 +135,7 @@ type Pago struct {
 }
 
 type PagoInput struct {
-	ReservaID  string     `json:"reservaId"`
+	ReservaID  int32      `json:"reservaId"`
 	MetodoPago string     `json:"metodoPago"`
 	Monto      string     `json:"monto"`
 	Estado     string     `json:"estado"`
@@ -144,7 +144,7 @@ type PagoInput struct {
 }
 
 type Proveedor struct {
-	ID          string      `json:"id"`
+	ID          int32       `json:"id"`
 	User        *User       `json:"user"`
 	Telefono    string      `json:"telefono"`
 	Descripcion *string     `json:"descripcion,omitempty"`
@@ -155,18 +155,10 @@ type Proveedor struct {
 }
 
 type ProveedorInput struct {
-	UserID      string  `json:"userId"`
+	UserID      int32   `json:"userId"`
 	Telefono    string  `json:"telefono"`
 	Descripcion *string `json:"descripcion,omitempty"`
-	UbicacionID *string `json:"ubicacionId,omitempty"`
-}
-
-type ProveedorProfile struct {
-	Proveedor            *Proveedor         `json:"proveedor"`
-	TotalServicios       int32              `json:"totalServicios"`
-	IngresosTotales      string             `json:"ingresosTotales"`
-	PromedioCalificacion float64            `json:"promedioCalificacion"`
-	TopServicios         []*ServicioVendido `json:"topServicios"`
+	UbicacionID *int32  `json:"ubicacionId,omitempty"`
 }
 
 type PuntoTendencia struct {
@@ -189,8 +181,8 @@ type ReporteCliente struct {
 type ReporteFilter struct {
 	FechaDesde    *string `json:"fechaDesde,omitempty"`
 	FechaHasta    *string `json:"fechaHasta,omitempty"`
-	CategoriaID   *string `json:"categoriaId,omitempty"`
-	ProveedorID   *string `json:"proveedorId,omitempty"`
+	CategoriaID   *int32  `json:"categoriaId,omitempty"`
+	ProveedorID   *int32  `json:"proveedorId,omitempty"`
 	Ciudad        *string `json:"ciudad,omitempty"`
 	EstadoReserva *string `json:"estadoReserva,omitempty"`
 }
@@ -219,7 +211,7 @@ type ReporteVentas struct {
 }
 
 type Reserva struct {
-	ID            string             `json:"id"`
+	ID            int32              `json:"id"`
 	Cliente       *Cliente           `json:"cliente"`
 	Fecha         string             `json:"fecha"`
 	Hora          string             `json:"hora"`
@@ -232,14 +224,14 @@ type Reserva struct {
 }
 
 type ReservaFilter struct {
-	ClienteID  *string `json:"clienteId,omitempty"`
+	ClienteID  *int32  `json:"clienteId,omitempty"`
 	Estado     *string `json:"estado,omitempty"`
 	FechaDesde *string `json:"fechaDesde,omitempty"`
 	FechaHasta *string `json:"fechaHasta,omitempty"`
 }
 
 type ReservaInput struct {
-	ClienteID     string `json:"clienteId"`
+	ClienteID     int32  `json:"clienteId"`
 	Fecha         string `json:"fecha"`
 	Hora          string `json:"hora"`
 	Estado        string `json:"estado"`
@@ -247,7 +239,7 @@ type ReservaInput struct {
 }
 
 type ReservaServicio struct {
-	ID             string    `json:"id"`
+	ID             int32     `json:"id"`
 	Reserva        *Reserva  `json:"reserva"`
 	Servicio       *Servicio `json:"servicio"`
 	Cantidad       int32     `json:"cantidad"`
@@ -258,14 +250,14 @@ type ReservaServicio struct {
 }
 
 type ReservaServicioInput struct {
-	ReservaID      string `json:"reservaId"`
-	ServicioID     string `json:"servicioId"`
+	ReservaID      int32  `json:"reservaId"`
+	ServicioID     int32  `json:"servicioId"`
 	Cantidad       int32  `json:"cantidad"`
 	PrecioUnitario string `json:"precioUnitario"`
 }
 
 type Servicio struct {
-	ID              string             `json:"id"`
+	ID              int32              `json:"id"`
 	Proveedor       *Proveedor         `json:"proveedor"`
 	Categoria       *Categoria         `json:"categoria"`
 	NombreServicio  string             `json:"nombreServicio"`
@@ -283,8 +275,8 @@ type Servicio struct {
 }
 
 type ServicioFilter struct {
-	CategoriaID *string  `json:"categoriaId,omitempty"`
-	ProveedorID *string  `json:"proveedorId,omitempty"`
+	CategoriaID *int32   `json:"categoriaId,omitempty"`
+	ProveedorID *int32   `json:"proveedorId,omitempty"`
 	Ciudad      *string  `json:"ciudad,omitempty"`
 	MinRating   *float64 `json:"minRating,omitempty"`
 	PrecioMin   *string  `json:"precioMin,omitempty"`
@@ -293,8 +285,8 @@ type ServicioFilter struct {
 }
 
 type ServicioInput struct {
-	ProveedorID    string   `json:"proveedorId"`
-	CategoriaID    string   `json:"categoriaId"`
+	ProveedorID    int32    `json:"proveedorId"`
+	CategoriaID    int32    `json:"categoriaId"`
 	NombreServicio string   `json:"nombreServicio"`
 	Descripcion    *string  `json:"descripcion,omitempty"`
 	Duracion       *string  `json:"duracion,omitempty"`
@@ -304,8 +296,8 @@ type ServicioInput struct {
 
 type ServicioSearchInput struct {
 	Q           *string  `json:"q,omitempty"`
-	CategoriaID *string  `json:"categoriaId,omitempty"`
-	ProveedorID *string  `json:"proveedorId,omitempty"`
+	CategoriaID *int32   `json:"categoriaId,omitempty"`
+	ProveedorID *int32   `json:"proveedorId,omitempty"`
 	Ciudad      *string  `json:"ciudad,omitempty"`
 	PrecioMin   *string  `json:"precioMin,omitempty"`
 	PrecioMax   *string  `json:"precioMax,omitempty"`
@@ -314,7 +306,7 @@ type ServicioSearchInput struct {
 }
 
 type ServicioUbicacion struct {
-	ID        string     `json:"id"`
+	ID        int32      `json:"id"`
 	Servicio  *Servicio  `json:"servicio"`
 	Ubicacion *Ubicacion `json:"ubicacion"`
 	CreatedAt time.Time  `json:"createdAt"`
@@ -322,8 +314,8 @@ type ServicioUbicacion struct {
 }
 
 type ServicioUbicacionInput struct {
-	ServicioID  string `json:"servicioId"`
-	UbicacionID string `json:"ubicacionId"`
+	ServicioID  int32 `json:"servicioId"`
+	UbicacionID int32 `json:"ubicacionId"`
 }
 
 type ServicioVendido struct {
@@ -333,7 +325,7 @@ type ServicioVendido struct {
 }
 
 type Ubicacion struct {
-	ID          string       `json:"id"`
+	ID          int32        `json:"id"`
 	Direccion   string       `json:"direccion"`
 	Ciudad      string       `json:"ciudad"`
 	Provincia   string       `json:"provincia"`
@@ -353,7 +345,7 @@ type UbicacionInput struct {
 }
 
 type User struct {
-	ID        string     `json:"id"`
+	ID        int32      `json:"id"`
 	Username  string     `json:"username"`
 	Email     string     `json:"email"`
 	FirstName *string    `json:"firstName,omitempty"`

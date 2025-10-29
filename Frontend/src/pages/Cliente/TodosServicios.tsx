@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getAllServicios } from "../../api/servicio";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import type { Iservicio } from "../../interfaces/servicio";
+import { graphQLRequest } from "../../api/graphql";
+import { QUERY_SERVICIOS } from "../../api/graphqlQueries";
 import "../../App.css";
 
 export function ServiciosCliente() {
@@ -9,6 +10,7 @@ export function ServiciosCliente() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,18 +23,38 @@ export function ServiciosCliente() {
       }
 
       try {
-        const res = await getAllServicios(token);
-        setServicios(res.data);
+        const categoriaParam = searchParams.get("categoria");
+        const categoriaId = categoriaParam ? Number(categoriaParam) : undefined;
+        const data = await graphQLRequest<{ servicios: any[] }>({
+          query: QUERY_SERVICIOS,
+          variables: {
+            filter: categoriaId ? { categoriaId } : null,
+            pagination: { limit: 50, offset: 0 },
+          },
+          token,
+        });
+
+        const mapped: Iservicio[] = (data.servicios || []).map((s) => ({
+          id: s.id,
+          categoria: { id: s.categoria?.id, nombre: s.categoria?.nombre },
+          nombre_servicio: s.nombreServicio,
+          descripcion: s.descripcion ?? null,
+          duracion: s.duracion ?? null,
+          rating_promedio: s.ratingPromedio ?? 0,
+          precio: Number(s.precio ?? 0),
+        }));
+
+        setServicios(mapped);
       } catch (err) {
         console.error("Error al cargar los servicios: ", err);
-        setError("No se pudieron cargar los servicios");
+        setError("No se pudieron cargar los servicios desde GraphQL");
       } finally {
         setLoading(false);
       }
     }
 
     loadServicios();
-  }, []);
+  }, [searchParams]);
 
   if (loading) return <p style={{ textAlign: "center" }}>Cargando servicios...</p>;
   if (error) return <p style={{ color: "#f44336", textAlign: "center" }}>{error}</p>;

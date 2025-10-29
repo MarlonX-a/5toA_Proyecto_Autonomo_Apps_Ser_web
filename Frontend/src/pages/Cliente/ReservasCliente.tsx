@@ -1,10 +1,11 @@
-import { getReservasByCliente } from "../../api/reserva";
 import { getUsers } from "../../api/usersApi";
 import { updateReserva } from "../../api/reserva"; // función PUT
 import type { Ireserva } from "../../interfaces/reserva";
 import { useEffect, useState } from "react";
 import "../../App.css";
 import { useNavigate } from "react-router-dom";
+import { graphQLRequest } from "../../api/graphql";
+import { QUERY_RESERVAS } from "../../api/graphqlQueries";
 
 export function ReservasCliente() {
   const [reservas, setReservas] = useState<Ireserva[]>([]);
@@ -25,8 +26,23 @@ export function ReservasCliente() {
         const perfilRes = await getUsers(token);
         const clienteId = perfilRes.data.id;
 
-        const reservasRes = await getReservasByCliente(clienteId, token);
-        setReservas(reservasRes.data);
+        const data = await graphQLRequest<{ reservas: any[] }>({
+          query: QUERY_RESERVAS,
+          variables: { filter: { clienteId }, pagination: { limit: 50, offset: 0 } },
+          token,
+        });
+
+        const mapped: Ireserva[] = (data.reservas || []).map((r) => ({
+          id: r.id,
+          cliente: {} as any, // no requerido en UI actual
+          fecha: r.fecha,
+          hora: r.hora,
+          estado: r.estado,
+          total_estimado: Number(r.totalEstimado ?? 0),
+          detalles: [],
+        }));
+
+        setReservas(mapped);
       } catch (err) {
         console.error("Error al cargar las reservas: ", err);
         setError("No se pudieron cargar las reservas");

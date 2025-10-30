@@ -11,7 +11,7 @@
 - pip
 
 ## Instalación rápida
-```bash
+```bash 
 cd Backend/Python
 pip install -r requirements.txt
 python manage.py migrate

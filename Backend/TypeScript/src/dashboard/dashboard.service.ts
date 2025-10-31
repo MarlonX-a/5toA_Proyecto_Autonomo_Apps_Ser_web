@@ -102,13 +102,17 @@ export class DashboardService {
   }
 
   async getApiIntegrationStatus() {
+    // En lugar de verificar un token (que genera 401 si es inválido),
+    // hacemos un ping al root público de DRF para validar conectividad.
     try {
-      // Intentar hacer una llamada simple a la API de Django
-      const testResponse = await this.djangoApi.verifyToken('test-token');
+      const res = await fetch('http://127.0.0.1:8000/api_rest/api/v1/')
+        .then(r => ({ ok: r.ok, status: r.status }))
+        .catch(() => ({ ok: false, status: 0 }));
+
       return {
-        status: 'connected',
+        status: res.ok ? 'connected' : 'disconnected',
         lastCheck: new Date().toISOString(),
-        responseTime: '< 100ms', // Podrías medir esto realmente
+        httpStatus: res.status,
       };
     } catch (error: any) {
       return {

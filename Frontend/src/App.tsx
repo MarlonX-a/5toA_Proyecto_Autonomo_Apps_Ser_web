@@ -20,6 +20,8 @@ import { Ubicaciones } from './pages/Proveedor/Ubicaciones';
 import { ReservaServicio } from './pages/Cliente/ReservaServicio';
 import { ServicioReservaList } from './pages/Cliente/ServicioReservaList';
 import { CategoriasCliente } from './pages/Cliente/Categorias';
+import Dashboard from './pages/Dashboard';
+import DashboardProveedor from './pages/Proveedor/DashboardProveedor';
 
 function App() {
 
@@ -49,6 +51,8 @@ function App() {
           <Route path='/todos-servicios/:servicio_id/reservaServicio' element={<ReservaServicio />} />
           <Route path='/servicios/reserva-list/reservados/:reserva_id/:id' element={<ReservaServicio />} />
           <Route path="/categorias" element={<CategoriasCliente />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/proveedor/dashboard" element={<DashboardProveedor />} />
 
         </Routes>
         

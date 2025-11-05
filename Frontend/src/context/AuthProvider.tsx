@@ -2,9 +2,11 @@ import { useState, type  ReactNode, useEffect } from 'react';
 import { AuthContext } from './AuthContext';
 import { getUsers } from '../api/usersApi';
 import { authenticateSocket, disconnectSocket } from '../websocket/socket';
+import { useNavigate } from 'react-router-dom';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [token, setToken] = useState<string | null>(null);
+    const navigate = useNavigate();
     
     useEffect(() => {
         const savedToken = localStorage.getItem('token');
@@ -20,6 +22,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const { id, rol } = profileRes.data as { id: number; rol: 'cliente' | 'proveedor' | 'admin' | null };
             if (id && rol && (rol === 'cliente' || rol === 'proveedor' || rol === 'admin')) {
                 await authenticateSocket({ token: newToken, userId: String(id), role: rol });
+            }
+            // Redirigir al dashboard de proveedor si aplica
+            if (rol === 'proveedor') {
+                navigate('/proveedor/dashboard');
             }
         } catch (e) {
             // Silenciar errores de auth WS para no romper la UX de login

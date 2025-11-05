@@ -9,6 +9,7 @@ export function Navbar(){
         <nav className='navbar'>
             <ul>
                 <li><Link to='/'>Inicio</Link></li>
+                <li><Link to='/dashboard'>Dashboard</Link></li>
                 <div className='right'>
                     {!token ? (
                         <>
@@ -17,6 +18,7 @@ export function Navbar(){
                         </>
                     ):(
                         <>
+                            <li><Link to='/proveedor/dashboard'>Panel Proveedor</Link></li>
                             <li><Link to='/' onClick={logout}>Cerrar Sesión</Link></li>
                             <li><Link to='/profile'>Perfil</Link></li>
                         </>

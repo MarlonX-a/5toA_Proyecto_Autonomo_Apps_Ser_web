@@ -80,7 +80,13 @@ export function ServiciosProveedor() {
     return <p style={{ color: "#f44336", textAlign: "center" }}>{error}</p>;
 
   if (servicios.length === 0)
-    return <p style={{ textAlign: "center" }}>No tienes servicios registrados</p>;
+    return (
+      <>
+        <p style={{ textAlign: "center" }}>No tienes servicios registrados</p>
+        <br />
+        <button onClick={() => navigate("/crear-nuevo-servicio")}>Agregar servicios</button>
+      </>
+    ) 
 
   return (
     <div style={{ maxWidth: "800px", margin: "2rem auto" }}>

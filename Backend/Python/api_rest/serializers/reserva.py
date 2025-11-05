@@ -14,7 +14,7 @@ class ReservaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate_cliente(self, value):
-        if not value or models.Cliente.objects.filter(id=value.id).exists():
+        if not value or not models.Cliente.objects.filter(id=value.id).exists():
             raise serializers.ValidationError("El cliente no existe.")
         return value
     

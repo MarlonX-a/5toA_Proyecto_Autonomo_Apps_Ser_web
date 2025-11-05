@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type { Iubicacion } from "../../interfaces/ubicacion";
 import { createUbicacion, deleteUbicacion, updateUbicacion } from "../../api/ubicacion";
 import { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ export function Ubicaciones() {
   const [servicioUbicaciones, setServicioUbicaciones] = useState<IservicioUbicacion[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
 
@@ -187,6 +188,7 @@ export function Ubicaciones() {
           style={{ width: "100%", marginBottom: "0.5rem" }}
         />
         <button onClick={handleCreate}>Agregar Ubicación</button>
+        <button onClick={() => navigate("/mis-servicios")}>terminar</button>
       </div>
 
       {/* Listado de ubicaciones */}

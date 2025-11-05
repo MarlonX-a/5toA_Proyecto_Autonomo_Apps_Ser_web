@@ -49,11 +49,13 @@ export function ReservaPage() {
 
     const reservaData = {
       cliente_id: cliente.id,
-      fecha: data.fecha,
+      fecha: new Date(data.fecha as string).toISOString().split("T")[0], // ✅ "YYYY-MM-DD"
       hora: horaFormateada,
       total_estimado: Number(total) || 0, // si da error, usa 0
       estado: "pendiente",
     };
+
+    console.log("Datos de reserva a enviar:", reservaData);
 
     try {
       await createReserva(reservaData, token);

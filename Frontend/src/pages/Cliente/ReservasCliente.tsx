@@ -82,7 +82,7 @@ export function ReservasCliente() {
       <h2 style={{ marginBottom: "1rem" }}>Mis Reservas</h2>
 
       {reservas.length === 0 ? (
-        <p style={{ textAlign: "center" }}>No tienes reservas registradas</p>
+          <p style={{ textAlign: "center" }}>No tienes reservas registradas</p>
       ) : (
         <div className="card-container">
           {reservas.map((reserva) => (
@@ -122,9 +122,10 @@ export function ReservasCliente() {
               )}
             </div>
           ))}
-          <button type="button" onClick={() => navigate("/servicios/reserva/form")}>Agregar reservas</button>
+
         </div>
       )}
+                <button type="button" onClick={() => navigate("/servicios/reserva/form")}>Agregar reservas</button>
     </div>
   );
 }

@@ -5,6 +5,8 @@ import { deleteServicio } from "../../api/servicio";
 import type { Iservicio } from "../../interfaces/servicio";
 import { graphQLRequest } from "../../api/graphql";
 import { QUERY_SERVICIOS } from "../../api/graphqlQueries";
+import { Trash2, Edit3, Image, MapPin, Plus } from "lucide-react";
+
 
 export function ServiciosProveedor() {
   const [servicios, setServicios] = useState<Iservicio[]>([]);
@@ -22,7 +24,6 @@ export function ServiciosProveedor() {
       }
 
       try {
-        // Obtener el proveedor autenticado
         const perfilRes = await getUsers(token);
         if (perfilRes.data.rol !== "proveedor") {
           setError("El usuario no tiene rol de proveedor");
@@ -31,12 +32,12 @@ export function ServiciosProveedor() {
         }
         const proveedorId = perfilRes.data.id;
 
-        // Obtener servicios del proveedor via GraphQL
         const data = await graphQLRequest<{ servicios: any[] }>({
           query: QUERY_SERVICIOS,
           variables: { filter: { proveedorId }, pagination: { limit: 50, offset: 0 } },
           token,
         });
+
         const mapped: Iservicio[] = (data.servicios || []).map((s) => ({
           id: s.id,
           categoria: { id: s.categoria?.id, nombre: s.categoria?.nombre },
@@ -72,7 +73,7 @@ export function ServiciosProveedor() {
       console.error("Error al eliminar el servicio: ", err);
       alert("No se pudo eliminar el servicio");
     }
-  }
+  };
 
   if (loading)
     return <p style={{ textAlign: "center" }}>Cargando servicios...</p>;
@@ -81,45 +82,48 @@ export function ServiciosProveedor() {
 
   if (servicios.length === 0)
     return (
-      <>
-        <p style={{ textAlign: "center" }}>No tienes servicios registrados</p>
-        <br />
-        <button onClick={() => navigate("/crear-nuevo-servicio")}>Agregar servicios</button>
-      </>
-    ) 
+      <div className="empty-container">
+        <p>No tienes servicios registrados</p>
+        <button className="add-btn" onClick={() => navigate("/crear-nuevo-servicio")}>
+          <Plus size={18} style={{ marginRight: 6 }} /> Agregar servicios
+        </button>
+      </div>
+    );
 
   return (
-    <div style={{ maxWidth: "800px", margin: "2rem auto" }}>
-      <h2>Mis Servicios</h2>
-      <div className="card-container">
+    <div className="servicios-container">
+      <h2 className="servicios-title">Mis Servicios</h2>
+      <div className="servicios-grid">
         {servicios.map((servicio) => (
-          <div
-            key={servicio.id}
-            className="card"
-            style={{ marginBottom: "1rem", padding: "1rem", border: "1px solid #ccc", borderRadius: "8px" }}
-          >
-            <h3>{servicio.nombre_servicio}</h3>
-            <p>{servicio.descripcion}</p>
-            <p>Duración: {servicio.duracion}</p>
-            <p>Rating: {servicio.rating_promedio}</p>
-            <button onClick={() => navigate(`/crear-nuevo-servicio/agregar-fotos/${servicio.id}`)}>
-              Ver fotos
-            </button>
-            <button onClick={() => navigate(`/crear-nuevo-servicio/ubicaciones/${servicio.id}`)} style={{ marginLeft: "1rem" }}>
-              Ver Ubicaciones
-            </button>
-            <br />
-            <br />
-            <button onClick={() => navigate(`/crear-nuevo-servicio/${servicio.id}`)} style={{ marginLeft: "1rem" }}>
-              editar
-            </button>
-            <button onClick={() => handleDelete(servicio.id)} style={{ marginLeft: "7rem", backgroundColor: "#f44336", color: "#fff" }}>
-              Eliminar Servicio
-            </button>
+          <div key={servicio.id} className="servicio-card">
+            <h3 className="servicio-title">{servicio.nombre_servicio}</h3>
+            <p className="servicio-desc">{servicio.descripcion}</p>
+            <p className="servicio-detail"><strong>Duración:</strong> {servicio.duracion}</p>
+            <p className="servicio-detail"><strong>Rating:</strong> ⭐ {servicio.rating_promedio}</p>
+
+            <div className="button-group">
+              <button onClick={() => navigate(`/crear-nuevo-servicio/agregar-fotos/${servicio.id}`)} className="btn blue">
+                <Image size={16} /> Fotos
+              </button>
+              <button onClick={() => navigate(`/crear-nuevo-servicio/ubicaciones/${servicio.id}`)} className="btn green">
+                <MapPin size={16} /> Ubicaciones
+              </button>
+              <button onClick={() => navigate(`/crear-nuevo-servicio/${servicio.id}`)} className="btn yellow">
+                <Edit3 size={16} /> Editar
+              </button>
+              <button onClick={() => handleDelete(servicio.id)} className="btn red">
+                <Trash2 size={16} /> Eliminar
+              </button>
+            </div>
           </div>
         ))}
       </div>
-      <button onClick={() => navigate("/crear-nuevo-servicio")}>Agregar servicios</button>
+
+      <div className="add-container">
+        <button className="add-btn" onClick={() => navigate("/crear-nuevo-servicio")}>
+          <Plus size={18} style={{ marginRight: 6 }} /> Agregar nuevo servicio
+        </button>
+      </div>
     </div>
   );
 }

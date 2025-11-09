@@ -4,7 +4,6 @@ import { Navbar } from './components/Navbar';
 import { HomePage } from './pages/homePage';
 import { LoginPage } from './pages/loginPage';
 import { RegisterPage } from './pages/registerPage';
-import { WorkDetails } from './components/WorkDetails';
 import { ProfilePage } from './pages/profilePage';
 import NuevoServicio from './pages/Proveedor/NuevoServicio';
 import { ReservaPage } from './pages/Cliente/reservaPage';
@@ -22,6 +21,7 @@ import { ServicioReservaList } from './pages/Cliente/ServicioReservaList';
 import { CategoriasCliente } from './pages/Cliente/Categorias';
 import Dashboard from './pages/Dashboard';
 import DashboardProveedor from './pages/Proveedor/DashboardProveedor';
+import { Footer } from './components/Footer';
 
 function App() {
 
@@ -42,7 +42,6 @@ function App() {
           <Route path="/crear-nuevo-servicio/agregar-fotos/:servicio_id" element={<Fotos />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/crear-nuevo-servicio/ubicaciones/:servicio_id" element={<Ubicaciones />} />
-          <Route path="/work-details" element={<WorkDetails />} />
           <Route path="/servicios/reserva/form" element={<ReservaPage />} />
           <Route path="/servicios/reserva-list/" element={<ReservasCliente />} />
           <Route path="/servicios/reserva-list/reservados/:reserva_id" element={<ServicioReservaList />} />
@@ -55,6 +54,7 @@ function App() {
           <Route path="/proveedor/dashboard" element={<DashboardProveedor />} />
 
         </Routes>
+        <Footer />
         
     </div>
   )

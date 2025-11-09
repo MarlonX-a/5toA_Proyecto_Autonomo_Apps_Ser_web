@@ -832,7 +832,7 @@ func (r *restClientImpl) ListReservas(ctx context.Context, filter *model.Reserva
 	q := u.Query()
 	if filter != nil {
 		if filter.ClienteID != nil {
-			q.Set("clienteId", strconv.Itoa(int(*filter.ClienteID)))
+			q.Set("cliente_id", strconv.Itoa(int(*filter.ClienteID)))
 		}
 		if filter.Estado != nil {
 			q.Set("estado", *filter.Estado)

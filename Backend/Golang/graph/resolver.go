@@ -4,9 +4,9 @@ package graph
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
 
-//imports para lo que se necesite
 import (
 	"context"
+	"strconv"
 	"time"
 
 	"github.com/MarlonX-a/5toA_Proyecto_Autonomo_Apps_Ser_web/Golang/graph/model"
@@ -36,14 +36,26 @@ func (r *Resolver) loadProveedores(ctx context.Context, ids []string) (map[strin
 	query := "SELECT * FROM api_rest_proveedor WHERE id = ANY($1)"
 	var proveedores []*model.Proveedor
 
-	err := r.DB.Select(&proveedores, query, ids)
+	// Convertir ids de string a int32
+	intIDs := make([]int32, len(ids))
+	for i, id := range ids {
+		val, err := strconv.ParseInt(id, 10, 32)
+		if err != nil {
+			return nil, err
+		}
+		intIDs[i] = int32(val)
+	}
+
+	err := r.DB.Select(&proveedores, query, intIDs)
 	if err != nil {
 		return nil, err
 	}
 
 	result := make(map[string]interface{})
 	for _, proveedor := range proveedores {
-		result[proveedor.ID] = proveedor
+		// Convertir int32 a string para el map key
+		key := strconv.Itoa(int(proveedor.ID))
+		result[key] = proveedor
 	}
 
 	return result, nil
@@ -54,14 +66,24 @@ func (r *Resolver) loadServicios(ctx context.Context, ids []string) (map[string]
 	query := "SELECT * FROM api_rest_servicio WHERE id = ANY($1)"
 	var servicios []*model.Servicio
 
-	err := r.DB.Select(&servicios, query, ids)
+	intIDs := make([]int32, len(ids))
+	for i, id := range ids {
+		val, err := strconv.ParseInt(id, 10, 32)
+		if err != nil {
+			return nil, err
+		}
+		intIDs[i] = int32(val)
+	}
+
+	err := r.DB.Select(&servicios, query, intIDs)
 	if err != nil {
 		return nil, err
 	}
 
 	result := make(map[string]interface{})
 	for _, servicio := range servicios {
-		result[servicio.ID] = servicio
+		key := strconv.Itoa(int(servicio.ID))
+		result[key] = servicio
 	}
 
 	return result, nil
@@ -72,14 +94,24 @@ func (r *Resolver) loadClientes(ctx context.Context, ids []string) (map[string]i
 	query := "SELECT * FROM api_rest_cliente WHERE id = ANY($1)"
 	var clientes []*model.Cliente
 
-	err := r.DB.Select(&clientes, query, ids)
+	intIDs := make([]int32, len(ids))
+	for i, id := range ids {
+		val, err := strconv.ParseInt(id, 10, 32)
+		if err != nil {
+			return nil, err
+		}
+		intIDs[i] = int32(val)
+	}
+
+	err := r.DB.Select(&clientes, query, intIDs)
 	if err != nil {
 		return nil, err
 	}
 
 	result := make(map[string]interface{})
 	for _, cliente := range clientes {
-		result[cliente.ID] = cliente
+		key := strconv.Itoa(int(cliente.ID))
+		result[key] = cliente
 	}
 
 	return result, nil

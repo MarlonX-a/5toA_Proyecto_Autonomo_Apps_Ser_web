@@ -35,7 +35,6 @@ func (r *queryResolver) getServiciosMasVendidos(ctx context.Context, filter *mod
 			args = append(args, *filter.FechaHasta)
 			argIndex++
 		}
-		// Algunos nombres de campo opcionales en ReporteFilter
 		if filter.CategoriaID != nil {
 			query += fmt.Sprintf(" AND s.categoria_id = $%d", argIndex)
 			args = append(args, *filter.CategoriaID)
@@ -51,7 +50,7 @@ func (r *queryResolver) getServiciosMasVendidos(ctx context.Context, filter *mod
 	query += " GROUP BY s.id, s.nombre_servicio ORDER BY cantidad_vendida DESC LIMIT 10"
 
 	var resultados []struct {
-		ServicioID        string `db:"id"`
+		ServicioID        int32  `db:"id"` // Cambiado a int32
 		NombreServicio    string `db:"nombre_servicio"`
 		CantidadVendida   int    `db:"cantidad_vendida"`
 		IngresosGenerados string `db:"ingresos_generados"`

@@ -1,11 +1,11 @@
-#Variables que no están establecidas de forma normal para el modelo
+# Variables especiales para el modelo
 scalar Time
 scalar Date
 scalar Decimal
 
-#Creacion de la tabla user
+# User
 type User {
-  id: ID!
+  id: Int!
   username: String!
   email: String!
   firstName: String
@@ -17,9 +17,9 @@ type User {
   proveedor: Proveedor
 }
 
-#Creacion de la tabla Ubicacion
+# Ubicacion
 type Ubicacion {
-  id: ID!
+  id: Int!
   direccion: String!
   ciudad: String!
   provincia: String!
@@ -31,9 +31,9 @@ type Ubicacion {
   servicios: [Servicio!]
 }
 
-#Creacion de la tabla Cliente
+# Cliente
 type Cliente {
-  id: ID!
+  id: Int!
   user: User!
   telefono: String!
   ubicacion: Ubicacion
@@ -44,9 +44,9 @@ type Cliente {
   comentarios: [Comentario!]
 }
 
-#Creacion de la tabla proveedor
+# Proveedor
 type Proveedor {
-  id: ID!
+  id: Int!
   user: User!
   telefono: String!
   descripcion: String
@@ -56,9 +56,9 @@ type Proveedor {
   servicios: [Servicio!]
 }
 
-#Creacion de la tabla categoria
+# Categoria
 type Categoria {
-  id: ID!
+  id: Int!
   nombre: String!
   descripcion: String
   createdAt: Time!
@@ -66,9 +66,9 @@ type Categoria {
   servicios: [Servicio!]
 }
 
-#Creacion de la tabla Servicio
+# Servicio
 type Servicio {
-  id: ID!
+  id: Int!
   proveedor: Proveedor!
   categoria: Categoria!
   nombreServicio: String!
@@ -85,18 +85,18 @@ type Servicio {
   updatedAt: Time!
 }
 
-#Creacion de la tabla transaccional de Servicio y ubicacion
+# ServicioUbicacion
 type ServicioUbicacion {
-  id: ID!
+  id: Int!
   servicio: Servicio!
   ubicacion: Ubicacion!
   createdAt: Time!
   updatedAt: Time!
 }
 
-#Creacion de la tabla para la foto de los servicios
+# FotoServicio
 type FotoServicio {
-  id: ID!
+  id: Int!
   servicio: Servicio!
   urlFoto: String!
   descripcion: String
@@ -104,9 +104,9 @@ type FotoServicio {
   updatedAt: Time!
 }
 
-#Creacion de la tabla reserva
+# Reserva
 type Reserva {
-  id: ID!
+  id: Int!
   cliente: Cliente!
   fecha: Date!
   hora: String!
@@ -118,9 +118,9 @@ type Reserva {
   updatedAt: Time!
 }
 
-#Creacion de la tabla transaccional de Reserva con Servicio
+# ReservaServicio
 type ReservaServicio {
-  id: ID!
+  id: Int!
   reserva: Reserva!
   servicio: Servicio!
   cantidad: Int!
@@ -130,9 +130,9 @@ type ReservaServicio {
   updatedAt: Time!
 }
 
-#Creacion de la tabla Pago
+# Pago
 type Pago {
-  id: ID!
+  id: Int!
   reserva: Reserva!
   metodoPago: String!
   monto: Decimal!
@@ -143,9 +143,9 @@ type Pago {
   updatedAt: Time!
 }
 
-#Creacion de la tabla Calificacion
+# Calificacion
 type Calificacion {
-  id: ID!
+  id: Int!
   cliente: Cliente!
   servicio: Servicio!
   fecha: Time!
@@ -154,9 +154,9 @@ type Calificacion {
   updatedAt: Time!
 }
 
-#Creacion de la tabla Comentario
+# Comentario
 type Comentario {
-  id: ID!
+  id: Int!
   cliente: Cliente!
   servicio: Servicio!
   titulo: String!
@@ -167,7 +167,7 @@ type Comentario {
   updatedAt: Time!
 }
 
-# Parte de los inputs para los ingresos de cada tabla
+# Inputs
 input UserInput {
   username: String!
   email: String!
@@ -184,16 +184,16 @@ input UbicacionInput {
 }
 
 input ClienteInput {
-  userId: ID!
+  userId: Int!
   telefono: String!
-  ubicacionId: ID
+  ubicacionId: Int
 }
 
 input ProveedorInput {
-  userId: ID!
+  userId: Int!
   telefono: String!
   descripcion: String
-  ubicacionId: ID
+  ubicacionId: Int
 }
 
 input CategoriaInput {
@@ -202,8 +202,8 @@ input CategoriaInput {
 }
 
 input ServicioInput {
-  proveedorId: ID!
-  categoriaId: ID!
+  proveedorId: Int!
+  categoriaId: Int!
   nombreServicio: String!
   descripcion: String
   duracion: String
@@ -212,13 +212,13 @@ input ServicioInput {
 }
 
 input FotoServicioInput {
-  servicioId: ID!
+  servicioId: Int!
   urlFoto: String!
   descripcion: String
 }
 
 input ReservaInput {
-  clienteId: ID!
+  clienteId: Int!
   fecha: Date!
   hora: String!
   estado: String!
@@ -226,14 +226,14 @@ input ReservaInput {
 }
 
 input ReservaServicioInput {
-  reservaId: ID!
-  servicioId: ID!
+  reservaId: Int!
+  servicioId: Int!
   cantidad: Int!
   precioUnitario: Decimal!
 }
 
 input PagoInput {
-  reservaId: ID!
+  reservaId: Int!
   metodoPago: String!
   monto: Decimal!
   estado: String!
@@ -242,47 +242,46 @@ input PagoInput {
 }
 
 input CalificacionInput {
-  clienteId: ID!
-  servicioId: ID!
+  clienteId: Int!
+  servicioId: Int!
   puntuacion: Int!
 }
 
 input ComentarioInput {
-  clienteId: ID!
-  servicioId: ID!
+  clienteId: Int!
+  servicioId: Int!
   titulo: String!
   texto: String!
   respuesta: String
 }
 
 input ServicioUbicacionInput {
-  servicioId: ID!
-  ubicacionId: ID!
+  servicioId: Int!
+  ubicacionId: Int!
 }
 
-#Parte de los inputs para crear las categorias
+# Filters y búsquedas
 input ServicioFilter {
-  categoriaId: ID
-  proveedorId: ID
+  categoriaId: Int
+  proveedorId: Int
   ciudad: String
   minRating: Float
   precioMin: Decimal
   precioMax: Decimal
-  q: String # búsqueda de texto libre (nombre, descripción)
+  q: String
 }
 
 input ReservaFilter {
-  clienteId: ID
+  clienteId: Int
   estado: String
   fechaDesde: Date
   fechaHasta: Date
 }
 
-# Inputs y tipos para búsquedas avanzadas y ordenamiento
 input ServicioSearchInput {
   q: String
-  categoriaId: ID
-  proveedorId: ID
+  categoriaId: Int
+  proveedorId: Int
   ciudad: String
   precioMin: Decimal
   precioMax: Decimal
@@ -298,21 +297,13 @@ enum ServicioSort {
   CREATED_AT_DESC
 }
 
-# Perfil de proveedor con métricas agregadas
-type ProveedorProfile {
-  proveedor: Proveedor!
-  totalServicios: Int!
-  ingresosTotales: Decimal!
-  promedioCalificacion: Float!
-  topServicios: [ServicioVendido!]!
-}
-
+# Pagination
 input Pagination {
   limit: Int
   offset: Int
 }
 
-# Tipos para reportes analíticos
+# Reportes
 type ReporteVentas {
   periodo: String!
   totalVentas: Decimal!
@@ -365,12 +356,11 @@ type MetricasGenerales {
   promedioSatisfaccion: Float!
 }
 
-# Filtros para reportes
 input ReporteFilter {
   fechaDesde: Date
   fechaHasta: Date
-  categoriaId: ID
-  proveedorId: ID
+  categoriaId: Int
+  proveedorId: Int
   ciudad: String
   estadoReserva: String
 }
@@ -394,114 +384,100 @@ type PuntoTendencia {
   etiqueta: String
 }
 
-# Query con la clase de limitacion que se creo antes para el limite
+# Queries
 type Query {
   users(pagination: Pagination): [User!]!
-  user(id: ID!): User
+  user(id: Int!): User
 
   ubicaciones(pagination: Pagination): [Ubicacion!]!
-  ubicacion(id: ID!): Ubicacion
+  ubicacion(id: Int!): Ubicacion
 
   clientes(pagination: Pagination): [Cliente!]!
-  cliente(id: ID!): Cliente
+  cliente(id: Int!): Cliente
 
   proveedores(pagination: Pagination): [Proveedor!]!
-  proveedor(id: ID!): Proveedor
+  proveedor(id: Int!): Proveedor
 
   categorias(pagination: Pagination): [Categoria!]!
-  categoria(id: ID!): Categoria
+  categoria(id: Int!): Categoria
 
   servicios(filter: ServicioFilter, pagination: Pagination): [Servicio!]!
-  servicio(id: ID!): Servicio
+  servicio(id: Int!): Servicio
 
   reservas(filter: ReservaFilter, pagination: Pagination): [Reserva!]!
-  reserva(id: ID!): Reserva
+  reserva(id: Int!): Reserva
 
   pagos(pagination: Pagination): [Pago!]!
-  pago(id: ID!): Pago
+  pago(id: Int!): Pago
 
   calificaciones(pagination: Pagination): [Calificacion!]!
   comentarios(pagination: Pagination): [Comentario!]!
 
-  # Reportes analíticos
   reporteVentas(filter: ReporteFilter): ReporteVentas!
   reporteSatisfaccion(filter: ReporteFilter): [ReporteSatisfaccion!]!
   reporteProveedores(filter: ReporteFilter): [ReporteProveedor!]!
   reporteClientes(filter: ReporteFilter): [ReporteCliente!]!
   metricasGenerales(filter: MetricasFilter): MetricasGenerales!
   
-  # Consultas optimizadas
   serviciosMasPopulares(limit: Int): [ServicioVendido!]!
   proveedoresMejorCalificados(limit: Int): [ReporteProveedor!]!
   clientesMasActivos(limit: Int): [ReporteCliente!]!
   
-  # Análisis de tendencias
   tendenciasVentas(filter: MetricasFilter): [PuntoTendencia!]!
   tendenciasSatisfaccion(filter: MetricasFilter): [PuntoTendencia!]!
 }
 
-# Consultas avanzadas: búsquedas combinadas, perfiles con métricas y reservas por proveedor
-extend type Query {
-  searchServicios(input: ServicioSearchInput, filter: ServicioFilter, pagination: Pagination, sort: ServicioSort): [Servicio!]!
-
-  serviciosBusquedaAvanzada(input: ServicioSearchInput, pagination: Pagination, sort: ServicioSort): [Servicio!]!
-
-  proveedorPerfil(id: ID!): ProveedorProfile!
-
-  reservasPorProveedor(proveedorId: ID!, filter: ReservaFilter, pagination: Pagination): [Reserva!]!
-}
-
-# Mutaciones para crear cada dato dentro de nuestro modelo
+# Mutations
 type Mutation {
   createUser(input: UserInput!): User!
-  updateUser(id: ID!, input: UserInput!): User!
-  deleteUser(id: ID!): Boolean!
+  updateUser(id: Int!, input: UserInput!): User!
+  deleteUser(id: Int!): Boolean!
 
   createUbicacion(input: UbicacionInput!): Ubicacion!
-  updateUbicacion(id: ID!, input: UbicacionInput!): Ubicacion!
-  deleteUbicacion(id: ID!): Boolean!
+  updateUbicacion(id: Int!, input: UbicacionInput!): Ubicacion!
+  deleteUbicacion(id: Int!): Boolean!
 
   createCliente(input: ClienteInput!): Cliente!
-  updateCliente(id: ID!, input: ClienteInput!): Cliente!
-  deleteCliente(id: ID!): Boolean!
+  updateCliente(id: Int!, input: ClienteInput!): Cliente!
+  deleteCliente(id: Int!): Boolean!
 
   createProveedor(input: ProveedorInput!): Proveedor!
-  updateProveedor(id: ID!, input: ProveedorInput!): Proveedor!
-  deleteProveedor(id: ID!): Boolean!
+  updateProveedor(id: Int!, input: ProveedorInput!): Proveedor!
+  deleteProveedor(id: Int!): Boolean!
 
   createCategoria(input: CategoriaInput!): Categoria!
-  updateCategoria(id: ID!, input: CategoriaInput!): Categoria!
-  deleteCategoria(id: ID!): Boolean!
+  updateCategoria(id: Int!, input: CategoriaInput!): Categoria!
+  deleteCategoria(id: Int!): Boolean!
 
   createServicio(input: ServicioInput!): Servicio!
-  updateServicio(id: ID!, input: ServicioInput!): Servicio!
-  deleteServicio(id: ID!): Boolean!
+  updateServicio(id: Int!, input: ServicioInput!): Servicio!
+  deleteServicio(id: Int!): Boolean!
 
   createFotoServicio(input: FotoServicioInput!): FotoServicio!
-  updateFotoServicio(id: ID!, input: FotoServicioInput!): FotoServicio!
-  deleteFotoServicio(id: ID!): Boolean!
+  updateFotoServicio(id: Int!, input: FotoServicioInput!): FotoServicio!
+  deleteFotoServicio(id: Int!): Boolean!
 
   createReserva(input: ReservaInput!): Reserva!
-  updateReserva(id: ID!, input: ReservaInput!): Reserva!
-  deleteReserva(id: ID!): Boolean!
+  updateReserva(id: Int!, input: ReservaInput!): Reserva!
+  deleteReserva(id: Int!): Boolean!
 
   createReservaServicio(input: ReservaServicioInput!): ReservaServicio!
-  updateReservaServicio(id: ID!, input: ReservaServicioInput!): ReservaServicio!
-  deleteReservaServicio(id: ID!): Boolean!
+  updateReservaServicio(id: Int!, input: ReservaServicioInput!): ReservaServicio!
+  deleteReservaServicio(id: Int!): Boolean!
 
   createPago(input: PagoInput!): Pago!
-  updatePago(id: ID!, input: PagoInput!): Pago!
-  deletePago(id: ID!): Boolean!
+  updatePago(id: Int!, input: PagoInput!): Pago!
+  deletePago(id: Int!): Boolean!
 
   createCalificacion(input: CalificacionInput!): Calificacion!
-  updateCalificacion(id: ID!, input: CalificacionInput!): Calificacion!
-  deleteCalificacion(id: ID!): Boolean!
+  updateCalificacion(id: Int!, input: CalificacionInput!): Calificacion!
+  deleteCalificacion(id: Int!): Boolean!
 
   createComentario(input: ComentarioInput!): Comentario!
-  updateComentario(id: ID!, input: ComentarioInput!): Comentario!
-  deleteComentario(id: ID!): Boolean!
+  updateComentario(id: Int!, input: ComentarioInput!): Comentario!
+  deleteComentario(id: Int!): Boolean!
 
   createServicioUbicacion(input: ServicioUbicacionInput!): ServicioUbicacion!
-  updateServicioUbicacion(id: ID!, input: ServicioUbicacionInput!): ServicioUbicacion!
-  deleteServicioUbicacion(id: ID!): Boolean!
+  updateServicioUbicacion(id: Int!, input: ServicioUbicacionInput!): ServicioUbicacion!
+  deleteServicioUbicacion(id: Int!): Boolean!
 }

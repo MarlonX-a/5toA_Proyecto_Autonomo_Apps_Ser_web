@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .. import models
 from .proveedor import ProveedorSerializer
 from .categoria import CategoriaSerializer
+from .ubicacion import UbicacionSerializer
 
 class ServicioSerializer(serializers.ModelSerializer):
     proveedor = ProveedorSerializer(read_only=True)
@@ -18,6 +19,8 @@ class ServicioSerializer(serializers.ModelSerializer):
         source='categoria',
         write_only=True
     )
+
+    ubicaciones = UbicacionSerializer(many=True, read_only=True)
 
     class Meta:
         model = models.Servicio

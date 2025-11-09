@@ -4,6 +4,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -33,7 +34,11 @@ func main() {
 
 	// Middleware de logging
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", LoggingMiddleware(srv))
+	// CORS + inyección de request en contexto + logging
+	http.Handle("/query", withCORS(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), "httpRequest", r)
+		LoggingMiddleware(srv).ServeHTTP(w, r.WithContext(ctx))
+	})))
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -56,5 +61,18 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 
 		duration := time.Since(start)
 		log.Printf("📈 Consulta GraphQL ejecutada en %v", duration)
+	})
+}
+
+func withCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next.ServeHTTP(w, r)
 	})
 }

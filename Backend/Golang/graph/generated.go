@@ -129,32 +129,32 @@ type ComplexityRoot struct {
 		CreateServicioUbicacion func(childComplexity int, input model.ServicioUbicacionInput) int
 		CreateUbicacion         func(childComplexity int, input model.UbicacionInput) int
 		CreateUser              func(childComplexity int, input model.UserInput) int
-		DeleteCalificacion      func(childComplexity int, id string) int
-		DeleteCategoria         func(childComplexity int, id string) int
-		DeleteCliente           func(childComplexity int, id string) int
-		DeleteComentario        func(childComplexity int, id string) int
-		DeleteFotoServicio      func(childComplexity int, id string) int
-		DeletePago              func(childComplexity int, id string) int
-		DeleteProveedor         func(childComplexity int, id string) int
-		DeleteReserva           func(childComplexity int, id string) int
-		DeleteReservaServicio   func(childComplexity int, id string) int
-		DeleteServicio          func(childComplexity int, id string) int
-		DeleteServicioUbicacion func(childComplexity int, id string) int
-		DeleteUbicacion         func(childComplexity int, id string) int
-		DeleteUser              func(childComplexity int, id string) int
-		UpdateCalificacion      func(childComplexity int, id string, input model.CalificacionInput) int
-		UpdateCategoria         func(childComplexity int, id string, input model.CategoriaInput) int
-		UpdateCliente           func(childComplexity int, id string, input model.ClienteInput) int
-		UpdateComentario        func(childComplexity int, id string, input model.ComentarioInput) int
-		UpdateFotoServicio      func(childComplexity int, id string, input model.FotoServicioInput) int
-		UpdatePago              func(childComplexity int, id string, input model.PagoInput) int
-		UpdateProveedor         func(childComplexity int, id string, input model.ProveedorInput) int
-		UpdateReserva           func(childComplexity int, id string, input model.ReservaInput) int
-		UpdateReservaServicio   func(childComplexity int, id string, input model.ReservaServicioInput) int
-		UpdateServicio          func(childComplexity int, id string, input model.ServicioInput) int
-		UpdateServicioUbicacion func(childComplexity int, id string, input model.ServicioUbicacionInput) int
-		UpdateUbicacion         func(childComplexity int, id string, input model.UbicacionInput) int
-		UpdateUser              func(childComplexity int, id string, input model.UserInput) int
+		DeleteCalificacion      func(childComplexity int, id int32) int
+		DeleteCategoria         func(childComplexity int, id int32) int
+		DeleteCliente           func(childComplexity int, id int32) int
+		DeleteComentario        func(childComplexity int, id int32) int
+		DeleteFotoServicio      func(childComplexity int, id int32) int
+		DeletePago              func(childComplexity int, id int32) int
+		DeleteProveedor         func(childComplexity int, id int32) int
+		DeleteReserva           func(childComplexity int, id int32) int
+		DeleteReservaServicio   func(childComplexity int, id int32) int
+		DeleteServicio          func(childComplexity int, id int32) int
+		DeleteServicioUbicacion func(childComplexity int, id int32) int
+		DeleteUbicacion         func(childComplexity int, id int32) int
+		DeleteUser              func(childComplexity int, id int32) int
+		UpdateCalificacion      func(childComplexity int, id int32, input model.CalificacionInput) int
+		UpdateCategoria         func(childComplexity int, id int32, input model.CategoriaInput) int
+		UpdateCliente           func(childComplexity int, id int32, input model.ClienteInput) int
+		UpdateComentario        func(childComplexity int, id int32, input model.ComentarioInput) int
+		UpdateFotoServicio      func(childComplexity int, id int32, input model.FotoServicioInput) int
+		UpdatePago              func(childComplexity int, id int32, input model.PagoInput) int
+		UpdateProveedor         func(childComplexity int, id int32, input model.ProveedorInput) int
+		UpdateReserva           func(childComplexity int, id int32, input model.ReservaInput) int
+		UpdateReservaServicio   func(childComplexity int, id int32, input model.ReservaServicioInput) int
+		UpdateServicio          func(childComplexity int, id int32, input model.ServicioInput) int
+		UpdateServicioUbicacion func(childComplexity int, id int32, input model.ServicioUbicacionInput) int
+		UpdateUbicacion         func(childComplexity int, id int32, input model.UbicacionInput) int
+		UpdateUser              func(childComplexity int, id int32, input model.UserInput) int
 	}
 
 	Pago struct {
@@ -180,14 +180,6 @@ type ComplexityRoot struct {
 		User        func(childComplexity int) int
 	}
 
-	ProveedorProfile struct {
-		IngresosTotales      func(childComplexity int) int
-		PromedioCalificacion func(childComplexity int) int
-		Proveedor            func(childComplexity int) int
-		TopServicios         func(childComplexity int) int
-		TotalServicios       func(childComplexity int) int
-	}
-
 	PuntoTendencia struct {
 		Etiqueta func(childComplexity int) int
 		Fecha    func(childComplexity int) int
@@ -196,36 +188,32 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Calificaciones              func(childComplexity int, pagination *model.Pagination) int
-		Categoria                   func(childComplexity int, id string) int
+		Categoria                   func(childComplexity int, id int32) int
 		Categorias                  func(childComplexity int, pagination *model.Pagination) int
-		Cliente                     func(childComplexity int, id string) int
+		Cliente                     func(childComplexity int, id int32) int
 		Clientes                    func(childComplexity int, pagination *model.Pagination) int
 		ClientesMasActivos          func(childComplexity int, limit *int32) int
 		Comentarios                 func(childComplexity int, pagination *model.Pagination) int
 		MetricasGenerales           func(childComplexity int, filter *model.MetricasFilter) int
-		Pago                        func(childComplexity int, id string) int
+		Pago                        func(childComplexity int, id int32) int
 		Pagos                       func(childComplexity int, pagination *model.Pagination) int
-		Proveedor                   func(childComplexity int, id string) int
-		ProveedorPerfil             func(childComplexity int, id string) int
+		Proveedor                   func(childComplexity int, id int32) int
 		Proveedores                 func(childComplexity int, pagination *model.Pagination) int
 		ProveedoresMejorCalificados func(childComplexity int, limit *int32) int
 		ReporteClientes             func(childComplexity int, filter *model.ReporteFilter) int
 		ReporteProveedores          func(childComplexity int, filter *model.ReporteFilter) int
 		ReporteSatisfaccion         func(childComplexity int, filter *model.ReporteFilter) int
 		ReporteVentas               func(childComplexity int, filter *model.ReporteFilter) int
-		Reserva                     func(childComplexity int, id string) int
+		Reserva                     func(childComplexity int, id int32) int
 		Reservas                    func(childComplexity int, filter *model.ReservaFilter, pagination *model.Pagination) int
-		ReservasPorProveedor        func(childComplexity int, proveedorID string, filter *model.ReservaFilter, pagination *model.Pagination) int
-		SearchServicios             func(childComplexity int, input *model.ServicioSearchInput, filter *model.ServicioFilter, pagination *model.Pagination, sort *model.ServicioSort) int
-		Servicio                    func(childComplexity int, id string) int
+		Servicio                    func(childComplexity int, id int32) int
 		Servicios                   func(childComplexity int, filter *model.ServicioFilter, pagination *model.Pagination) int
-		ServiciosBusquedaAvanzada   func(childComplexity int, input *model.ServicioSearchInput, pagination *model.Pagination, sort *model.ServicioSort) int
 		ServiciosMasPopulares       func(childComplexity int, limit *int32) int
 		TendenciasSatisfaccion      func(childComplexity int, filter *model.MetricasFilter) int
 		TendenciasVentas            func(childComplexity int, filter *model.MetricasFilter) int
-		Ubicacion                   func(childComplexity int, id string) int
+		Ubicacion                   func(childComplexity int, id int32) int
 		Ubicaciones                 func(childComplexity int, pagination *model.Pagination) int
-		User                        func(childComplexity int, id string) int
+		User                        func(childComplexity int, id int32) int
 		Users                       func(childComplexity int, pagination *model.Pagination) int
 	}
 
@@ -345,62 +333,62 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateUser(ctx context.Context, input model.UserInput) (*model.User, error)
-	UpdateUser(ctx context.Context, id string, input model.UserInput) (*model.User, error)
-	DeleteUser(ctx context.Context, id string) (bool, error)
+	UpdateUser(ctx context.Context, id int32, input model.UserInput) (*model.User, error)
+	DeleteUser(ctx context.Context, id int32) (bool, error)
 	CreateUbicacion(ctx context.Context, input model.UbicacionInput) (*model.Ubicacion, error)
-	UpdateUbicacion(ctx context.Context, id string, input model.UbicacionInput) (*model.Ubicacion, error)
-	DeleteUbicacion(ctx context.Context, id string) (bool, error)
+	UpdateUbicacion(ctx context.Context, id int32, input model.UbicacionInput) (*model.Ubicacion, error)
+	DeleteUbicacion(ctx context.Context, id int32) (bool, error)
 	CreateCliente(ctx context.Context, input model.ClienteInput) (*model.Cliente, error)
-	UpdateCliente(ctx context.Context, id string, input model.ClienteInput) (*model.Cliente, error)
-	DeleteCliente(ctx context.Context, id string) (bool, error)
+	UpdateCliente(ctx context.Context, id int32, input model.ClienteInput) (*model.Cliente, error)
+	DeleteCliente(ctx context.Context, id int32) (bool, error)
 	CreateProveedor(ctx context.Context, input model.ProveedorInput) (*model.Proveedor, error)
-	UpdateProveedor(ctx context.Context, id string, input model.ProveedorInput) (*model.Proveedor, error)
-	DeleteProveedor(ctx context.Context, id string) (bool, error)
+	UpdateProveedor(ctx context.Context, id int32, input model.ProveedorInput) (*model.Proveedor, error)
+	DeleteProveedor(ctx context.Context, id int32) (bool, error)
 	CreateCategoria(ctx context.Context, input model.CategoriaInput) (*model.Categoria, error)
-	UpdateCategoria(ctx context.Context, id string, input model.CategoriaInput) (*model.Categoria, error)
-	DeleteCategoria(ctx context.Context, id string) (bool, error)
+	UpdateCategoria(ctx context.Context, id int32, input model.CategoriaInput) (*model.Categoria, error)
+	DeleteCategoria(ctx context.Context, id int32) (bool, error)
 	CreateServicio(ctx context.Context, input model.ServicioInput) (*model.Servicio, error)
-	UpdateServicio(ctx context.Context, id string, input model.ServicioInput) (*model.Servicio, error)
-	DeleteServicio(ctx context.Context, id string) (bool, error)
+	UpdateServicio(ctx context.Context, id int32, input model.ServicioInput) (*model.Servicio, error)
+	DeleteServicio(ctx context.Context, id int32) (bool, error)
 	CreateFotoServicio(ctx context.Context, input model.FotoServicioInput) (*model.FotoServicio, error)
-	UpdateFotoServicio(ctx context.Context, id string, input model.FotoServicioInput) (*model.FotoServicio, error)
-	DeleteFotoServicio(ctx context.Context, id string) (bool, error)
+	UpdateFotoServicio(ctx context.Context, id int32, input model.FotoServicioInput) (*model.FotoServicio, error)
+	DeleteFotoServicio(ctx context.Context, id int32) (bool, error)
 	CreateReserva(ctx context.Context, input model.ReservaInput) (*model.Reserva, error)
-	UpdateReserva(ctx context.Context, id string, input model.ReservaInput) (*model.Reserva, error)
-	DeleteReserva(ctx context.Context, id string) (bool, error)
+	UpdateReserva(ctx context.Context, id int32, input model.ReservaInput) (*model.Reserva, error)
+	DeleteReserva(ctx context.Context, id int32) (bool, error)
 	CreateReservaServicio(ctx context.Context, input model.ReservaServicioInput) (*model.ReservaServicio, error)
-	UpdateReservaServicio(ctx context.Context, id string, input model.ReservaServicioInput) (*model.ReservaServicio, error)
-	DeleteReservaServicio(ctx context.Context, id string) (bool, error)
+	UpdateReservaServicio(ctx context.Context, id int32, input model.ReservaServicioInput) (*model.ReservaServicio, error)
+	DeleteReservaServicio(ctx context.Context, id int32) (bool, error)
 	CreatePago(ctx context.Context, input model.PagoInput) (*model.Pago, error)
-	UpdatePago(ctx context.Context, id string, input model.PagoInput) (*model.Pago, error)
-	DeletePago(ctx context.Context, id string) (bool, error)
+	UpdatePago(ctx context.Context, id int32, input model.PagoInput) (*model.Pago, error)
+	DeletePago(ctx context.Context, id int32) (bool, error)
 	CreateCalificacion(ctx context.Context, input model.CalificacionInput) (*model.Calificacion, error)
-	UpdateCalificacion(ctx context.Context, id string, input model.CalificacionInput) (*model.Calificacion, error)
-	DeleteCalificacion(ctx context.Context, id string) (bool, error)
+	UpdateCalificacion(ctx context.Context, id int32, input model.CalificacionInput) (*model.Calificacion, error)
+	DeleteCalificacion(ctx context.Context, id int32) (bool, error)
 	CreateComentario(ctx context.Context, input model.ComentarioInput) (*model.Comentario, error)
-	UpdateComentario(ctx context.Context, id string, input model.ComentarioInput) (*model.Comentario, error)
-	DeleteComentario(ctx context.Context, id string) (bool, error)
+	UpdateComentario(ctx context.Context, id int32, input model.ComentarioInput) (*model.Comentario, error)
+	DeleteComentario(ctx context.Context, id int32) (bool, error)
 	CreateServicioUbicacion(ctx context.Context, input model.ServicioUbicacionInput) (*model.ServicioUbicacion, error)
-	UpdateServicioUbicacion(ctx context.Context, id string, input model.ServicioUbicacionInput) (*model.ServicioUbicacion, error)
-	DeleteServicioUbicacion(ctx context.Context, id string) (bool, error)
+	UpdateServicioUbicacion(ctx context.Context, id int32, input model.ServicioUbicacionInput) (*model.ServicioUbicacion, error)
+	DeleteServicioUbicacion(ctx context.Context, id int32) (bool, error)
 }
 type QueryResolver interface {
 	Users(ctx context.Context, pagination *model.Pagination) ([]*model.User, error)
-	User(ctx context.Context, id string) (*model.User, error)
+	User(ctx context.Context, id int32) (*model.User, error)
 	Ubicaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Ubicacion, error)
-	Ubicacion(ctx context.Context, id string) (*model.Ubicacion, error)
+	Ubicacion(ctx context.Context, id int32) (*model.Ubicacion, error)
 	Clientes(ctx context.Context, pagination *model.Pagination) ([]*model.Cliente, error)
-	Cliente(ctx context.Context, id string) (*model.Cliente, error)
+	Cliente(ctx context.Context, id int32) (*model.Cliente, error)
 	Proveedores(ctx context.Context, pagination *model.Pagination) ([]*model.Proveedor, error)
-	Proveedor(ctx context.Context, id string) (*model.Proveedor, error)
+	Proveedor(ctx context.Context, id int32) (*model.Proveedor, error)
 	Categorias(ctx context.Context, pagination *model.Pagination) ([]*model.Categoria, error)
-	Categoria(ctx context.Context, id string) (*model.Categoria, error)
+	Categoria(ctx context.Context, id int32) (*model.Categoria, error)
 	Servicios(ctx context.Context, filter *model.ServicioFilter, pagination *model.Pagination) ([]*model.Servicio, error)
-	Servicio(ctx context.Context, id string) (*model.Servicio, error)
+	Servicio(ctx context.Context, id int32) (*model.Servicio, error)
 	Reservas(ctx context.Context, filter *model.ReservaFilter, pagination *model.Pagination) ([]*model.Reserva, error)
-	Reserva(ctx context.Context, id string) (*model.Reserva, error)
+	Reserva(ctx context.Context, id int32) (*model.Reserva, error)
 	Pagos(ctx context.Context, pagination *model.Pagination) ([]*model.Pago, error)
-	Pago(ctx context.Context, id string) (*model.Pago, error)
+	Pago(ctx context.Context, id int32) (*model.Pago, error)
 	Calificaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Calificacion, error)
 	Comentarios(ctx context.Context, pagination *model.Pagination) ([]*model.Comentario, error)
 	ReporteVentas(ctx context.Context, filter *model.ReporteFilter) (*model.ReporteVentas, error)
@@ -413,10 +401,6 @@ type QueryResolver interface {
 	ClientesMasActivos(ctx context.Context, limit *int32) ([]*model.ReporteCliente, error)
 	TendenciasVentas(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error)
 	TendenciasSatisfaccion(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error)
-	SearchServicios(ctx context.Context, input *model.ServicioSearchInput, filter *model.ServicioFilter, pagination *model.Pagination, sort *model.ServicioSort) ([]*model.Servicio, error)
-	ServiciosBusquedaAvanzada(ctx context.Context, input *model.ServicioSearchInput, pagination *model.Pagination, sort *model.ServicioSort) ([]*model.Servicio, error)
-	ProveedorPerfil(ctx context.Context, id string) (*model.ProveedorProfile, error)
-	ReservasPorProveedor(ctx context.Context, proveedorID string, filter *model.ReservaFilter, pagination *model.Pagination) ([]*model.Reserva, error)
 }
 
 type executableSchema struct {
@@ -874,7 +858,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteCalificacion(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteCalificacion(childComplexity, args["id"].(int32)), true
 	case "Mutation.deleteCategoria":
 		if e.complexity.Mutation.DeleteCategoria == nil {
 			break
@@ -885,7 +869,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteCategoria(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteCategoria(childComplexity, args["id"].(int32)), true
 	case "Mutation.deleteCliente":
 		if e.complexity.Mutation.DeleteCliente == nil {
 			break
@@ -896,7 +880,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteCliente(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteCliente(childComplexity, args["id"].(int32)), true
 	case "Mutation.deleteComentario":
 		if e.complexity.Mutation.DeleteComentario == nil {
 			break
@@ -907,7 +891,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteComentario(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteComentario(childComplexity, args["id"].(int32)), true
 	case "Mutation.deleteFotoServicio":
 		if e.complexity.Mutation.DeleteFotoServicio == nil {
 			break
@@ -918,7 +902,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteFotoServicio(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteFotoServicio(childComplexity, args["id"].(int32)), true
 	case "Mutation.deletePago":
 		if e.complexity.Mutation.DeletePago == nil {
 			break
@@ -929,7 +913,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeletePago(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeletePago(childComplexity, args["id"].(int32)), true
 	case "Mutation.deleteProveedor":
 		if e.complexity.Mutation.DeleteProveedor == nil {
 			break
@@ -940,7 +924,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteProveedor(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteProveedor(childComplexity, args["id"].(int32)), true
 	case "Mutation.deleteReserva":
 		if e.complexity.Mutation.DeleteReserva == nil {
 			break
@@ -951,7 +935,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteReserva(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteReserva(childComplexity, args["id"].(int32)), true
 	case "Mutation.deleteReservaServicio":
 		if e.complexity.Mutation.DeleteReservaServicio == nil {
 			break
@@ -962,7 +946,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteReservaServicio(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteReservaServicio(childComplexity, args["id"].(int32)), true
 	case "Mutation.deleteServicio":
 		if e.complexity.Mutation.DeleteServicio == nil {
 			break
@@ -973,7 +957,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteServicio(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteServicio(childComplexity, args["id"].(int32)), true
 	case "Mutation.deleteServicioUbicacion":
 		if e.complexity.Mutation.DeleteServicioUbicacion == nil {
 			break
@@ -984,7 +968,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteServicioUbicacion(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteServicioUbicacion(childComplexity, args["id"].(int32)), true
 	case "Mutation.deleteUbicacion":
 		if e.complexity.Mutation.DeleteUbicacion == nil {
 			break
@@ -995,7 +979,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteUbicacion(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteUbicacion(childComplexity, args["id"].(int32)), true
 	case "Mutation.deleteUser":
 		if e.complexity.Mutation.DeleteUser == nil {
 			break
@@ -1006,7 +990,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteUser(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteUser(childComplexity, args["id"].(int32)), true
 	case "Mutation.updateCalificacion":
 		if e.complexity.Mutation.UpdateCalificacion == nil {
 			break
@@ -1017,7 +1001,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateCalificacion(childComplexity, args["id"].(string), args["input"].(model.CalificacionInput)), true
+		return e.complexity.Mutation.UpdateCalificacion(childComplexity, args["id"].(int32), args["input"].(model.CalificacionInput)), true
 	case "Mutation.updateCategoria":
 		if e.complexity.Mutation.UpdateCategoria == nil {
 			break
@@ -1028,7 +1012,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateCategoria(childComplexity, args["id"].(string), args["input"].(model.CategoriaInput)), true
+		return e.complexity.Mutation.UpdateCategoria(childComplexity, args["id"].(int32), args["input"].(model.CategoriaInput)), true
 	case "Mutation.updateCliente":
 		if e.complexity.Mutation.UpdateCliente == nil {
 			break
@@ -1039,7 +1023,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateCliente(childComplexity, args["id"].(string), args["input"].(model.ClienteInput)), true
+		return e.complexity.Mutation.UpdateCliente(childComplexity, args["id"].(int32), args["input"].(model.ClienteInput)), true
 	case "Mutation.updateComentario":
 		if e.complexity.Mutation.UpdateComentario == nil {
 			break
@@ -1050,7 +1034,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateComentario(childComplexity, args["id"].(string), args["input"].(model.ComentarioInput)), true
+		return e.complexity.Mutation.UpdateComentario(childComplexity, args["id"].(int32), args["input"].(model.ComentarioInput)), true
 	case "Mutation.updateFotoServicio":
 		if e.complexity.Mutation.UpdateFotoServicio == nil {
 			break
@@ -1061,7 +1045,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateFotoServicio(childComplexity, args["id"].(string), args["input"].(model.FotoServicioInput)), true
+		return e.complexity.Mutation.UpdateFotoServicio(childComplexity, args["id"].(int32), args["input"].(model.FotoServicioInput)), true
 	case "Mutation.updatePago":
 		if e.complexity.Mutation.UpdatePago == nil {
 			break
@@ -1072,7 +1056,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdatePago(childComplexity, args["id"].(string), args["input"].(model.PagoInput)), true
+		return e.complexity.Mutation.UpdatePago(childComplexity, args["id"].(int32), args["input"].(model.PagoInput)), true
 	case "Mutation.updateProveedor":
 		if e.complexity.Mutation.UpdateProveedor == nil {
 			break
@@ -1083,7 +1067,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateProveedor(childComplexity, args["id"].(string), args["input"].(model.ProveedorInput)), true
+		return e.complexity.Mutation.UpdateProveedor(childComplexity, args["id"].(int32), args["input"].(model.ProveedorInput)), true
 	case "Mutation.updateReserva":
 		if e.complexity.Mutation.UpdateReserva == nil {
 			break
@@ -1094,7 +1078,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateReserva(childComplexity, args["id"].(string), args["input"].(model.ReservaInput)), true
+		return e.complexity.Mutation.UpdateReserva(childComplexity, args["id"].(int32), args["input"].(model.ReservaInput)), true
 	case "Mutation.updateReservaServicio":
 		if e.complexity.Mutation.UpdateReservaServicio == nil {
 			break
@@ -1105,7 +1089,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateReservaServicio(childComplexity, args["id"].(string), args["input"].(model.ReservaServicioInput)), true
+		return e.complexity.Mutation.UpdateReservaServicio(childComplexity, args["id"].(int32), args["input"].(model.ReservaServicioInput)), true
 	case "Mutation.updateServicio":
 		if e.complexity.Mutation.UpdateServicio == nil {
 			break
@@ -1116,7 +1100,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateServicio(childComplexity, args["id"].(string), args["input"].(model.ServicioInput)), true
+		return e.complexity.Mutation.UpdateServicio(childComplexity, args["id"].(int32), args["input"].(model.ServicioInput)), true
 	case "Mutation.updateServicioUbicacion":
 		if e.complexity.Mutation.UpdateServicioUbicacion == nil {
 			break
@@ -1127,7 +1111,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateServicioUbicacion(childComplexity, args["id"].(string), args["input"].(model.ServicioUbicacionInput)), true
+		return e.complexity.Mutation.UpdateServicioUbicacion(childComplexity, args["id"].(int32), args["input"].(model.ServicioUbicacionInput)), true
 	case "Mutation.updateUbicacion":
 		if e.complexity.Mutation.UpdateUbicacion == nil {
 			break
@@ -1138,7 +1122,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateUbicacion(childComplexity, args["id"].(string), args["input"].(model.UbicacionInput)), true
+		return e.complexity.Mutation.UpdateUbicacion(childComplexity, args["id"].(int32), args["input"].(model.UbicacionInput)), true
 	case "Mutation.updateUser":
 		if e.complexity.Mutation.UpdateUser == nil {
 			break
@@ -1149,7 +1133,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateUser(childComplexity, args["id"].(string), args["input"].(model.UserInput)), true
+		return e.complexity.Mutation.UpdateUser(childComplexity, args["id"].(int32), args["input"].(model.UserInput)), true
 
 	case "Pago.createdAt":
 		if e.complexity.Pago.CreatedAt == nil {
@@ -1255,37 +1239,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Proveedor.User(childComplexity), true
 
-	case "ProveedorProfile.ingresosTotales":
-		if e.complexity.ProveedorProfile.IngresosTotales == nil {
-			break
-		}
-
-		return e.complexity.ProveedorProfile.IngresosTotales(childComplexity), true
-	case "ProveedorProfile.promedioCalificacion":
-		if e.complexity.ProveedorProfile.PromedioCalificacion == nil {
-			break
-		}
-
-		return e.complexity.ProveedorProfile.PromedioCalificacion(childComplexity), true
-	case "ProveedorProfile.proveedor":
-		if e.complexity.ProveedorProfile.Proveedor == nil {
-			break
-		}
-
-		return e.complexity.ProveedorProfile.Proveedor(childComplexity), true
-	case "ProveedorProfile.topServicios":
-		if e.complexity.ProveedorProfile.TopServicios == nil {
-			break
-		}
-
-		return e.complexity.ProveedorProfile.TopServicios(childComplexity), true
-	case "ProveedorProfile.totalServicios":
-		if e.complexity.ProveedorProfile.TotalServicios == nil {
-			break
-		}
-
-		return e.complexity.ProveedorProfile.TotalServicios(childComplexity), true
-
 	case "PuntoTendencia.etiqueta":
 		if e.complexity.PuntoTendencia.Etiqueta == nil {
 			break
@@ -1326,7 +1279,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.Categoria(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Categoria(childComplexity, args["id"].(int32)), true
 	case "Query.categorias":
 		if e.complexity.Query.Categorias == nil {
 			break
@@ -1348,7 +1301,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.Cliente(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Cliente(childComplexity, args["id"].(int32)), true
 	case "Query.clientes":
 		if e.complexity.Query.Clientes == nil {
 			break
@@ -1403,7 +1356,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.Pago(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Pago(childComplexity, args["id"].(int32)), true
 	case "Query.pagos":
 		if e.complexity.Query.Pagos == nil {
 			break
@@ -1425,18 +1378,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.Proveedor(childComplexity, args["id"].(string)), true
-	case "Query.proveedorPerfil":
-		if e.complexity.Query.ProveedorPerfil == nil {
-			break
-		}
-
-		args, err := ec.field_Query_proveedorPerfil_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.ProveedorPerfil(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Proveedor(childComplexity, args["id"].(int32)), true
 	case "Query.proveedores":
 		if e.complexity.Query.Proveedores == nil {
 			break
@@ -1513,7 +1455,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.Reserva(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Reserva(childComplexity, args["id"].(int32)), true
 	case "Query.reservas":
 		if e.complexity.Query.Reservas == nil {
 			break
@@ -1525,28 +1467,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.Reservas(childComplexity, args["filter"].(*model.ReservaFilter), args["pagination"].(*model.Pagination)), true
-	case "Query.reservasPorProveedor":
-		if e.complexity.Query.ReservasPorProveedor == nil {
-			break
-		}
-
-		args, err := ec.field_Query_reservasPorProveedor_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.ReservasPorProveedor(childComplexity, args["proveedorId"].(string), args["filter"].(*model.ReservaFilter), args["pagination"].(*model.Pagination)), true
-	case "Query.searchServicios":
-		if e.complexity.Query.SearchServicios == nil {
-			break
-		}
-
-		args, err := ec.field_Query_searchServicios_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.SearchServicios(childComplexity, args["input"].(*model.ServicioSearchInput), args["filter"].(*model.ServicioFilter), args["pagination"].(*model.Pagination), args["sort"].(*model.ServicioSort)), true
 	case "Query.servicio":
 		if e.complexity.Query.Servicio == nil {
 			break
@@ -1557,7 +1477,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.Servicio(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Servicio(childComplexity, args["id"].(int32)), true
 	case "Query.servicios":
 		if e.complexity.Query.Servicios == nil {
 			break
@@ -1569,17 +1489,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.Servicios(childComplexity, args["filter"].(*model.ServicioFilter), args["pagination"].(*model.Pagination)), true
-	case "Query.serviciosBusquedaAvanzada":
-		if e.complexity.Query.ServiciosBusquedaAvanzada == nil {
-			break
-		}
-
-		args, err := ec.field_Query_serviciosBusquedaAvanzada_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.ServiciosBusquedaAvanzada(childComplexity, args["input"].(*model.ServicioSearchInput), args["pagination"].(*model.Pagination), args["sort"].(*model.ServicioSort)), true
 	case "Query.serviciosMasPopulares":
 		if e.complexity.Query.ServiciosMasPopulares == nil {
 			break
@@ -1623,7 +1532,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.Ubicacion(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Ubicacion(childComplexity, args["id"].(int32)), true
 	case "Query.ubicaciones":
 		if e.complexity.Query.Ubicaciones == nil {
 			break
@@ -1645,7 +1554,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.User(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.User(childComplexity, args["id"].(int32)), true
 	case "Query.users":
 		if e.complexity.Query.Users == nil {
 			break
@@ -2438,7 +2347,7 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_deleteCalificacion_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2449,7 +2358,7 @@ func (ec *executionContext) field_Mutation_deleteCalificacion_args(ctx context.C
 func (ec *executionContext) field_Mutation_deleteCategoria_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2460,7 +2369,7 @@ func (ec *executionContext) field_Mutation_deleteCategoria_args(ctx context.Cont
 func (ec *executionContext) field_Mutation_deleteCliente_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2471,7 +2380,7 @@ func (ec *executionContext) field_Mutation_deleteCliente_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_deleteComentario_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2482,7 +2391,7 @@ func (ec *executionContext) field_Mutation_deleteComentario_args(ctx context.Con
 func (ec *executionContext) field_Mutation_deleteFotoServicio_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2493,7 +2402,7 @@ func (ec *executionContext) field_Mutation_deleteFotoServicio_args(ctx context.C
 func (ec *executionContext) field_Mutation_deletePago_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2504,7 +2413,7 @@ func (ec *executionContext) field_Mutation_deletePago_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_deleteProveedor_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2515,7 +2424,7 @@ func (ec *executionContext) field_Mutation_deleteProveedor_args(ctx context.Cont
 func (ec *executionContext) field_Mutation_deleteReservaServicio_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2526,7 +2435,7 @@ func (ec *executionContext) field_Mutation_deleteReservaServicio_args(ctx contex
 func (ec *executionContext) field_Mutation_deleteReserva_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2537,7 +2446,7 @@ func (ec *executionContext) field_Mutation_deleteReserva_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_deleteServicioUbicacion_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2548,7 +2457,7 @@ func (ec *executionContext) field_Mutation_deleteServicioUbicacion_args(ctx cont
 func (ec *executionContext) field_Mutation_deleteServicio_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2559,7 +2468,7 @@ func (ec *executionContext) field_Mutation_deleteServicio_args(ctx context.Conte
 func (ec *executionContext) field_Mutation_deleteUbicacion_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2570,7 +2479,7 @@ func (ec *executionContext) field_Mutation_deleteUbicacion_args(ctx context.Cont
 func (ec *executionContext) field_Mutation_deleteUser_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2581,7 +2490,7 @@ func (ec *executionContext) field_Mutation_deleteUser_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_updateCalificacion_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2597,7 +2506,7 @@ func (ec *executionContext) field_Mutation_updateCalificacion_args(ctx context.C
 func (ec *executionContext) field_Mutation_updateCategoria_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2613,7 +2522,7 @@ func (ec *executionContext) field_Mutation_updateCategoria_args(ctx context.Cont
 func (ec *executionContext) field_Mutation_updateCliente_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2629,7 +2538,7 @@ func (ec *executionContext) field_Mutation_updateCliente_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_updateComentario_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2645,7 +2554,7 @@ func (ec *executionContext) field_Mutation_updateComentario_args(ctx context.Con
 func (ec *executionContext) field_Mutation_updateFotoServicio_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2661,7 +2570,7 @@ func (ec *executionContext) field_Mutation_updateFotoServicio_args(ctx context.C
 func (ec *executionContext) field_Mutation_updatePago_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2677,7 +2586,7 @@ func (ec *executionContext) field_Mutation_updatePago_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_updateProveedor_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2693,7 +2602,7 @@ func (ec *executionContext) field_Mutation_updateProveedor_args(ctx context.Cont
 func (ec *executionContext) field_Mutation_updateReservaServicio_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2709,7 +2618,7 @@ func (ec *executionContext) field_Mutation_updateReservaServicio_args(ctx contex
 func (ec *executionContext) field_Mutation_updateReserva_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2725,7 +2634,7 @@ func (ec *executionContext) field_Mutation_updateReserva_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_updateServicioUbicacion_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2741,7 +2650,7 @@ func (ec *executionContext) field_Mutation_updateServicioUbicacion_args(ctx cont
 func (ec *executionContext) field_Mutation_updateServicio_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2757,7 +2666,7 @@ func (ec *executionContext) field_Mutation_updateServicio_args(ctx context.Conte
 func (ec *executionContext) field_Mutation_updateUbicacion_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2773,7 +2682,7 @@ func (ec *executionContext) field_Mutation_updateUbicacion_args(ctx context.Cont
 func (ec *executionContext) field_Mutation_updateUser_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2811,7 +2720,7 @@ func (ec *executionContext) field_Query_calificaciones_args(ctx context.Context,
 func (ec *executionContext) field_Query_categoria_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2833,7 +2742,7 @@ func (ec *executionContext) field_Query_categorias_args(ctx context.Context, raw
 func (ec *executionContext) field_Query_cliente_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2888,7 +2797,7 @@ func (ec *executionContext) field_Query_metricasGenerales_args(ctx context.Conte
 func (ec *executionContext) field_Query_pago_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2907,21 +2816,10 @@ func (ec *executionContext) field_Query_pagos_args(ctx context.Context, rawArgs 
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_proveedorPerfil_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
-	if err != nil {
-		return nil, err
-	}
-	args["id"] = arg0
-	return args, nil
-}
-
 func (ec *executionContext) field_Query_proveedor_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -2998,32 +2896,11 @@ func (ec *executionContext) field_Query_reporteVentas_args(ctx context.Context, 
 func (ec *executionContext) field_Query_reserva_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
 	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_reservasPorProveedor_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "proveedorId", ec.unmarshalNID2string)
-	if err != nil {
-		return nil, err
-	}
-	args["proveedorId"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOReservaFilter2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReservaFilter)
-	if err != nil {
-		return nil, err
-	}
-	args["filter"] = arg1
-	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "pagination", ec.unmarshalOPagination2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPagination)
-	if err != nil {
-		return nil, err
-	}
-	args["pagination"] = arg2
 	return args, nil
 }
 
@@ -3043,61 +2920,14 @@ func (ec *executionContext) field_Query_reservas_args(ctx context.Context, rawAr
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_searchServicios_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalOServicioSearchInput2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioSearchInput)
-	if err != nil {
-		return nil, err
-	}
-	args["input"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOServicioFilter2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioFilter)
-	if err != nil {
-		return nil, err
-	}
-	args["filter"] = arg1
-	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "pagination", ec.unmarshalOPagination2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPagination)
-	if err != nil {
-		return nil, err
-	}
-	args["pagination"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "sort", ec.unmarshalOServicioSort2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioSort)
-	if err != nil {
-		return nil, err
-	}
-	args["sort"] = arg3
-	return args, nil
-}
-
 func (ec *executionContext) field_Query_servicio_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
 	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_serviciosBusquedaAvanzada_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalOServicioSearchInput2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioSearchInput)
-	if err != nil {
-		return nil, err
-	}
-	args["input"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "pagination", ec.unmarshalOPagination2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPagination)
-	if err != nil {
-		return nil, err
-	}
-	args["pagination"] = arg1
-	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "sort", ec.unmarshalOServicioSort2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioSort)
-	if err != nil {
-		return nil, err
-	}
-	args["sort"] = arg2
 	return args, nil
 }
 
@@ -3153,7 +2983,7 @@ func (ec *executionContext) field_Query_tendenciasVentas_args(ctx context.Contex
 func (ec *executionContext) field_Query_ubicacion_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -3175,7 +3005,7 @@ func (ec *executionContext) field_Query_ubicaciones_args(ctx context.Context, ra
 func (ec *executionContext) field_Query_user_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -3256,7 +3086,7 @@ func (ec *executionContext) _Calificacion_id(ctx context.Context, field graphql.
 			return obj.ID, nil
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNInt2int32,
 		true,
 		true,
 	)
@@ -3269,7 +3099,7 @@ func (ec *executionContext) fieldContext_Calificacion_id(_ context.Context, fiel
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3511,7 +3341,7 @@ func (ec *executionContext) _Categoria_id(ctx context.Context, field graphql.Col
 			return obj.ID, nil
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNInt2int32,
 		true,
 		true,
 	)
@@ -3524,7 +3354,7 @@ func (ec *executionContext) fieldContext_Categoria_id(_ context.Context, field g
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3717,7 +3547,7 @@ func (ec *executionContext) _Cliente_id(ctx context.Context, field graphql.Colle
 			return obj.ID, nil
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNInt2int32,
 		true,
 		true,
 	)
@@ -3730,7 +3560,7 @@ func (ec *executionContext) fieldContext_Cliente_id(_ context.Context, field gra
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -4080,7 +3910,7 @@ func (ec *executionContext) _Comentario_id(ctx context.Context, field graphql.Co
 			return obj.ID, nil
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNInt2int32,
 		true,
 		true,
 	)
@@ -4093,7 +3923,7 @@ func (ec *executionContext) fieldContext_Comentario_id(_ context.Context, field 
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -4480,7 +4310,7 @@ func (ec *executionContext) _FotoServicio_id(ctx context.Context, field graphql.
 			return obj.ID, nil
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNInt2int32,
 		true,
 		true,
 	)
@@ -4493,7 +4323,7 @@ func (ec *executionContext) fieldContext_FotoServicio_id(_ context.Context, fiel
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -4921,7 +4751,7 @@ func (ec *executionContext) _Mutation_updateUser(ctx context.Context, field grap
 		ec.fieldContext_Mutation_updateUser,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().UpdateUser(ctx, fc.Args["id"].(string), fc.Args["input"].(model.UserInput))
+			return ec.resolvers.Mutation().UpdateUser(ctx, fc.Args["id"].(int32), fc.Args["input"].(model.UserInput))
 		},
 		nil,
 		ec.marshalNUser2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐUser,
@@ -4984,7 +4814,7 @@ func (ec *executionContext) _Mutation_deleteUser(ctx context.Context, field grap
 		ec.fieldContext_Mutation_deleteUser,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteUser(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteUser(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -5088,7 +4918,7 @@ func (ec *executionContext) _Mutation_updateUbicacion(ctx context.Context, field
 		ec.fieldContext_Mutation_updateUbicacion,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().UpdateUbicacion(ctx, fc.Args["id"].(string), fc.Args["input"].(model.UbicacionInput))
+			return ec.resolvers.Mutation().UpdateUbicacion(ctx, fc.Args["id"].(int32), fc.Args["input"].(model.UbicacionInput))
 		},
 		nil,
 		ec.marshalNUbicacion2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐUbicacion,
@@ -5151,7 +4981,7 @@ func (ec *executionContext) _Mutation_deleteUbicacion(ctx context.Context, field
 		ec.fieldContext_Mutation_deleteUbicacion,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteUbicacion(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteUbicacion(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -5253,7 +5083,7 @@ func (ec *executionContext) _Mutation_updateCliente(ctx context.Context, field g
 		ec.fieldContext_Mutation_updateCliente,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().UpdateCliente(ctx, fc.Args["id"].(string), fc.Args["input"].(model.ClienteInput))
+			return ec.resolvers.Mutation().UpdateCliente(ctx, fc.Args["id"].(int32), fc.Args["input"].(model.ClienteInput))
 		},
 		nil,
 		ec.marshalNCliente2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐCliente,
@@ -5314,7 +5144,7 @@ func (ec *executionContext) _Mutation_deleteCliente(ctx context.Context, field g
 		ec.fieldContext_Mutation_deleteCliente,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteCliente(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteCliente(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -5414,7 +5244,7 @@ func (ec *executionContext) _Mutation_updateProveedor(ctx context.Context, field
 		ec.fieldContext_Mutation_updateProveedor,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().UpdateProveedor(ctx, fc.Args["id"].(string), fc.Args["input"].(model.ProveedorInput))
+			return ec.resolvers.Mutation().UpdateProveedor(ctx, fc.Args["id"].(int32), fc.Args["input"].(model.ProveedorInput))
 		},
 		nil,
 		ec.marshalNProveedor2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐProveedor,
@@ -5473,7 +5303,7 @@ func (ec *executionContext) _Mutation_deleteProveedor(ctx context.Context, field
 		ec.fieldContext_Mutation_deleteProveedor,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteProveedor(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteProveedor(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -5569,7 +5399,7 @@ func (ec *executionContext) _Mutation_updateCategoria(ctx context.Context, field
 		ec.fieldContext_Mutation_updateCategoria,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().UpdateCategoria(ctx, fc.Args["id"].(string), fc.Args["input"].(model.CategoriaInput))
+			return ec.resolvers.Mutation().UpdateCategoria(ctx, fc.Args["id"].(int32), fc.Args["input"].(model.CategoriaInput))
 		},
 		nil,
 		ec.marshalNCategoria2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐCategoria,
@@ -5624,7 +5454,7 @@ func (ec *executionContext) _Mutation_deleteCategoria(ctx context.Context, field
 		ec.fieldContext_Mutation_deleteCategoria,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteCategoria(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteCategoria(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -5738,7 +5568,7 @@ func (ec *executionContext) _Mutation_updateServicio(ctx context.Context, field 
 		ec.fieldContext_Mutation_updateServicio,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().UpdateServicio(ctx, fc.Args["id"].(string), fc.Args["input"].(model.ServicioInput))
+			return ec.resolvers.Mutation().UpdateServicio(ctx, fc.Args["id"].(int32), fc.Args["input"].(model.ServicioInput))
 		},
 		nil,
 		ec.marshalNServicio2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicio,
@@ -5811,7 +5641,7 @@ func (ec *executionContext) _Mutation_deleteServicio(ctx context.Context, field 
 		ec.fieldContext_Mutation_deleteServicio,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteServicio(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteServicio(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -5907,7 +5737,7 @@ func (ec *executionContext) _Mutation_updateFotoServicio(ctx context.Context, fi
 		ec.fieldContext_Mutation_updateFotoServicio,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().UpdateFotoServicio(ctx, fc.Args["id"].(string), fc.Args["input"].(model.FotoServicioInput))
+			return ec.resolvers.Mutation().UpdateFotoServicio(ctx, fc.Args["id"].(int32), fc.Args["input"].(model.FotoServicioInput))
 		},
 		nil,
 		ec.marshalNFotoServicio2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐFotoServicio,
@@ -5962,7 +5792,7 @@ func (ec *executionContext) _Mutation_deleteFotoServicio(ctx context.Context, fi
 		ec.fieldContext_Mutation_deleteFotoServicio,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteFotoServicio(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteFotoServicio(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -6066,7 +5896,7 @@ func (ec *executionContext) _Mutation_updateReserva(ctx context.Context, field g
 		ec.fieldContext_Mutation_updateReserva,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().UpdateReserva(ctx, fc.Args["id"].(string), fc.Args["input"].(model.ReservaInput))
+			return ec.resolvers.Mutation().UpdateReserva(ctx, fc.Args["id"].(int32), fc.Args["input"].(model.ReservaInput))
 		},
 		nil,
 		ec.marshalNReserva2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReserva,
@@ -6129,7 +5959,7 @@ func (ec *executionContext) _Mutation_deleteReserva(ctx context.Context, field g
 		ec.fieldContext_Mutation_deleteReserva,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteReserva(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteReserva(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -6229,7 +6059,7 @@ func (ec *executionContext) _Mutation_updateReservaServicio(ctx context.Context,
 		ec.fieldContext_Mutation_updateReservaServicio,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().UpdateReservaServicio(ctx, fc.Args["id"].(string), fc.Args["input"].(model.ReservaServicioInput))
+			return ec.resolvers.Mutation().UpdateReservaServicio(ctx, fc.Args["id"].(int32), fc.Args["input"].(model.ReservaServicioInput))
 		},
 		nil,
 		ec.marshalNReservaServicio2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReservaServicio,
@@ -6288,7 +6118,7 @@ func (ec *executionContext) _Mutation_deleteReservaServicio(ctx context.Context,
 		ec.fieldContext_Mutation_deleteReservaServicio,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteReservaServicio(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteReservaServicio(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -6390,7 +6220,7 @@ func (ec *executionContext) _Mutation_updatePago(ctx context.Context, field grap
 		ec.fieldContext_Mutation_updatePago,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().UpdatePago(ctx, fc.Args["id"].(string), fc.Args["input"].(model.PagoInput))
+			return ec.resolvers.Mutation().UpdatePago(ctx, fc.Args["id"].(int32), fc.Args["input"].(model.PagoInput))
 		},
 		nil,
 		ec.marshalNPago2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPago,
@@ -6451,7 +6281,7 @@ func (ec *executionContext) _Mutation_deletePago(ctx context.Context, field grap
 		ec.fieldContext_Mutation_deletePago,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeletePago(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeletePago(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -6549,7 +6379,7 @@ func (ec *executionContext) _Mutation_updateCalificacion(ctx context.Context, fi
 		ec.fieldContext_Mutation_updateCalificacion,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().UpdateCalificacion(ctx, fc.Args["id"].(string), fc.Args["input"].(model.CalificacionInput))
+			return ec.resolvers.Mutation().UpdateCalificacion(ctx, fc.Args["id"].(int32), fc.Args["input"].(model.CalificacionInput))
 		},
 		nil,
 		ec.marshalNCalificacion2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐCalificacion,
@@ -6606,7 +6436,7 @@ func (ec *executionContext) _Mutation_deleteCalificacion(ctx context.Context, fi
 		ec.fieldContext_Mutation_deleteCalificacion,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteCalificacion(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteCalificacion(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -6708,7 +6538,7 @@ func (ec *executionContext) _Mutation_updateComentario(ctx context.Context, fiel
 		ec.fieldContext_Mutation_updateComentario,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().UpdateComentario(ctx, fc.Args["id"].(string), fc.Args["input"].(model.ComentarioInput))
+			return ec.resolvers.Mutation().UpdateComentario(ctx, fc.Args["id"].(int32), fc.Args["input"].(model.ComentarioInput))
 		},
 		nil,
 		ec.marshalNComentario2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐComentario,
@@ -6769,7 +6599,7 @@ func (ec *executionContext) _Mutation_deleteComentario(ctx context.Context, fiel
 		ec.fieldContext_Mutation_deleteComentario,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteComentario(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteComentario(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -6863,7 +6693,7 @@ func (ec *executionContext) _Mutation_updateServicioUbicacion(ctx context.Contex
 		ec.fieldContext_Mutation_updateServicioUbicacion,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().UpdateServicioUbicacion(ctx, fc.Args["id"].(string), fc.Args["input"].(model.ServicioUbicacionInput))
+			return ec.resolvers.Mutation().UpdateServicioUbicacion(ctx, fc.Args["id"].(int32), fc.Args["input"].(model.ServicioUbicacionInput))
 		},
 		nil,
 		ec.marshalNServicioUbicacion2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioUbicacion,
@@ -6916,7 +6746,7 @@ func (ec *executionContext) _Mutation_deleteServicioUbicacion(ctx context.Contex
 		ec.fieldContext_Mutation_deleteServicioUbicacion,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteServicioUbicacion(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteServicioUbicacion(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -6959,7 +6789,7 @@ func (ec *executionContext) _Pago_id(ctx context.Context, field graphql.Collecte
 			return obj.ID, nil
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNInt2int32,
 		true,
 		true,
 	)
@@ -6972,7 +6802,7 @@ func (ec *executionContext) fieldContext_Pago_id(_ context.Context, field graphq
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -7242,7 +7072,7 @@ func (ec *executionContext) _Proveedor_id(ctx context.Context, field graphql.Col
 			return obj.ID, nil
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNInt2int32,
 		true,
 		true,
 	)
@@ -7255,7 +7085,7 @@ func (ec *executionContext) fieldContext_Proveedor_id(_ context.Context, field g
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -7540,177 +7370,6 @@ func (ec *executionContext) fieldContext_Proveedor_servicios(_ context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _ProveedorProfile_proveedor(ctx context.Context, field graphql.CollectedField, obj *model.ProveedorProfile) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_ProveedorProfile_proveedor,
-		func(ctx context.Context) (any, error) {
-			return obj.Proveedor, nil
-		},
-		nil,
-		ec.marshalNProveedor2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐProveedor,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_ProveedorProfile_proveedor(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ProveedorProfile",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Proveedor_id(ctx, field)
-			case "user":
-				return ec.fieldContext_Proveedor_user(ctx, field)
-			case "telefono":
-				return ec.fieldContext_Proveedor_telefono(ctx, field)
-			case "descripcion":
-				return ec.fieldContext_Proveedor_descripcion(ctx, field)
-			case "ubicacion":
-				return ec.fieldContext_Proveedor_ubicacion(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Proveedor_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Proveedor_updatedAt(ctx, field)
-			case "servicios":
-				return ec.fieldContext_Proveedor_servicios(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Proveedor", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ProveedorProfile_totalServicios(ctx context.Context, field graphql.CollectedField, obj *model.ProveedorProfile) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_ProveedorProfile_totalServicios,
-		func(ctx context.Context) (any, error) {
-			return obj.TotalServicios, nil
-		},
-		nil,
-		ec.marshalNInt2int32,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_ProveedorProfile_totalServicios(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ProveedorProfile",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ProveedorProfile_ingresosTotales(ctx context.Context, field graphql.CollectedField, obj *model.ProveedorProfile) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_ProveedorProfile_ingresosTotales,
-		func(ctx context.Context) (any, error) {
-			return obj.IngresosTotales, nil
-		},
-		nil,
-		ec.marshalNDecimal2string,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_ProveedorProfile_ingresosTotales(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ProveedorProfile",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Decimal does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ProveedorProfile_promedioCalificacion(ctx context.Context, field graphql.CollectedField, obj *model.ProveedorProfile) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_ProveedorProfile_promedioCalificacion,
-		func(ctx context.Context) (any, error) {
-			return obj.PromedioCalificacion, nil
-		},
-		nil,
-		ec.marshalNFloat2float64,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_ProveedorProfile_promedioCalificacion(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ProveedorProfile",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Float does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ProveedorProfile_topServicios(ctx context.Context, field graphql.CollectedField, obj *model.ProveedorProfile) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_ProveedorProfile_topServicios,
-		func(ctx context.Context) (any, error) {
-			return obj.TopServicios, nil
-		},
-		nil,
-		ec.marshalNServicioVendido2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioVendidoᚄ,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_ProveedorProfile_topServicios(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ProveedorProfile",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "servicio":
-				return ec.fieldContext_ServicioVendido_servicio(ctx, field)
-			case "cantidadVendida":
-				return ec.fieldContext_ServicioVendido_cantidadVendida(ctx, field)
-			case "ingresosGenerados":
-				return ec.fieldContext_ServicioVendido_ingresosGenerados(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ServicioVendido", field.Name)
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _PuntoTendencia_fecha(ctx context.Context, field graphql.CollectedField, obj *model.PuntoTendencia) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -7869,7 +7528,7 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 		ec.fieldContext_Query_user,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().User(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Query().User(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalOUser2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐUser,
@@ -7995,7 +7654,7 @@ func (ec *executionContext) _Query_ubicacion(ctx context.Context, field graphql.
 		ec.fieldContext_Query_ubicacion,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().Ubicacion(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Query().Ubicacion(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalOUbicacion2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐUbicacion,
@@ -8119,7 +7778,7 @@ func (ec *executionContext) _Query_cliente(ctx context.Context, field graphql.Co
 		ec.fieldContext_Query_cliente,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().Cliente(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Query().Cliente(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalOCliente2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐCliente,
@@ -8239,7 +7898,7 @@ func (ec *executionContext) _Query_proveedor(ctx context.Context, field graphql.
 		ec.fieldContext_Query_proveedor,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().Proveedor(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Query().Proveedor(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalOProveedor2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐProveedor,
@@ -8353,7 +8012,7 @@ func (ec *executionContext) _Query_categoria(ctx context.Context, field graphql.
 		ec.fieldContext_Query_categoria,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().Categoria(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Query().Categoria(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalOCategoria2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐCategoria,
@@ -8481,7 +8140,7 @@ func (ec *executionContext) _Query_servicio(ctx context.Context, field graphql.C
 		ec.fieldContext_Query_servicio,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().Servicio(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Query().Servicio(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalOServicio2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicio,
@@ -8617,7 +8276,7 @@ func (ec *executionContext) _Query_reserva(ctx context.Context, field graphql.Co
 		ec.fieldContext_Query_reserva,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().Reserva(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Query().Reserva(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalOReserva2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReserva,
@@ -8741,7 +8400,7 @@ func (ec *executionContext) _Query_pago(ctx context.Context, field graphql.Colle
 		ec.fieldContext_Query_pago,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().Pago(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Query().Pago(ctx, fc.Args["id"].(int32))
 		},
 		nil,
 		ec.marshalOPago2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPago,
@@ -9424,268 +9083,6 @@ func (ec *executionContext) fieldContext_Query_tendenciasSatisfaccion(ctx contex
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_tendenciasSatisfaccion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_searchServicios(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Query_searchServicios,
-		func(ctx context.Context) (any, error) {
-			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().SearchServicios(ctx, fc.Args["input"].(*model.ServicioSearchInput), fc.Args["filter"].(*model.ServicioFilter), fc.Args["pagination"].(*model.Pagination), fc.Args["sort"].(*model.ServicioSort))
-		},
-		nil,
-		ec.marshalNServicio2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioᚄ,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_Query_searchServicios(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Servicio_id(ctx, field)
-			case "proveedor":
-				return ec.fieldContext_Servicio_proveedor(ctx, field)
-			case "categoria":
-				return ec.fieldContext_Servicio_categoria(ctx, field)
-			case "nombreServicio":
-				return ec.fieldContext_Servicio_nombreServicio(ctx, field)
-			case "descripcion":
-				return ec.fieldContext_Servicio_descripcion(ctx, field)
-			case "duracion":
-				return ec.fieldContext_Servicio_duracion(ctx, field)
-			case "ratingPromedio":
-				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
-			case "precio":
-				return ec.fieldContext_Servicio_precio(ctx, field)
-			case "ubicaciones":
-				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
-			case "fotos":
-				return ec.fieldContext_Servicio_fotos(ctx, field)
-			case "calificaciones":
-				return ec.fieldContext_Servicio_calificaciones(ctx, field)
-			case "comentarios":
-				return ec.fieldContext_Servicio_comentarios(ctx, field)
-			case "detallesReserva":
-				return ec.fieldContext_Servicio_detallesReserva(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Servicio_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Servicio_updatedAt(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Servicio", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_searchServicios_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_serviciosBusquedaAvanzada(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Query_serviciosBusquedaAvanzada,
-		func(ctx context.Context) (any, error) {
-			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().ServiciosBusquedaAvanzada(ctx, fc.Args["input"].(*model.ServicioSearchInput), fc.Args["pagination"].(*model.Pagination), fc.Args["sort"].(*model.ServicioSort))
-		},
-		nil,
-		ec.marshalNServicio2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioᚄ,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_Query_serviciosBusquedaAvanzada(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Servicio_id(ctx, field)
-			case "proveedor":
-				return ec.fieldContext_Servicio_proveedor(ctx, field)
-			case "categoria":
-				return ec.fieldContext_Servicio_categoria(ctx, field)
-			case "nombreServicio":
-				return ec.fieldContext_Servicio_nombreServicio(ctx, field)
-			case "descripcion":
-				return ec.fieldContext_Servicio_descripcion(ctx, field)
-			case "duracion":
-				return ec.fieldContext_Servicio_duracion(ctx, field)
-			case "ratingPromedio":
-				return ec.fieldContext_Servicio_ratingPromedio(ctx, field)
-			case "precio":
-				return ec.fieldContext_Servicio_precio(ctx, field)
-			case "ubicaciones":
-				return ec.fieldContext_Servicio_ubicaciones(ctx, field)
-			case "fotos":
-				return ec.fieldContext_Servicio_fotos(ctx, field)
-			case "calificaciones":
-				return ec.fieldContext_Servicio_calificaciones(ctx, field)
-			case "comentarios":
-				return ec.fieldContext_Servicio_comentarios(ctx, field)
-			case "detallesReserva":
-				return ec.fieldContext_Servicio_detallesReserva(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Servicio_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Servicio_updatedAt(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Servicio", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_serviciosBusquedaAvanzada_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_proveedorPerfil(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Query_proveedorPerfil,
-		func(ctx context.Context) (any, error) {
-			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().ProveedorPerfil(ctx, fc.Args["id"].(string))
-		},
-		nil,
-		ec.marshalNProveedorProfile2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐProveedorProfile,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_Query_proveedorPerfil(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "proveedor":
-				return ec.fieldContext_ProveedorProfile_proveedor(ctx, field)
-			case "totalServicios":
-				return ec.fieldContext_ProveedorProfile_totalServicios(ctx, field)
-			case "ingresosTotales":
-				return ec.fieldContext_ProveedorProfile_ingresosTotales(ctx, field)
-			case "promedioCalificacion":
-				return ec.fieldContext_ProveedorProfile_promedioCalificacion(ctx, field)
-			case "topServicios":
-				return ec.fieldContext_ProveedorProfile_topServicios(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ProveedorProfile", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_proveedorPerfil_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_reservasPorProveedor(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Query_reservasPorProveedor,
-		func(ctx context.Context) (any, error) {
-			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().ReservasPorProveedor(ctx, fc.Args["proveedorId"].(string), fc.Args["filter"].(*model.ReservaFilter), fc.Args["pagination"].(*model.Pagination))
-		},
-		nil,
-		ec.marshalNReserva2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐReservaᚄ,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_Query_reservasPorProveedor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Reserva_id(ctx, field)
-			case "cliente":
-				return ec.fieldContext_Reserva_cliente(ctx, field)
-			case "fecha":
-				return ec.fieldContext_Reserva_fecha(ctx, field)
-			case "hora":
-				return ec.fieldContext_Reserva_hora(ctx, field)
-			case "estado":
-				return ec.fieldContext_Reserva_estado(ctx, field)
-			case "totalEstimado":
-				return ec.fieldContext_Reserva_totalEstimado(ctx, field)
-			case "detalles":
-				return ec.fieldContext_Reserva_detalles(ctx, field)
-			case "pagos":
-				return ec.fieldContext_Reserva_pagos(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Reserva_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Reserva_updatedAt(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Reserva", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_reservasPorProveedor_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -10447,7 +9844,7 @@ func (ec *executionContext) _Reserva_id(ctx context.Context, field graphql.Colle
 			return obj.ID, nil
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNInt2int32,
 		true,
 		true,
 	)
@@ -10460,7 +9857,7 @@ func (ec *executionContext) fieldContext_Reserva_id(_ context.Context, field gra
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -10795,7 +10192,7 @@ func (ec *executionContext) _ReservaServicio_id(ctx context.Context, field graph
 			return obj.ID, nil
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNInt2int32,
 		true,
 		true,
 	)
@@ -10808,7 +10205,7 @@ func (ec *executionContext) fieldContext_ReservaServicio_id(_ context.Context, f
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -11081,7 +10478,7 @@ func (ec *executionContext) _Servicio_id(ctx context.Context, field graphql.Coll
 			return obj.ID, nil
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNInt2int32,
 		true,
 		true,
 	)
@@ -11094,7 +10491,7 @@ func (ec *executionContext) fieldContext_Servicio_id(_ context.Context, field gr
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -11638,7 +11035,7 @@ func (ec *executionContext) _ServicioUbicacion_id(ctx context.Context, field gra
 			return obj.ID, nil
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNInt2int32,
 		true,
 		true,
 	)
@@ -11651,7 +11048,7 @@ func (ec *executionContext) fieldContext_ServicioUbicacion_id(_ context.Context,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -11956,7 +11353,7 @@ func (ec *executionContext) _Ubicacion_id(ctx context.Context, field graphql.Col
 			return obj.ID, nil
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNInt2int32,
 		true,
 		true,
 	)
@@ -11969,7 +11366,7 @@ func (ec *executionContext) fieldContext_Ubicacion_id(_ context.Context, field g
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -12316,7 +11713,7 @@ func (ec *executionContext) _User_id(ctx context.Context, field graphql.Collecte
 			return obj.ID, nil
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNInt2int32,
 		true,
 		true,
 	)
@@ -12329,7 +11726,7 @@ func (ec *executionContext) fieldContext_User_id(_ context.Context, field graphq
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -14096,14 +13493,14 @@ func (ec *executionContext) unmarshalInputCalificacionInput(ctx context.Context,
 		switch k {
 		case "clienteId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clienteId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ClienteID = data
 		case "servicioId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("servicioId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14171,7 +13568,7 @@ func (ec *executionContext) unmarshalInputClienteInput(ctx context.Context, obj 
 		switch k {
 		case "userId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14185,7 +13582,7 @@ func (ec *executionContext) unmarshalInputClienteInput(ctx context.Context, obj 
 			it.Telefono = data
 		case "ubicacionId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ubicacionId"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14212,14 +13609,14 @@ func (ec *executionContext) unmarshalInputComentarioInput(ctx context.Context, o
 		switch k {
 		case "clienteId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clienteId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ClienteID = data
 		case "servicioId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("servicioId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14267,7 +13664,7 @@ func (ec *executionContext) unmarshalInputFotoServicioInput(ctx context.Context,
 		switch k {
 		case "servicioId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("servicioId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14383,7 +13780,7 @@ func (ec *executionContext) unmarshalInputPagoInput(ctx context.Context, obj any
 		switch k {
 		case "reservaId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reservaId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14445,7 +13842,7 @@ func (ec *executionContext) unmarshalInputProveedorInput(ctx context.Context, ob
 		switch k {
 		case "userId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14466,7 +13863,7 @@ func (ec *executionContext) unmarshalInputProveedorInput(ctx context.Context, ob
 			it.Descripcion = data
 		case "ubicacionId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ubicacionId"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14507,14 +13904,14 @@ func (ec *executionContext) unmarshalInputReporteFilter(ctx context.Context, obj
 			it.FechaHasta = data
 		case "categoriaId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("categoriaId"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.CategoriaID = data
 		case "proveedorId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("proveedorId"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14555,7 +13952,7 @@ func (ec *executionContext) unmarshalInputReservaFilter(ctx context.Context, obj
 		switch k {
 		case "clienteId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clienteId"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14603,7 +14000,7 @@ func (ec *executionContext) unmarshalInputReservaInput(ctx context.Context, obj 
 		switch k {
 		case "clienteId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clienteId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14658,14 +14055,14 @@ func (ec *executionContext) unmarshalInputReservaServicioInput(ctx context.Conte
 		switch k {
 		case "reservaId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reservaId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ReservaID = data
 		case "servicioId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("servicioId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14706,14 +14103,14 @@ func (ec *executionContext) unmarshalInputServicioFilter(ctx context.Context, ob
 		switch k {
 		case "categoriaId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("categoriaId"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.CategoriaID = data
 		case "proveedorId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("proveedorId"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14775,14 +14172,14 @@ func (ec *executionContext) unmarshalInputServicioInput(ctx context.Context, obj
 		switch k {
 		case "proveedorId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("proveedorId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ProveedorID = data
 		case "categoriaId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("categoriaId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14851,14 +14248,14 @@ func (ec *executionContext) unmarshalInputServicioSearchInput(ctx context.Contex
 			it.Q = data
 		case "categoriaId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("categoriaId"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.CategoriaID = data
 		case "proveedorId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("proveedorId"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14920,14 +14317,14 @@ func (ec *executionContext) unmarshalInputServicioUbicacionInput(ctx context.Con
 		switch k {
 		case "servicioId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("servicioId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ServicioID = data
 		case "ubicacionId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ubicacionId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -15946,65 +15343,6 @@ func (ec *executionContext) _Proveedor(ctx context.Context, sel ast.SelectionSet
 	return out
 }
 
-var proveedorProfileImplementors = []string{"ProveedorProfile"}
-
-func (ec *executionContext) _ProveedorProfile(ctx context.Context, sel ast.SelectionSet, obj *model.ProveedorProfile) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, proveedorProfileImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("ProveedorProfile")
-		case "proveedor":
-			out.Values[i] = ec._ProveedorProfile_proveedor(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "totalServicios":
-			out.Values[i] = ec._ProveedorProfile_totalServicios(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "ingresosTotales":
-			out.Values[i] = ec._ProveedorProfile_ingresosTotales(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "promedioCalificacion":
-			out.Values[i] = ec._ProveedorProfile_promedioCalificacion(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "topServicios":
-			out.Values[i] = ec._ProveedorProfile_topServicios(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
 var puntoTendenciaImplementors = []string{"PuntoTendencia"}
 
 func (ec *executionContext) _PuntoTendencia(ctx context.Context, sel ast.SelectionSet, obj *model.PuntoTendencia) graphql.Marshaler {
@@ -16650,94 +15988,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_tendenciasSatisfaccion(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "searchServicios":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_searchServicios(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "serviciosBusquedaAvanzada":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_serviciosBusquedaAvanzada(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "proveedorPerfil":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_proveedorPerfil(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "reservasPorProveedor":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_reservasPorProveedor(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -18228,22 +17478,6 @@ func (ec *executionContext) unmarshalNFotoServicioInput2githubᚗcomᚋMarlonX�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNID2string(ctx context.Context, v any) (string, error) {
-	res, err := graphql.UnmarshalID(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	_ = sel
-	res := graphql.MarshalID(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
-}
-
 func (ec *executionContext) unmarshalNInt2int32(ctx context.Context, v any) (int32, error) {
 	res, err := graphql.UnmarshalInt32(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -18398,20 +17632,6 @@ func (ec *executionContext) marshalNProveedor2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5t
 func (ec *executionContext) unmarshalNProveedorInput2githubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐProveedorInput(ctx context.Context, v any) (model.ProveedorInput, error) {
 	res, err := ec.unmarshalInputProveedorInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNProveedorProfile2githubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐProveedorProfile(ctx context.Context, sel ast.SelectionSet, v model.ProveedorProfile) graphql.Marshaler {
-	return ec._ProveedorProfile(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNProveedorProfile2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐProveedorProfile(ctx context.Context, sel ast.SelectionSet, v *model.ProveedorProfile) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._ProveedorProfile(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNPuntoTendencia2ᚕᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐPuntoTendenciaᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.PuntoTendencia) graphql.Marshaler {
@@ -19574,24 +18794,6 @@ func (ec *executionContext) marshalOFotoServicio2ᚕᚖgithubᚗcomᚋMarlonXᚑ
 	return ret
 }
 
-func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v any) (*string, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalID(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	_ = sel
-	_ = ctx
-	res := graphql.MarshalID(*v)
-	return res
-}
-
 func (ec *executionContext) unmarshalOInt2ᚖint32(ctx context.Context, v any) (*int32, error) {
 	if v == nil {
 		return nil, nil
@@ -19911,30 +19113,6 @@ func (ec *executionContext) unmarshalOServicioFilter2ᚖgithubᚗcomᚋMarlonX�
 	}
 	res, err := ec.unmarshalInputServicioFilter(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalOServicioSearchInput2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioSearchInput(ctx context.Context, v any) (*model.ServicioSearchInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputServicioSearchInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalOServicioSort2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioSort(ctx context.Context, v any) (*model.ServicioSort, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(model.ServicioSort)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOServicioSort2ᚖgithubᚗcomᚋMarlonXᚑaᚋ5toA_Proyecto_Autonomo_Apps_Ser_webᚋGolangᚋgraphᚋmodelᚐServicioSort(ctx context.Context, sel ast.SelectionSet, v *model.ServicioSort) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
 }
 
 func (ec *executionContext) unmarshalOString2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {

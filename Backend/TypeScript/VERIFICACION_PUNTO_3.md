@@ -201,12 +201,7 @@ npm run start:dev
 - URL: http://localhost:4000/dashboard.html
 - API: http://localhost:4000/dashboard
 
-### Ejecutar clientes de prueba:
-```bash
-npm run test:clients
-```
 
----
 
 ## ⚠️ ERRORES ESPERADOS
 

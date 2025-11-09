@@ -637,8 +637,6 @@ func (c *DummyRestClient) GetUser(ctx context.Context, id string) (*model.User, 
 // buildURL builds a URL for the servicios endpoint with query params from filter/pagination
 func (c *DummyRestClient) buildServiciosURL(filter *model.ServicioFilter, pagination *model.Pagination) string {
 	u, _ := url.Parse(c.BaseURL)
-	// assume Django REST endpoint at /api/servicios/
-	// url.JoinPath returns (string, error) in Go 1.20+. Use simple join to remain compatible.
 	if u.Path == "/" || u.Path == "" {
 		u.Path = "/api_rest/api/v1/servicio"
 	} else {
@@ -647,10 +645,10 @@ func (c *DummyRestClient) buildServiciosURL(filter *model.ServicioFilter, pagina
 	q := u.Query()
 	if filter != nil {
 		if filter.CategoriaID != nil {
-			q.Set("categoriaId", *filter.CategoriaID)
+			q.Set("categoria_id", strconv.Itoa(int(*filter.CategoriaID)))
 		}
 		if filter.ProveedorID != nil {
-			q.Set("proveedorId", *filter.ProveedorID)
+			q.Set("proveedor_id", strconv.Itoa(int(*filter.ProveedorID)))
 		}
 		if filter.Ciudad != nil {
 			q.Set("ciudad", *filter.Ciudad)
@@ -944,7 +942,7 @@ func (c *DummyRestClient) ListReservas(ctx context.Context, filter *model.Reserv
 	q := u.Query()
 	if filter != nil {
 		if filter.ClienteID != nil {
-			q.Set("clienteId", *filter.ClienteID)
+			q.Set("clienteId", strconv.Itoa(int(*filter.ClienteID)))
 		}
 		if filter.Estado != nil {
 			q.Set("estado", *filter.Estado)
@@ -1004,6 +1002,7 @@ func (c *DummyRestClient) GetReserva(ctx context.Context, id string) (*model.Res
 	return &r, nil
 }
 
+// /
 func (c *DummyRestClient) ListClientes(ctx context.Context, pagination *model.Pagination) ([]*model.Cliente, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
@@ -1585,10 +1584,10 @@ func (c *DummyRestClient) ReporteVentas(ctx context.Context, filter *model.Repor
 			q.Set("fechaHasta", *filter.FechaHasta)
 		}
 		if filter.CategoriaID != nil {
-			q.Set("categoriaId", *filter.CategoriaID)
+			q.Set("categoriaId", strconv.Itoa(int(*filter.CategoriaID)))
 		}
 		if filter.ProveedorID != nil {
-			q.Set("proveedorId", *filter.ProveedorID)
+			q.Set("proveedorId", strconv.Itoa(int(*filter.ProveedorID)))
 		}
 		if filter.Ciudad != nil {
 			q.Set("ciudad", *filter.Ciudad)

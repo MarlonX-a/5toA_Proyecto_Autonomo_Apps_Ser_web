@@ -57,6 +57,10 @@ export function HomePage() {
               <button onClick={handleMisTrabajos}>
                 {rol === "proveedor" ? "Mis trabajos" : "Mis reservas"}
               </button>
+
+              <button onClick={() => navigate("/categorias")}>
+                Categorías
+              </button>
             </>
           ) : (
             <>

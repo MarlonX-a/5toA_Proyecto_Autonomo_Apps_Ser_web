@@ -645,10 +645,10 @@ func (c *DummyRestClient) buildServiciosURL(filter *model.ServicioFilter, pagina
 	q := u.Query()
 	if filter != nil {
 		if filter.CategoriaID != nil {
-			q.Set("categoriaId", strconv.Itoa(int(*filter.CategoriaID)))
+			q.Set("categoria_id", strconv.Itoa(int(*filter.CategoriaID)))
 		}
 		if filter.ProveedorID != nil {
-			q.Set("proveedorId", strconv.Itoa(int(*filter.ProveedorID)))
+			q.Set("proveedor_id", strconv.Itoa(int(*filter.ProveedorID)))
 		}
 		if filter.Ciudad != nil {
 			q.Set("ciudad", *filter.Ciudad)

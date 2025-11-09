@@ -137,15 +137,18 @@ class ServicioViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        # Puedes filtrar por parámetro query ?proveedor_id=5
-        proveedor_id = self.request.query_params.get("proveedor_id")
+        user = self.request.user
 
+        # Parámetro opcional: solo mostrar los servicios del proveedor conectado
+        solo_mios = self.request.query_params.get("solo_mios")
+
+        if solo_mios == "true" and hasattr(user, "proveedor"):
+            queryset = queryset.filter(proveedor=user.proveedor)
+
+        # También puedes filtrar por proveedor_id específico si se pasa
+        proveedor_id = self.request.query_params.get("proveedor_id")
         if proveedor_id:
             queryset = queryset.filter(proveedor_id=proveedor_id)
-        else:
-            user = self.request.user
-            if hasattr(user, "proveedor"):
-                queryset = queryset.filter(proveedor=user.proveedor)
 
         return queryset
 
@@ -155,6 +158,7 @@ class ServicioViewSet(viewsets.ModelViewSet):
             serializer.save(proveedor=user.proveedor)
         else:
             serializer.save()
+
 
 
 class ServicioUbicacionView(viewsets.ModelViewSet):

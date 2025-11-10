@@ -2,17 +2,20 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import type { Iservicio } from "../../interfaces/servicio";
 import { graphQLRequest } from "../../api/graphql";
-import { QUERY_SERVICIOS } from "../../api/graphqlQueries";
+import { QUERY_SERVICIOS, QUERY_CATEGORIAS } from "../../api/graphqlQueries";
 import "../../App.css";
 
 export function ServiciosCliente() {
   const [servicios, setServicios] = useState<Iservicio[]>([]);
+  const [categorias, setCategorias] = useState<{ id: number; nombre: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
+  // Cargar servicios filtrados por categoría
   useEffect(() => {
     async function loadServicios() {
       const token = localStorage.getItem("token");
@@ -43,24 +46,47 @@ export function ServiciosCliente() {
           duracion: s.duracion ?? "",
           rating_promedio: s.ratingPromedio ?? 0,
           precio: Number(s.precio ?? 0),
-    }));
+        }));
 
-    setServicios(mapped);
-  } catch (err) {
-    console.error("Error al cargar los servicios: ", err);
-    setError("No se pudieron cargar los servicios desde GraphQL");
-  } finally {
-    setLoading(false);
-  }
-}
-
+        setServicios(mapped);
+      } catch (err) {
+        console.error("Error al cargar los servicios: ", err);
+        setError("No se pudieron cargar los servicios desde GraphQL");
+      } finally {
+        setLoading(false);
+      }
+    }
 
     loadServicios();
   }, [searchParams]);
 
+  // Cargar categorías para el combobox
+  useEffect(() => {
+    async function loadCategorias() {
+      try {
+        const data = await graphQLRequest<{ categorias: any[] }>({
+          query: QUERY_CATEGORIAS,
+          variables: { pagination: { limit: 100, offset: 0 } }
+        });
+
+        setCategorias(
+          data.categorias.map((c) => ({
+            id: c.id,
+            nombre: c.nombre
+          }))
+        );
+      } catch (err) {
+        console.error("Error cargando categorías:", err);
+      }
+    }
+
+    loadCategorias();
+  }, []);
+
   if (loading) return <p style={{ textAlign: "center" }}>Cargando servicios...</p>;
   if (error) return <p style={{ color: "#f44336", textAlign: "center" }}>{error}</p>;
 
+  // Filtro por texto
   const filteredServicios = servicios.filter((servicio) =>
     servicio.nombre_servicio.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -69,6 +95,29 @@ export function ServiciosCliente() {
     <div className="homepage-container">
       <h1>Servicios Disponibles</h1>
 
+      {/* ComboBox para filtrar por categoría */}
+      <select
+        value={searchParams.get("categoria") || ""}
+        onChange={(e) => {
+          const categoriaId = e.target.value;
+
+          if (categoriaId) {
+            navigate(`?categoria=${categoriaId}`);
+          } else {
+            navigate("");
+          }
+        }}
+        style={{ marginBottom: "1rem", padding: "0.5rem" }}
+      >
+        <option value="">Todas las categorías</option>
+        {categorias.map((cat) => (
+          <option key={cat.id} value={cat.id}>
+            {cat.nombre}
+          </option>
+        ))}
+      </select>
+
+      {/* Buscador interno */}
       <input
         type="text"
         placeholder="Buscar servicios..."
@@ -77,6 +126,7 @@ export function ServiciosCliente() {
         style={{ marginBottom: "1rem" }}
       />
 
+      {/* Lista de servicios */}
       <div className="card-container">
         {filteredServicios.map((servicio) => (
           <div key={servicio.id} className="card">

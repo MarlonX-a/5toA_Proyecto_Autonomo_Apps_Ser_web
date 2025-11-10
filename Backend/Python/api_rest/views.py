@@ -150,6 +150,11 @@ class ServicioViewSet(viewsets.ModelViewSet):
         if proveedor_id:
             queryset = queryset.filter(proveedor_id=proveedor_id)
 
+        #Esto ayudará para realizar los filtros dentro de "todos los servicios"
+        categoria_id = self.request.query_params.get("categoria_id")
+        if categoria_id:
+            queryset = queryset.filter(categoria_id=categoria_id)
+
         return queryset
 
     def perform_create(self, serializer):
@@ -158,6 +163,7 @@ class ServicioViewSet(viewsets.ModelViewSet):
             serializer.save(proveedor=user.proveedor)
         else:
             serializer.save()
+
 
 
 

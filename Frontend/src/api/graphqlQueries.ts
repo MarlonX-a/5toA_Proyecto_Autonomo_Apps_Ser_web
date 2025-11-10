@@ -36,3 +36,4 @@ export const QUERY_CATEGORIAS = `
 `;
 
 
+

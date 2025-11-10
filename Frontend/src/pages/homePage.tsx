@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUsers } from "../api/usersApi";
+import { getCategorias } from "../api/categoria";
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -8,27 +9,29 @@ export function HomePage() {
 
   const [rol, setRol] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [categorias, setCategorias] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
-    async function loadUser() {
+    async function loadData() {
       try {
-        const res = await getUsers(token);
-        console.log("Usuario cargado:", res.data);
-        setRol(res.data.rol); // "cliente" o "proveedor"
+        if (token) {
+          const res = await getUsers(token);
+          setRol(res.data.rol);
+        }
+
+        const catRes = await getCategorias();
+        setCategorias(catRes.categorias);   // ✅ Importante
       } catch (err) {
-        console.error("Error cargando usuario:", err);
+        console.error("Error cargando datos:", err);
+        console.log("Categorias recibidas:", categorias);
       } finally {
         setLoading(false);
       }
     }
 
-    loadUser();
+    loadData();
   }, [token]);
+
 
   if (loading) return <p>Cargando...</p>;
 
@@ -42,11 +45,16 @@ export function HomePage() {
     }
   };
 
+  const abrirCategoria = (catId: number) => {
+    navigate(`/todos-servicios?categoria=${catId}`);
+  };
+
   return (
     <div className="homepage-container">
       <section className="banner">
         <h1>FindYourWork</h1>
         <p>Encuentra y contrata los mejores servicios profesionales cerca de ti.</p>
+
         <div className="banner-buttons">
           {token ? (
             <>
@@ -71,14 +79,25 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Sección de categorías */}
+      {/* CATEGORÍAS DESDE BASE DE DATOS */}
       <section className="categories">
         <h2>Categorías populares</h2>
+
         <div className="category-list">
-          <div className="category-card">Desarrollo</div>
-          <div className="category-card">Diseño</div>
-          <div className="category-card">Administración</div>
-          <div className="category-card">Marketing</div>
+          {categorias.length === 0 ? (
+            <p>No hay categorías registradas.</p>
+          ) : (
+            categorias.map(cat => (
+              <div
+                key={cat.id}
+                className="category-card"
+                onClick={() => abrirCategoria(cat.id)}
+                style={{ cursor: "pointer" }}
+              >
+                {cat.nombre}
+              </div>
+            ))
+          )}
         </div>
       </section>
     </div>

@@ -24,34 +24,36 @@ export function ServiciosCliente() {
 
       try {
         const categoriaParam = searchParams.get("categoria");
-        const categoriaId = categoriaParam ? Number(categoriaParam) : undefined;
+        const categoriaId = categoriaParam ? Number(categoriaParam) : null;
+
         const data = await graphQLRequest<{ servicios: any[] }>({
           query: QUERY_SERVICIOS,
           variables: {
             filter: categoriaId ? { categoriaId } : null,
-            pagination: { limit: 50, offset: 0 },
+            pagination: { limit: 50, offset: 0 }
           },
           token,
         });
 
-        const mapped: Iservicio[] = (data.servicios || []).map((s) => ({
+        const mapped: Iservicio[] = data.servicios.map((s) => ({
           id: s.id,
           categoria: { id: s.categoria?.id, nombre: s.categoria?.nombre },
           nombre_servicio: s.nombreServicio,
-          descripcion: s.descripcion ?? null,
-          duracion: s.duracion ?? null,
+          descripcion: s.descripcion ?? "",
+          duracion: s.duracion ?? "",
           rating_promedio: s.ratingPromedio ?? 0,
           precio: Number(s.precio ?? 0),
-        }));
+    }));
 
-        setServicios(mapped);
-      } catch (err) {
-        console.error("Error al cargar los servicios: ", err);
-        setError("No se pudieron cargar los servicios desde GraphQL");
-      } finally {
-        setLoading(false);
-      }
-    }
+    setServicios(mapped);
+  } catch (err) {
+    console.error("Error al cargar los servicios: ", err);
+    setError("No se pudieron cargar los servicios desde GraphQL");
+  } finally {
+    setLoading(false);
+  }
+}
+
 
     loadServicios();
   }, [searchParams]);

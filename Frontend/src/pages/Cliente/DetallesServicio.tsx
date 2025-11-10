@@ -4,7 +4,6 @@ import { getServicioById } from "../../api/servicio";
 import { getFotosByServicio } from "../../api/foto";
 import type { Iservicio } from "../../interfaces/servicio";
 import type { Ifoto } from "../../interfaces/foto";
-import "../../App.css";
 
 export function ServicioDetalles() {
   const { id } = useParams<{ id: string }>();
@@ -37,57 +36,47 @@ export function ServicioDetalles() {
     loadData();
   }, [id, token]);
 
-  if (loading) return <p style={{ textAlign: "center" }}>Cargando detalles...</p>;
-  if (error) return <p style={{ color: "#f44336", textAlign: "center" }}>{error}</p>;
-  if (!servicio) return <p>No se encontró el servicio.</p>;
+  if (loading) return <p className="loading">Cargando detalles...</p>;
+  if (error) return <p className="error">{error}</p>;
+  if (!servicio) return <p className="empty">No se encontró el servicio.</p>;
 
   return (
-    <div className="homepage-container">
-      <h2>{servicio.nombre_servicio}</h2>
-      <p><strong>Descripción:</strong> {servicio.descripcion}</p>
-      <p><strong>Duración:</strong> {servicio.duracion || "No especificada"}</p>
-      <p><strong>Categoría:</strong> {servicio.categoria?.nombre || "Sin categoría"}</p>
-      <p><strong>Rating promedio:</strong> {servicio.rating_promedio.toFixed(1)} ⭐</p>
-      <p><strong>Precio: </strong>{servicio.precio}</p>
+    <div className="servicio-detalles-container">
+      <h2 className="titulo">{servicio.nombre_servicio}</h2>
 
-      <h3>📸 Fotos del servicio</h3>
-      <div className="card-container">
+      <div className="info-card">
+        <p><strong>Descripción:</strong> {servicio.descripcion}</p>
+        <p><strong>Duración:</strong> {servicio.duracion || "No especificada"}</p>
+        <p><strong>Categoría:</strong> {servicio.categoria?.nombre || "Sin categoría"}</p>
+        <p><strong>Rating promedio:</strong> ⭐ {servicio.rating_promedio.toFixed(1)}</p>
+        <p><strong>Precio:</strong> ${servicio.precio}</p>
+      </div>
+
+      <h3 className="subtitulo">📸 Fotos del servicio</h3>
+      <div className="fotos-grid">
         {fotos.length > 0 ? (
           fotos.map((foto) => (
-            <div key={foto.id} className="card">
-              <img
-                src={foto.url_foto}
-                alt="Foto del servicio"
-                style={{ width: "100%", borderRadius: "10px" }}
-              />
+            <div key={foto.id} className="foto-card">
+              <img src={foto.url_foto} alt="Foto del servicio" />
               {foto.descripcion && <p>{foto.descripcion}</p>}
             </div>
           ))
         ) : (
-          <p>No hay fotos disponibles.</p>
+          <p className="empty">No hay fotos disponibles.</p>
         )}
       </div>
 
-      <button
-        style={{ marginTop: "1rem" }}
-        onClick={() => navigate(`/todos-servicios/${id}/comentarios`)}
-      >
-        Ver Comentarios
-      </button>
-        <br />
-      <button
-        style={{ marginTop: "1rem" }}
-        onClick={() => navigate(`/todos-servicios/${id}/calificaciones`)}
-      >
-        Ver Calificaciones
-      </button>
-        <br />
-      <button
-        style={{ marginTop: "1rem" }}
-        onClick={() => navigate(`/todos-servicios/${id}/reservaServicio`)}
-      >
-        Agregar a la reserva
-      </button>
+      <div className="botones-container">
+        <button className="btn blue" onClick={() => navigate(`/todos-servicios/${id}/comentarios`)}>
+          Ver Comentarios
+        </button>
+        <button className="btn yellow" onClick={() => navigate(`/todos-servicios/${id}/calificaciones`)}>
+          Ver Calificaciones
+        </button>
+        <button className="btn green" onClick={() => navigate(`/todos-servicios/${id}/reservaServicio`)}>
+          Agregar a la reserva
+        </button>
+      </div>
     </div>
   );
 }

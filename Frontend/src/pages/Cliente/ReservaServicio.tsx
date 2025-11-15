@@ -9,7 +9,7 @@ import type { IreservaServicio } from "../../interfaces/reservaServicio";
 
 export function ReservaServicio() {
   const [reservas, setReservas] = useState<Ireserva[]>([]);
-  const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
+  const token = useState<string | null>(localStorage.getItem("token"))[0];
   const [initialData, setInitialData] = useState<Partial<IreservaServicio>>({});
   const navigate = useNavigate();
 
@@ -97,8 +97,9 @@ export function ReservaServicio() {
       } else {
         await createReservaServicio(modifiedData as IreservaServicio, token);
         alert("✅ Reserva de servicio creada correctamente");
+        
       }
-      navigate("/servicios/reserva-list/");
+      navigate("/servicios/reserva-list/reservados/23");
     } catch (err) {
       console.error("Error al guardar reserva de servicio:", err);
       alert("❌ No se pudo guardar la reserva de servicio");

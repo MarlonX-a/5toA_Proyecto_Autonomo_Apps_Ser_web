@@ -15,6 +15,13 @@ export const getReservaServiciosByReserva = (reservaId: number, token: string) =
   ReservaServicioApi.get(`/?reserva_id=${reservaId}`, {
     headers: { Authorization: `Token ${token}` },
   });
+
+export const getReservaServiciosByProveedor = (proveedorId: number, token: string) =>
+  ReservaServicioApi.get(`/?proveedor_id=${proveedorId}`, {
+    headers: { Authorization: `Token ${token}` },
+  });
+
+  
 export const updateReservaServicio = (id: number, data: Partial<IreservaServicio>, token: string) => ReservaServicioApi.patch(`/${id}/`, data, {headers: { Authorization: `Token ${token}` },});
 
 export const getReservaServicioById = (id: number, token: string) =>

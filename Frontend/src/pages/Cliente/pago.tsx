@@ -4,7 +4,7 @@ import type { Ireserva } from "../../interfaces/reserva";
 import { useForm } from "react-hook-form";
 import type { Ipago } from "../../interfaces/pago";
 import { getReserva } from "../../api/reserva";
-import { createPago } from "../../api/pago";
+import { createPago, markPagoAsPagado } from "../../api/pago";
 
 export default function Pago() {
   const { id } = useParams();
@@ -14,6 +14,8 @@ export default function Pago() {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [pagoId, setPagoId] = useState<number | null>(null);
+  const [simulandoPago, setSimulandoPago] = useState(false);
 
   const {
     register,
@@ -50,21 +52,37 @@ export default function Pago() {
     if (!token || !reserva) return;
 
     const pagoData = {
-      reserva_id: reserva.id,
+      reserva_id: reserva.id ?? 0,
       monto: reserva.total_estimado,
-      estado: "pendiente",
+      estado: "pendiente" as const,
       metodo_pago: data.metodo_pago,
       referencia: data.referencia || "",
       fecha_pago: new Date().toISOString(),
     };
 
     try {
-      await createPago(pagoData, token);
+      const res = await createPago(pagoData, token);
+      setPagoId(res.data.id);
       alert("Pago registrado exitosamente ✅");
-      navigate("/servicios/reserva-list/");
     } catch (err: any) {
       console.error("Error registrando pago:", err.response?.data || err);
       alert("Error al registrar el pago. Revisa los datos.");
+    }
+  };
+
+  const handleSimularPago = async () => {
+    if (!token || !pagoId) return;
+    
+    setSimulandoPago(true);
+    try {
+      await markPagoAsPagado(pagoId, token);
+      alert("Pago simulado como pagado ✅ La reserva debe estar confirmada ahora.");
+      setTimeout(() => navigate("/servicios/reserva-list/"), 1500);
+    } catch (err: any) {
+      console.error("Error simulando pago:", err.response?.data || err);
+      alert("Error al simular el pago.");
+    } finally {
+      setSimulandoPago(false);
     }
   };
 
@@ -110,6 +128,30 @@ export default function Pago() {
 
         <button type="submit">Registrar Pago</button>
       </form>
+
+      {pagoId && (
+        <div style={{ maxWidth: "400px", margin: "2rem auto", textAlign: "center" }}>
+          <p style={{ fontWeight: 600 }}>✅ Pago registrado (pendiente)</p>
+          <button
+            onClick={handleSimularPago}
+            disabled={simulandoPago}
+            style={{
+              backgroundColor: "#2196F3",
+              color: "#fff",
+              padding: "0.75rem 1.5rem",
+              border: "none",
+              borderRadius: "4px",
+              cursor: simulandoPago ? "not-allowed" : "pointer",
+              opacity: simulandoPago ? 0.6 : 1,
+            }}
+          >
+            {simulandoPago ? "Simulando..." : "Simular Pago (Testing)"}
+          </button>
+          <p style={{ fontSize: "0.85rem", color: "#666", marginTop: "1rem" }}>
+            🧪 En producción, aquí se integraría una pasarela de pago real.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

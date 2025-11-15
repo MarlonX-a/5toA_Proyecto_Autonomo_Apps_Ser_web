@@ -134,7 +134,7 @@ export function ServiciosCliente() {
             <p><strong>Categoría:</strong> {servicio.categoria?.nombre || "Sin categoría"}</p>
             <p><strong>Descripción:</strong> {servicio.descripcion}</p>
             <p><strong>Duración:</strong> {servicio.duracion || "No especificada"}</p>
-            <p><strong>Rating:</strong> {servicio.rating_promedio.toFixed(1)} ⭐</p>
+            <p><strong>Rating:</strong> {(servicio.rating_promedio ?? 0).toFixed(1)} ⭐</p>
 
             <button onClick={() => navigate(`/todos-servicios/${servicio.id}`)}>
               Ver detalles

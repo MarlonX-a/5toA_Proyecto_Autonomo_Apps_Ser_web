@@ -49,10 +49,10 @@ export function ReservaPage() {
 
     const reservaData = {
       cliente_id: cliente.id,
-      fecha: new Date(data.fecha as string).toISOString().split("T")[0], // ✅ "YYYY-MM-DD"
+      fecha: new Date(data.fecha as string).toISOString().split("T")[0],
       hora: horaFormateada,
-      total_estimado: Number(total) || 0, // si da error, usa 0
-      estado: "pendiente",
+      total_estimado: Number(total) || 0,
+      estado: "pendiente" as const,
     };
 
     console.log("Datos de reserva a enviar:", reservaData);
@@ -94,15 +94,6 @@ export function ReservaPage() {
           {errors.hora && <span>{errors.hora.message}</span>}
         </div>
 
-        <div>
-          <label>Total estimado:</label>
-          <input
-            type="number"
-            step="0.01"
-            value={total}
-            readOnly 
-          />
-        </div>
 
         <button type="submit">Crear Reserva</button>
       </form>

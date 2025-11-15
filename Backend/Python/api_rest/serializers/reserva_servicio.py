@@ -21,6 +21,7 @@ class ReservaServicioSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReservaServicio
         fields = '__all__'
+        
 
         def validate_reserva(self, value):
             if not value or not models.Reserva.objects.filter(id=value.id).exists():

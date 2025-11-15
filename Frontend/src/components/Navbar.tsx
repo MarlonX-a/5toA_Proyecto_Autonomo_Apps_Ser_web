@@ -1,12 +1,20 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { useContext, useEffect, useState } from 'react';
 import { getUsers } from '../api/usersApi';
-import { Home, LogIn, UserPlus, LogOut, User, LayoutDashboard } from 'lucide-react';
+import {
+  Home,
+  LogIn,
+  UserPlus,
+  LogOut,
+  User,
+  LayoutDashboard,
+} from 'lucide-react';
 
 export function Navbar() {
   const { token, logout } = useContext(AuthContext);
   const [rol, setRol] = useState('');
+  const location = useLocation(); // para detectar la ruta actual
 
   useEffect(() => {
     async function loadCliente() {
@@ -21,6 +29,7 @@ export function Navbar() {
     }
     loadCliente();
   }, [token]);
+
 
   return (
     <nav className="navbar">
@@ -49,6 +58,7 @@ export function Navbar() {
           </>
         ) : (
           <>
+            {/* Panel Proveedor */}
             {rol === 'proveedor' && (
               <li>
                 <Link to="/proveedor/dashboard">
@@ -57,12 +67,24 @@ export function Navbar() {
                 </Link>
               </li>
             )}
+
+            {/* Panel Cliente */}
+            {rol === 'cliente' && (
+              <li>
+                <Link to="/cliente/dashboard">
+                  <LayoutDashboard size={18} />
+                  <span>Mi Panel</span>
+                </Link>
+              </li>
+            )}
+
             <li>
               <Link to="/profile">
                 <User size={18} />
                 <span>Perfil</span>
               </Link>
             </li>
+
             <li>
               <button className="logout-btn" onClick={logout}>
                 <LogOut size={18} />

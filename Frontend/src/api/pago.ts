@@ -6,3 +6,5 @@ const pagoApi = axios.create({
 })
 
 export const createPago = (pago: Ipago, token: string) => pagoApi.post("/", pago, {headers: {Authorization: `Token ${token}`}})
+
+export const markPagoAsPagado = (pagoId: number, token: string) => pagoApi.post(`/${pagoId}/mark_pagado/`, {}, {headers: {Authorization: `Token ${token}`}})

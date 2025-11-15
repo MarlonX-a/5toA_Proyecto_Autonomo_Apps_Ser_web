@@ -14,7 +14,7 @@ const profileApi = axios.create({
     baseURL: "http://127.0.0.1:8000/api_rest/profile/"
 });
 
-export const getUsers = (token: string) => profileApi.get("/", { headers: { Authorization: `Token ${token}` } });
+export const getUsers = (token: string | null) => profileApi.get("/", { headers: { Authorization: `Token ${token}` } });
 
 export const getCliente = (id: number) => clienteApi.get(`/${id}/`);
 export const updateCliente = (id: number, cliente: Partial<IclienteRegister>, token: string) =>

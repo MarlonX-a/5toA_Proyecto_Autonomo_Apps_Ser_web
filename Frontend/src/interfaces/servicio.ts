@@ -4,7 +4,9 @@ import type { Ifoto } from "./foto";
 
 export interface Iservicio {
     id?: number;
-    categoria: Icategoria;
+    categoria?: Icategoria;
+    categoria_id?: number;
+    proveedor_id?: number;
     nombre_servicio: string;
     descripcion?: string | null;
     duracion?: string | null;

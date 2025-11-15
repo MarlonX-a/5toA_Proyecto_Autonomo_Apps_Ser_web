@@ -19,7 +19,7 @@ export function ServicioReservaList() {
 
     // Sumar precios (convertidos a número)
     const montoTotal = serviciosActuales.reduce((acc, s) => {
-      const precio = parseFloat(s.servicio?.precio || "0");
+      const precio = parseFloat(String(s.servicio?.precio || "0"));
       return acc + (isNaN(precio) ? 0 : precio);
     }, 0);
 
@@ -39,7 +39,7 @@ export function ServicioReservaList() {
     async function loadServicios() {
       setLoading(true);
       try {
-        const res = await getReservaServiciosByReserva(Number(reserva_id), token);
+        const res = await getReservaServiciosByReserva(Number(reserva_id), token ?? "");
         console.log("Servicios cargados:", res.data);
         setServicios(res.data);
 
@@ -90,6 +90,7 @@ export function ServicioReservaList() {
   if (loading) return <p>Cargando servicios de la reserva...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
   if (servicios.length === 0) return <p>No hay servicios asignados a esta reserva</p>;
+  const hayConfirmadas = servicios.some(s => s.estado === 'confirmada');
 
   return (
     <div style={{ maxWidth: "800px", margin: "2rem auto" }}>
@@ -108,12 +109,13 @@ export function ServicioReservaList() {
           <p><strong>Fecha del servicio:</strong> {servicio.fecha_servicio}</p>
           <p><strong>Hora:</strong> {servicio.hora_servicio}</p>
           <p><strong>Precio:</strong> ${servicio.servicio?.precio}</p>
+          <p><strong>Estado del servicio:</strong> <span style={{ fontWeight: 700 }}>{(servicio.estado ?? 'pendiente').toUpperCase()}</span></p>
 
-          <button onClick={() => handleEdit(servicio.id)} style={{ marginRight: "1rem" }}>
+          <button onClick={() => handleEdit(servicio.id ?? 0)} style={{ marginRight: "1rem" }}>
             Editar
           </button>
           <button
-            onClick={() => handleDelete(servicio.id)}
+            onClick={() => handleDelete(servicio.id ?? 0)}
             style={{ backgroundColor: "#f44336", color: "#fff" }}
           >
             Eliminar
@@ -123,7 +125,9 @@ export function ServicioReservaList() {
 
       <button
         onClick={() => irAPago(reserva_id)}
-        style={{ backgroundColor: "#4CAF50", color: "#fff", marginTop: "1rem" }}
+        style={{ backgroundColor: hayConfirmadas ? "#4CAF50" : "#9e9e9e", color: "#fff", marginTop: "1rem" }}
+        disabled={!hayConfirmadas}
+        title={!hayConfirmadas ? "No puedes pagar hasta que al menos un proveedor confirme su servicio" : "Pagar reserva"}
       >
         Pagar Reserva
       </button>

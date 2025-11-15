@@ -82,8 +82,6 @@ export class DashboardService {
   }
 
   getEventHistory() {
-    // Aquí podrías implementar un historial de eventos
-    // Por ahora retornamos datos de ejemplo
     return {
       recentEvents: [
         {

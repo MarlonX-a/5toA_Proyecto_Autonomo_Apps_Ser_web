@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { getUsers } from '../../api/usersApi';
 import { getServicioByProveedor } from '../../api/servicio';
-import { getAllReservas } from '../../api/reserva';
-import { createPago } from '../../api/pago';
+// import { getAllReservas } from '../../api/reserva';
+import { getReservaServiciosByProveedor, updateReservaServicio } from '../../api/reservaServicio';
+import { getSocket, authenticateSocket } from '../../websocket/socket';
 
 type Rol = 'cliente' | 'proveedor' | 'admin' | null;
 
@@ -19,9 +20,10 @@ interface Reserva {
   fecha: string;
   hora: string;
   total_estimado: number;
-  estado: 'pendiente' | 'confirmada' | 'cancelada';
+  estado: 'pendiente' | 'confirmada' | 'cancelada' | 'rechazada';
   servicio: number; // servicio_id
   cliente: number; // cliente_id
+  reserva_servicio_id?: number;
 }
 
 export default function DashboardProveedor() {
@@ -34,46 +36,142 @@ export default function DashboardProveedor() {
 
   const token = useMemo(() => localStorage.getItem('token') || '', []);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        if (!token) {
-          setError('No hay token. Inicia sesión.');
-          setLoading(false);
-          return;
-        }
-
-        const perfil = await getUsers(token);
-        const data = perfil.data as { id: number; rol: Rol };
-        setRol(data.rol);
-        if (data.rol !== 'proveedor') {
-          setError('Este panel es solo para proveedores.');
-          setLoading(false);
-          return;
-        }
-
-        setProveedorId(data.id);
-
-        const [servRes, allReservas] = await Promise.all([
-          getServicioByProveedor(data.id, token),
-          getAllReservas(token),
-        ]);
-
-        const svc: Servicio[] = servRes.data || [];
-        setServicios(svc);
-
-        const servicioIds = new Set<number>(svc.map(s => s.id));
-        const resFiltradas: Reserva[] = (allReservas.data || []).filter((r: any) => servicioIds.has(r.servicio));
-        setReservas(resFiltradas);
-      } catch (e: any) {
-        console.error(e);
-        setError(e?.message || 'Error cargando dashboard');
-      } finally {
+  // Función para cargar datos
+  const loadData = useCallback(async () => {
+    try {
+      if (!token) {
+        setError('No hay token. Inicia sesión.');
         setLoading(false);
+        return;
       }
+
+      const perfil = await getUsers(token);
+      const data = perfil.data as { id: number; rol: Rol };
+      setRol(data.rol);
+      if (data.rol !== 'proveedor') {
+        setError('Este panel es solo para proveedores.');
+        setLoading(false);
+        return;
+      }
+
+      setProveedorId(data.id);
+
+      const [servRes, rsByProveedor] = await Promise.all([
+        getServicioByProveedor(data.id, token),
+        getReservaServiciosByProveedor(data.id, token),
+      ]);
+
+      const svc: Servicio[] = servRes.data || [];
+      setServicios(svc);
+
+      // Mapear los ReservaServicio a un formato de reserva simplificado para mostrar
+      const rsList = (rsByProveedor.data || []).map((rs: any) => ({
+        id: rs.reserva?.id ?? rs.id,
+        reserva_servicio_id: rs.id,
+        fecha: rs.reserva?.fecha ?? rs.fecha_servicio,
+        hora: rs.reserva?.hora ?? rs.hora_servicio,
+        total_estimado: rs.reserva?.total_estimado ?? 0,
+        estado: rs.estado,
+        servicio: rs.servicio?.id ?? rs.servicio_id,
+        reserva_obj: rs.reserva,
+      }));
+
+      setReservas(rsList);
+    } catch (e: any) {
+      console.error(e);
+      setError(e?.message || 'Error cargando dashboard');
+    } finally {
+      setLoading(false);
     }
-    load();
   }, [token]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  const handleChangeEstado = async (reservaServicioId: number, nuevoEstado: string) => {
+    if (!token) return;
+  try {
+  await updateReservaServicio(reservaServicioId, { estado: nuevoEstado } as any, token);
+      // refrescar datos
+      await loadData();
+    } catch (err) {
+      console.error('Error cambiando estado:', err);
+      alert('No se pudo cambiar el estado');
+    }
+  };
+
+  // Conexión WebSocket para actualizaciones en tiempo real
+  useEffect(() => {
+    if (!token || !proveedorId || rol !== 'proveedor') return;
+
+    const socket = getSocket();
+    let isConnected = false;
+
+    const setupWebSocket = async () => {
+      try {
+        // Autenticar socket
+        await authenticateSocket({
+          token,
+          userId: proveedorId.toString(),
+          role: 'proveedor',
+        });
+
+        // Unirse a la sala del proveedor
+        socket.emit('join_room', { roomName: `proveedor_${proveedorId}` });
+
+        // Escuchar eventos de reservas
+        socket.on('reservation_created', (data: any) => {
+          console.log('Nueva reserva creada:', data);
+          if (data.data?.proveedorId === proveedorId || data.data?.proveedor_id === proveedorId) {
+            loadData();
+          }
+        });
+
+        socket.on('payment_created', (data: any) => {
+          console.log('Pago creado:', data);
+          if (data.data?.proveedorId === proveedorId || data.data?.proveedor_id === proveedorId) {
+            loadData();
+          }
+        });
+
+        socket.on('comment_created', (data: any) => {
+          console.log('Comentario creado:', data);
+          if (data.data?.proveedorId === proveedorId || data.data?.proveedor_id === proveedorId) {
+            loadData();
+          }
+        });
+
+        // Escuchar eventos generales de la sala del proveedor
+        socket.on('event', (eventData: any) => {
+          console.log('Evento recibido:', eventData);
+          if (eventData.type === 'reservation_created' || 
+              eventData.type === 'payment_created' || 
+              eventData.type === 'comment_created') {
+            if (eventData.data?.proveedorId === proveedorId || 
+                eventData.data?.proveedor_id === proveedorId) {
+              loadData();
+            }
+          }
+        });
+
+        isConnected = true;
+      } catch (error) {
+        console.error('Error conectando WebSocket:', error);
+      }
+    };
+
+    setupWebSocket();
+
+    return () => {
+      if (isConnected) {
+        socket.off('reservation_created');
+        socket.off('payment_created');
+        socket.off('comment_created');
+        socket.off('event');
+      }
+    };
+  }, [token, proveedorId, rol, loadData]);
 
   const totalPendientes = reservas.filter(r => r.estado === 'pendiente').length;
   const totalConfirmadas = reservas.filter(r => r.estado === 'confirmada').length;
@@ -180,12 +278,20 @@ export default function DashboardProveedor() {
               </thead>
               <tbody>
                 {reservas.slice(0, 12).map(r => (
-                  <tr key={r.id} style={{ borderBottom: '1px solid #2c2c2c' }}>
+                  <tr key={r.reserva_servicio_id ?? r.id} style={{ borderBottom: '1px solid #2c2c2c' }}>
                     <td style={{ padding: '0.35rem 0' }}>#{r.id}</td>
                     <td style={{ padding: '0.35rem 0' }}>{r.fecha}</td>
                     <td style={{ padding: '0.35rem 0' }}>{r.hora}</td>
                     <td style={{ padding: '0.35rem 0' }}>${r.total_estimado}</td>
                     <td style={{ padding: '0.35rem 0' }}>{statusPill(r.estado)}</td>
+                    <td style={{ padding: '0.35rem 0' }}>
+                      {r.estado === 'pendiente' && (
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          <button onClick={() => handleChangeEstado(r.reserva_servicio_id ?? r.id, 'confirmada')}>Aceptar</button>
+                          <button onClick={() => handleChangeEstado(r.reserva_servicio_id ?? r.id, 'rechazada')}>Rechazar</button>
+                        </div>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>

@@ -22,6 +22,7 @@ import { CategoriasCliente } from './pages/Cliente/Categorias';
 import Dashboard from './pages/Dashboard';
 import DashboardProveedor from './pages/Proveedor/DashboardProveedor';
 import { Footer } from './components/Footer';
+import DashboardCliente from './pages/Cliente/DashboardCliente';
 
 function App() {
 
@@ -32,7 +33,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/singup" element={<RegisterPage />} />
+          <Route path="/signup" element={<RegisterPage />} />
           <Route path="/mis-servicios" element={<ServiciosProveedor />} />
           <Route path="/todos-servicios" element={<ServiciosCliente />} />
           <Route path="/crear-nuevo-servicio" element={<NuevoServicio />} />
@@ -52,6 +53,7 @@ function App() {
           <Route path="/categorias" element={<CategoriasCliente />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/proveedor/dashboard" element={<DashboardProveedor />} />
+          <Route path="/cliente/dashboard" element={<DashboardCliente />} />
 
         </Routes>
         <Footer />

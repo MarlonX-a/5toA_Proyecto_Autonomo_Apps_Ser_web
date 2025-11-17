@@ -19,7 +19,13 @@ class ProfileView(GenericAPIView):
         user = request.user
         perfil_data = {"user": self.serializer_class(instance=user).data}
 
-        if hasattr(user, "cliente"):
+        # Verificar primero si es administrador (staff o superuser)
+        if user.is_staff or user.is_superuser:
+            perfil_data.update({
+                "id": user.id,
+                "rol": "administrador"
+            })
+        elif hasattr(user, "cliente"):
             cliente = user.cliente
             perfil_data.update({
                 "id": cliente.id,

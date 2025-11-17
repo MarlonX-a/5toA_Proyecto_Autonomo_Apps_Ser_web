@@ -5,6 +5,7 @@ class User(AbstractUser):
     ROLES = [
         ('cliente', 'Cliente'),
         ('proveedor', 'Proveedor'),
+        ('administrador', 'Administrador'),
     ]
     rol = models.CharField(max_length=20, choices=ROLES)
     created_at = models.DateTimeField(auto_now_add=True)

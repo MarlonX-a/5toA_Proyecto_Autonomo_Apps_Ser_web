@@ -23,6 +23,7 @@ import Dashboard from './pages/Dashboard';
 import DashboardProveedor from './pages/Proveedor/DashboardProveedor';
 import { Footer } from './components/Footer';
 import DashboardCliente from './pages/Cliente/DashboardCliente';
+import { AdminDashboard } from './pages/AdminDashboard';
 
 function App() {
 
@@ -54,6 +55,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/proveedor/dashboard" element={<DashboardProveedor />} />
           <Route path="/cliente/dashboard" element={<DashboardCliente />} />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
         </Routes>
         <Footer />

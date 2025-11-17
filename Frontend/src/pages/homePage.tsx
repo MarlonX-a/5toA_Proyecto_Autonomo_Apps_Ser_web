@@ -62,9 +62,15 @@ export function HomePage() {
                 Ver trabajos
               </button>
 
-              <button onClick={handleMisTrabajos}>
-                {rol === "proveedor" ? "Mis trabajos" : "Mis reservas"}
-              </button>
+              {rol === "administrador" ? (
+                <button onClick={() => navigate("/admin-dashboard")}>
+                  Panel de administrador
+                </button>
+              ) : (
+                <button onClick={handleMisTrabajos}>
+                  {rol === "proveedor" ? "Mis trabajos" : "Mis reservas"}
+                </button>
+              )}
 
               <button onClick={() => navigate("/categorias")}>
                 Categorías

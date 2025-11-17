@@ -753,3 +753,46 @@ a:hover {
 .empty {
   color: #ccc;
 }
+
+/* === ADMIN DASHBOARD STYLES === */
+.admin-dashboard {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  color: var(--text-main);
+}
+
+.metric-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid var(--border-color);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(123, 92, 255, 0.2);
+}
+
+.tab:hover {
+  color: var(--accent);
+}
+
+table tbody tr:hover {
+  background: rgba(123, 92, 255, 0.05);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard {
+    padding: 1rem;
+  }
+}

@@ -1,107 +1,82 @@
 package graph
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/MarlonX-a/5toA_Proyecto_Autonomo_Apps_Ser_web/Golang/graph/model"
+	"github.com/shopspring/decimal"
 	"net/http"
 	"net/url"
+	"sort"
 	"strconv"
-
-	"github.com/MarlonX-a/5toA_Proyecto_Autonomo_Apps_Ser_web/Golang/graph/model"
+	"time"
 )
 
 // RestClient defines the interface for REST calls to the Django API
 type RestClient interface {
+
 	// Users
 	GetUser(ctx context.Context, id string) (*model.User, error)
 	ListUsers(ctx context.Context, pagination *model.Pagination) ([]*model.User, error)
-	CreateUser(ctx context.Context, input model.UserInput) (*model.User, error)
-	UpdateUser(ctx context.Context, id string, input model.UserInput) (*model.User, error)
-	DeleteUser(ctx context.Context, id string) (bool, error)
 
 	// ServicioUbicacion
-	CreateServicioUbicacion(ctx context.Context, input model.ServicioUbicacionInput) (*model.ServicioUbicacion, error)
-	UpdateServicioUbicacion(ctx context.Context, id string, input model.ServicioUbicacionInput) (*model.ServicioUbicacion, error)
-	DeleteServicioUbicacion(ctx context.Context, id string) (bool, error)
 	GetServicioUbicacion(ctx context.Context, id string) (*model.ServicioUbicacion, error)
 	ListServicioUbicaciones(ctx context.Context, pagination *model.Pagination) ([]*model.ServicioUbicacion, error)
-	CreateCliente(ctx context.Context, input model.ClienteInput) (*model.Cliente, error)
-	UpdateCliente(ctx context.Context, id string, input model.ClienteInput) (*model.Cliente, error)
-	DeleteCliente(ctx context.Context, id string) (bool, error)
-	CreateProveedor(ctx context.Context, input model.ProveedorInput) (*model.Proveedor, error)
-	UpdateProveedor(ctx context.Context, id string, input model.ProveedorInput) (*model.Proveedor, error)
-	DeleteProveedor(ctx context.Context, id string) (bool, error)
+
+	// Servicio
 	GetServicio(ctx context.Context, id string) (*model.Servicio, error)
+	ListServicios(ctx context.Context, filter *model.ServicioFilterInput, pagination *model.Pagination) ([]*model.Servicio, error)
 
-	// Reservas
-	CreateReserva(ctx context.Context, input model.ReservaInput) (*model.Reserva, error)
-	UpdateReserva(ctx context.Context, id string, input model.ReservaInput) (*model.Reserva, error)
-	DeleteReserva(ctx context.Context, id string) (bool, error)
-
-	// ReservaServicio
-	CreateReservaServicio(ctx context.Context, input model.ReservaServicioInput) (*model.ReservaServicio, error)
-	UpdateReservaServicio(ctx context.Context, id string, input model.ReservaServicioInput) (*model.ReservaServicio, error)
-	DeleteReservaServicio(ctx context.Context, id string) (bool, error)
-
-	// Pagos
-	CreatePago(ctx context.Context, input model.PagoInput) (*model.Pago, error)
-	UpdatePago(ctx context.Context, id string, input model.PagoInput) (*model.Pago, error)
-	DeletePago(ctx context.Context, id string) (bool, error)
-	CreateServicio(ctx context.Context, input model.ServicioInput) (*model.Servicio, error)
-	UpdateServicio(ctx context.Context, id string, input model.ServicioInput) (*model.Servicio, error)
-	DeleteServicio(ctx context.Context, id string) (bool, error)
-	CreateFotoServicio(ctx context.Context, input model.FotoServicioInput) (*model.FotoServicio, error)
-	UpdateFotoServicio(ctx context.Context, id string, input model.FotoServicioInput) (*model.FotoServicio, error)
-	DeleteFotoServicio(ctx context.Context, id string) (bool, error)
-	ListServicios(ctx context.Context, filter *model.ServicioFilter, pagination *model.Pagination) ([]*model.Servicio, error)
+	// Proveedor
 	GetProveedor(ctx context.Context, id string) (*model.Proveedor, error)
 	ListProveedores(ctx context.Context, pagination *model.Pagination) ([]*model.Proveedor, error)
-	ListReservas(ctx context.Context, filter *model.ReservaFilter, pagination *model.Pagination) ([]*model.Reserva, error)
+
+	// Reserva
 	GetReserva(ctx context.Context, id string) (*model.Reserva, error)
-	ListClientes(ctx context.Context, pagination *model.Pagination) ([]*model.Cliente, error)
+	ListReservas(ctx context.Context, filter *model.ReservaFilterInput, pagination *model.Pagination) ([]*model.Reserva, error)
+
+	// Cliente
 	GetCliente(ctx context.Context, id string) (*model.Cliente, error)
-	ListUbicaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Ubicacion, error)
+	ListClientes(ctx context.Context, pagination *model.Pagination) ([]*model.Cliente, error)
+
+	// Ubicacion
 	GetUbicacion(ctx context.Context, id string) (*model.Ubicacion, error)
-	ListCategorias(ctx context.Context, pagination *model.Pagination) ([]*model.Categoria, error)
+	ListUbicaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Ubicacion, error)
+
+	// Categoria
 	GetCategoria(ctx context.Context, id string) (*model.Categoria, error)
+	ListCategorias(ctx context.Context, pagination *model.Pagination) ([]*model.Categoria, error)
+
+	// Calificacion
 	ListCalificaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Calificacion, error)
+
+	// Comentario
 	ListComentarios(ctx context.Context, pagination *model.Pagination) ([]*model.Comentario, error)
-	ListPagos(ctx context.Context, pagination *model.Pagination) ([]*model.Pago, error)
+
+	// Pago
 	GetPago(ctx context.Context, id string) (*model.Pago, error)
+	ListPagos(ctx context.Context, pagination *model.Pagination) ([]*model.Pago, error)
 
-	// CRUD Ubicacion
-	CreateUbicacion(ctx context.Context, input model.UbicacionInput) (*model.Ubicacion, error)
-	UpdateUbicacion(ctx context.Context, id string, input model.UbicacionInput) (*model.Ubicacion, error)
-	DeleteUbicacion(ctx context.Context, id string) (bool, error)
+	// =====================================
+	// REPORTES / MÉTRICAS
+	// =====================================
 
-	// CRUD Categoria
-	CreateCategoria(ctx context.Context, input model.CategoriaInput) (*model.Categoria, error)
-	UpdateCategoria(ctx context.Context, id string, input model.CategoriaInput) (*model.Categoria, error)
-	DeleteCategoria(ctx context.Context, id string) (bool, error)
+	// Reportes generales
+	ReporteVentas(ctx context.Context, pagination *model.Pagination) (*model.ReporteVentas, error)
+	ReporteSatisfaccion(ctx context.Context, pagination *model.Pagination) ([]*model.ReporteSatisfaccion, error)
+	ReporteProveedores(ctx context.Context, pagination *model.Pagination) ([]*model.ReporteProveedor, error)
+	ReporteClientes(ctx context.Context, pagination *model.Pagination) ([]*model.ReporteCliente, error)
+	MetricasGenerales(ctx context.Context, pagination *model.Pagination) (*model.MetricasGenerales, error)
 
-	// CRUD Calificacion
-	CreateCalificacion(ctx context.Context, input model.CalificacionInput) (*model.Calificacion, error)
-	UpdateCalificacion(ctx context.Context, id string, input model.CalificacionInput) (*model.Calificacion, error)
-	DeleteCalificacion(ctx context.Context, id string) (bool, error)
-
-	// CRUD Comentario
-	CreateComentario(ctx context.Context, input model.ComentarioInput) (*model.Comentario, error)
-	UpdateComentario(ctx context.Context, id string, input model.ComentarioInput) (*model.Comentario, error)
-	DeleteComentario(ctx context.Context, id string) (bool, error)
-
-	// Reports / metrics / advanced
-	ReporteVentas(ctx context.Context, filter *model.ReporteFilter) (*model.ReporteVentas, error)
-	ReporteSatisfaccion(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteSatisfaccion, error)
-	ReporteProveedores(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteProveedor, error)
-	ReporteClientes(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteCliente, error)
-	MetricasGenerales(ctx context.Context, filter *model.MetricasFilter) (*model.MetricasGenerales, error)
+	// Listados para reportes específicos
 	ServiciosMasPopulares(ctx context.Context, limit *int32) ([]*model.ServicioVendido, error)
 	ProveedoresMejorCalificados(ctx context.Context, limit *int32) ([]*model.ReporteProveedor, error)
 	ClientesMasActivos(ctx context.Context, limit *int32) ([]*model.ReporteCliente, error)
-	TendenciasVentas(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error)
-	TendenciasSatisfaccion(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error)
+
+	// Datos para gráficos de tendencias
+	TendenciasVentas(ctx context.Context, filter *model.TendenciasFilter, pagination *model.Pagination) ([]*model.PuntoTendencia, error)
+	TendenciasSatisfaccion(ctx context.Context, filter *model.TendenciasFilter, pagination *model.Pagination) ([]*model.PuntoTendencia, error)
 }
 
 // DummyRestClient is a minimal implementation that can be replaced by a real HTTP client.
@@ -114,6 +89,7 @@ func NewDummyRestClient(baseURL string) *DummyRestClient {
 	return &DummyRestClient{HTTP: &http.Client{}, BaseURL: baseURL}
 }
 
+// Función para llamar a todos los usuarios a través de la API REST
 func (c *DummyRestClient) ListUsers(ctx context.Context, pagination *model.Pagination) ([]*model.User, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
@@ -150,470 +126,7 @@ func (c *DummyRestClient) ListUsers(ctx context.Context, pagination *model.Pagin
 	return list, nil
 }
 
-func (c *DummyRestClient) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s/api_rest/api/v1/users/", c.BaseURL), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var user model.User
-	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
-		return nil, err
-	}
-	return &user, nil
-}
-
-func (c *DummyRestClient) UpdateUser(ctx context.Context, id string, input model.UserInput) (*model.User, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/api_rest/api/v1/users/%s/", c.BaseURL, id), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var user model.User
-	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
-		return nil, err
-	}
-	return &user, nil
-}
-
-func (c *DummyRestClient) DeleteUser(ctx context.Context, id string) (bool, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fmt.Sprintf("%s/api_rest/api/v1/users/%s/", c.BaseURL, id), nil)
-	if err != nil {
-		return false, err
-	}
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return false, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusNoContent {
-		return false, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	return true, nil
-}
-
-func (c *DummyRestClient) CreateCliente(ctx context.Context, input model.ClienteInput) (*model.Cliente, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s/api_rest/api/v1/cliente/", c.BaseURL), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var cliente model.Cliente
-	if err := json.NewDecoder(resp.Body).Decode(&cliente); err != nil {
-		return nil, err
-	}
-	return &cliente, nil
-}
-
-func (c *DummyRestClient) UpdateCliente(ctx context.Context, id string, input model.ClienteInput) (*model.Cliente, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/api/clientes/%s/", c.BaseURL, id), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var cliente model.Cliente
-	if err := json.NewDecoder(resp.Body).Decode(&cliente); err != nil {
-		return nil, err
-	}
-	return &cliente, nil
-}
-
-func (c *DummyRestClient) DeleteCliente(ctx context.Context, id string) (bool, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fmt.Sprintf("%s/api/clientes/%s/", c.BaseURL, id), nil)
-	if err != nil {
-		return false, err
-	}
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return false, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusNoContent {
-		return false, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	return true, nil
-}
-
-func (c *DummyRestClient) CreateProveedor(ctx context.Context, input model.ProveedorInput) (*model.Proveedor, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s/api/proveedores/", c.BaseURL), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var proveedor model.Proveedor
-	if err := json.NewDecoder(resp.Body).Decode(&proveedor); err != nil {
-		return nil, err
-	}
-	return &proveedor, nil
-}
-
-func (c *DummyRestClient) UpdateProveedor(ctx context.Context, id string, input model.ProveedorInput) (*model.Proveedor, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/api/proveedores/%s/", c.BaseURL, id), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var proveedor model.Proveedor
-	if err := json.NewDecoder(resp.Body).Decode(&proveedor); err != nil {
-		return nil, err
-	}
-	return &proveedor, nil
-}
-
-func (c *DummyRestClient) DeleteProveedor(ctx context.Context, id string) (bool, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fmt.Sprintf("%s/api/proveedores/%s/", c.BaseURL, id), nil)
-	if err != nil {
-		return false, err
-	}
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return false, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusNoContent {
-		return false, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	return true, nil
-}
-
-// Reservas
-func (c *DummyRestClient) CreateReserva(ctx context.Context, input model.ReservaInput) (*model.Reserva, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s/api/reservas/", c.BaseURL), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var r model.Reserva
-	if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
-		return nil, err
-	}
-	return &r, nil
-}
-
-func (c *DummyRestClient) UpdateReserva(ctx context.Context, id string, input model.ReservaInput) (*model.Reserva, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/api/reservas/%s/", c.BaseURL, id), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var r model.Reserva
-	if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
-		return nil, err
-	}
-	return &r, nil
-}
-
-func (c *DummyRestClient) DeleteReserva(ctx context.Context, id string) (bool, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fmt.Sprintf("%s/api/reservas/%s/", c.BaseURL, id), nil)
-	if err != nil {
-		return false, err
-	}
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return false, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusNoContent {
-		return false, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	return true, nil
-}
-
-// ReservaServicio
-func (c *DummyRestClient) CreateReservaServicio(ctx context.Context, input model.ReservaServicioInput) (*model.ReservaServicio, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s/api/reserva-servicios/", c.BaseURL), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var rs model.ReservaServicio
-	if err := json.NewDecoder(resp.Body).Decode(&rs); err != nil {
-		return nil, err
-	}
-	return &rs, nil
-}
-
-func (c *DummyRestClient) UpdateReservaServicio(ctx context.Context, id string, input model.ReservaServicioInput) (*model.ReservaServicio, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/api/reserva-servicios/%s/", c.BaseURL, id), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var rs model.ReservaServicio
-	if err := json.NewDecoder(resp.Body).Decode(&rs); err != nil {
-		return nil, err
-	}
-	return &rs, nil
-}
-
-func (c *DummyRestClient) DeleteReservaServicio(ctx context.Context, id string) (bool, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fmt.Sprintf("%s/api/reserva-servicios/%s/", c.BaseURL, id), nil)
-	if err != nil {
-		return false, err
-	}
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return false, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusNoContent {
-		return false, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	return true, nil
-}
-
-// Pagos
-func (c *DummyRestClient) CreatePago(ctx context.Context, input model.PagoInput) (*model.Pago, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s/api/pagos/", c.BaseURL), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var pago model.Pago
-	if err := json.NewDecoder(resp.Body).Decode(&pago); err != nil {
-		return nil, err
-	}
-	return &pago, nil
-}
-
-func (c *DummyRestClient) UpdatePago(ctx context.Context, id string, input model.PagoInput) (*model.Pago, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/api/pagos/%s/", c.BaseURL, id), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var pago model.Pago
-	if err := json.NewDecoder(resp.Body).Decode(&pago); err != nil {
-		return nil, err
-	}
-	return &pago, nil
-}
-
-func (c *DummyRestClient) DeletePago(ctx context.Context, id string) (bool, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fmt.Sprintf("%s/api/pagos/%s/", c.BaseURL, id), nil)
-	if err != nil {
-		return false, err
-	}
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return false, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusNoContent {
-		return false, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	return true, nil
-}
+// Función para llamar a un usuario específico a través de la API REST
 func (c *DummyRestClient) GetUser(ctx context.Context, id string) (*model.User, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/users/%s/", c.BaseURL, id), nil)
 	if err != nil {
@@ -634,38 +147,41 @@ func (c *DummyRestClient) GetUser(ctx context.Context, id string) (*model.User, 
 	return &user, nil
 }
 
-// buildURL builds a URL for the servicios endpoint with query params from filter/pagination
-func (c *DummyRestClient) buildServiciosURL(filter *model.ServicioFilter, pagination *model.Pagination) string {
+// buildServiciosURL builds a URL for the servicios endpoint with query params
+func (c *DummyRestClient) buildServiciosURL(filter *model.ServicioFilterInput, pagination *model.Pagination) string {
 	u, _ := url.Parse(c.BaseURL)
+
+	// Path adecuado para tu API
 	if u.Path == "/" || u.Path == "" {
 		u.Path = "/api_rest/api/v1/servicio"
 	} else {
 		u.Path = u.Path + "/api_rest/api/v1/servicio"
 	}
+
 	q := u.Query()
+
+	// ==== FILTROS REALES QUE EXISTEN EN DJANGO ====
+
 	if filter != nil {
-		if filter.CategoriaID != nil {
-			q.Set("categoria_id", strconv.Itoa(int(*filter.CategoriaID)))
+		// solo_mios
+		if filter.SoloMios != nil {
+			if *filter.SoloMios {
+				q.Set("solo_mios", "true")
+			}
 		}
+
+		// proveedor_id
 		if filter.ProveedorID != nil {
 			q.Set("proveedor_id", strconv.Itoa(int(*filter.ProveedorID)))
 		}
-		if filter.Ciudad != nil {
-			q.Set("ciudad", *filter.Ciudad)
-		}
-		if filter.MinRating != nil {
-			q.Set("minRating", fmt.Sprintf("%f", *filter.MinRating))
-		}
-		if filter.PrecioMin != nil {
-			q.Set("precioMin", *filter.PrecioMin)
-		}
-		if filter.PrecioMax != nil {
-			q.Set("precioMax", *filter.PrecioMax)
-		}
-		if filter.Q != nil {
-			q.Set("q", *filter.Q)
+
+		// categoria_id
+		if filter.CategoriaID != nil {
+			q.Set("categoria_id", strconv.Itoa(int(*filter.CategoriaID)))
 		}
 	}
+
+	// ==== PAGINACIÓN ====
 	if pagination != nil {
 		if pagination.Limit != nil {
 			q.Set("limit", strconv.Itoa(int(*pagination.Limit)))
@@ -674,10 +190,12 @@ func (c *DummyRestClient) buildServiciosURL(filter *model.ServicioFilter, pagina
 			q.Set("offset", strconv.Itoa(int(*pagination.Offset)))
 		}
 	}
+
 	u.RawQuery = q.Encode()
 	return u.String()
 }
 
+// Funcion para llamar a un servicio específico a través de la API REST
 func (c *DummyRestClient) GetServicio(ctx context.Context, id string) (*model.Servicio, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api_rest/api/v1/servicio/%s/", c.BaseURL, id), nil)
 	if err != nil {
@@ -698,161 +216,8 @@ func (c *DummyRestClient) GetServicio(ctx context.Context, id string) (*model.Se
 	return &s, nil
 }
 
-func (c *DummyRestClient) CreateServicio(ctx context.Context, input model.ServicioInput) (*model.Servicio, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s/api_rest/api/v1/servicio/", c.BaseURL), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var s model.Servicio
-	if err := json.NewDecoder(resp.Body).Decode(&s); err != nil {
-		return nil, err
-	}
-	return &s, nil
-}
-
-func (c *DummyRestClient) UpdateServicio(ctx context.Context, id string, input model.ServicioInput) (*model.Servicio, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/api_rest/api/v1/servicio/%s/", c.BaseURL, id), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var s model.Servicio
-	if err := json.NewDecoder(resp.Body).Decode(&s); err != nil {
-		return nil, err
-	}
-	return &s, nil
-}
-
-func (c *DummyRestClient) DeleteServicio(ctx context.Context, id string) (bool, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fmt.Sprintf("%s/api_rest/api/v1/servicio/%s/", c.BaseURL, id), nil)
-	if err != nil {
-		return false, err
-	}
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return false, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusNoContent {
-		return false, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	return true, nil
-}
-
-func (c *DummyRestClient) CreateFotoServicio(ctx context.Context, input model.FotoServicioInput) (*model.FotoServicio, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s/api/fotos-servicio/", c.BaseURL), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var foto model.FotoServicio
-	if err := json.NewDecoder(resp.Body).Decode(&foto); err != nil {
-		return nil, err
-	}
-	return &foto, nil
-}
-
-func (c *DummyRestClient) UpdateFotoServicio(ctx context.Context, id string, input model.FotoServicioInput) (*model.FotoServicio, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/api/fotos-servicio/%s/", c.BaseURL, id), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var foto model.FotoServicio
-	if err := json.NewDecoder(resp.Body).Decode(&foto); err != nil {
-		return nil, err
-	}
-	return &foto, nil
-}
-
-func (c *DummyRestClient) DeleteFotoServicio(ctx context.Context, id string) (bool, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fmt.Sprintf("%s/api/fotos-servicio/%s/", c.BaseURL, id), nil)
-	if err != nil {
-		return false, err
-	}
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return false, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusNoContent {
-		return false, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	return true, nil
-}
-
-func (c *DummyRestClient) ListServicios(ctx context.Context, filter *model.ServicioFilter, pagination *model.Pagination) ([]*model.Servicio, error) {
+// Funcion para llamar a todos los servicios a través de la API REST con filtros y paginación
+func (c *DummyRestClient) ListServicios(ctx context.Context, filter *model.ServicioFilterInput, pagination *model.Pagination) ([]*model.Servicio, error) {
 	url := c.buildServiciosURL(filter, pagination)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
@@ -876,6 +241,7 @@ func (c *DummyRestClient) ListServicios(ctx context.Context, filter *model.Servi
 	return list, nil
 }
 
+// Función para llamar a un proveedor específico a través de la API REST
 func (c *DummyRestClient) GetProveedor(ctx context.Context, id string) (*model.Proveedor, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/proveedores/%s/", c.BaseURL, id), nil)
 	if err != nil {
@@ -896,6 +262,7 @@ func (c *DummyRestClient) GetProveedor(ctx context.Context, id string) (*model.P
 	return &p, nil
 }
 
+// Función para llamar a todos los proveedores a través de la API REST
 func (c *DummyRestClient) ListProveedores(ctx context.Context, pagination *model.Pagination) ([]*model.Proveedor, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
@@ -932,7 +299,8 @@ func (c *DummyRestClient) ListProveedores(ctx context.Context, pagination *model
 	return list, nil
 }
 
-func (c *DummyRestClient) ListReservas(ctx context.Context, filter *model.ReservaFilter, pagination *model.Pagination) ([]*model.Reserva, error) {
+// Función para llamar a todas las reservas a través de la API REST
+func (c *DummyRestClient) ListReservas(ctx context.Context, filter *model.ReservaFilterInput, pagination *model.Pagination) ([]*model.Reserva, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
 		u.Path = "/api/reservas"
@@ -982,6 +350,7 @@ func (c *DummyRestClient) ListReservas(ctx context.Context, filter *model.Reserv
 	return list, nil
 }
 
+// Función para llamar a una reserva específica a través de la API REST
 func (c *DummyRestClient) GetReserva(ctx context.Context, id string) (*model.Reserva, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/reservas/%s/", c.BaseURL, id), nil)
 	if err != nil {
@@ -1002,7 +371,7 @@ func (c *DummyRestClient) GetReserva(ctx context.Context, id string) (*model.Res
 	return &r, nil
 }
 
-// /
+// Función para llamar a todos los clientes a través de la API REST
 func (c *DummyRestClient) ListClientes(ctx context.Context, pagination *model.Pagination) ([]*model.Cliente, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
@@ -1039,6 +408,7 @@ func (c *DummyRestClient) ListClientes(ctx context.Context, pagination *model.Pa
 	return list, nil
 }
 
+// Función para llamar a un cliente específico a través de la API REST
 func (c *DummyRestClient) GetCliente(ctx context.Context, id string) (*model.Cliente, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/clientes/%s/", c.BaseURL, id), nil)
 	if err != nil {
@@ -1059,6 +429,7 @@ func (c *DummyRestClient) GetCliente(ctx context.Context, id string) (*model.Cli
 	return &cobj, nil
 }
 
+// Función para llamar a todas las ubicaciones a través de la API REST
 func (c *DummyRestClient) ListUbicaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Ubicacion, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
@@ -1095,6 +466,7 @@ func (c *DummyRestClient) ListUbicaciones(ctx context.Context, pagination *model
 	return list, nil
 }
 
+// Función para llamar a una ubicación específica a través de la API REST
 func (c *DummyRestClient) GetUbicacion(ctx context.Context, id string) (*model.Ubicacion, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/ubicaciones/%s/", c.BaseURL, id), nil)
 	if err != nil {
@@ -1115,6 +487,7 @@ func (c *DummyRestClient) GetUbicacion(ctx context.Context, id string) (*model.U
 	return &ub, nil
 }
 
+// Función para llamar a todas las categorías a través de la API REST
 func (c *DummyRestClient) ListCategorias(ctx context.Context, pagination *model.Pagination) ([]*model.Categoria, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
@@ -1151,6 +524,7 @@ func (c *DummyRestClient) ListCategorias(ctx context.Context, pagination *model.
 	return list, nil
 }
 
+// Función para llamar a una categoría específica a través de la API REST
 func (c *DummyRestClient) GetCategoria(ctx context.Context, id string) (*model.Categoria, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/categorias/%s/", c.BaseURL, id), nil)
 	if err != nil {
@@ -1171,6 +545,7 @@ func (c *DummyRestClient) GetCategoria(ctx context.Context, id string) (*model.C
 	return &cat, nil
 }
 
+// Función para llamar a todas las calificaciones a través de la API REST
 func (c *DummyRestClient) ListCalificaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Calificacion, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
@@ -1207,6 +582,7 @@ func (c *DummyRestClient) ListCalificaciones(ctx context.Context, pagination *mo
 	return list, nil
 }
 
+// Función para llamar a todos los comentarios a través de la API REST
 func (c *DummyRestClient) ListComentarios(ctx context.Context, pagination *model.Pagination) ([]*model.Comentario, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
@@ -1243,6 +619,7 @@ func (c *DummyRestClient) ListComentarios(ctx context.Context, pagination *model
 	return list, nil
 }
 
+// Función para llamar a todos los pagos a través de la API REST
 func (c *DummyRestClient) ListPagos(ctx context.Context, pagination *model.Pagination) ([]*model.Pago, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
@@ -1279,6 +656,7 @@ func (c *DummyRestClient) ListPagos(ctx context.Context, pagination *model.Pagin
 	return list, nil
 }
 
+// Función para llamar a un pago específico a través de la API REST
 func (c *DummyRestClient) GetPago(ctx context.Context, id string) (*model.Pago, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/pagos/%s/", c.BaseURL, id), nil)
 	if err != nil {
@@ -1299,674 +677,7 @@ func (c *DummyRestClient) GetPago(ctx context.Context, id string) (*model.Pago, 
 	return &pago, nil
 }
 
-// CRUD Ubicacion
-func (c *DummyRestClient) CreateUbicacion(ctx context.Context, input model.UbicacionInput) (*model.Ubicacion, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s/api/ubicaciones/", c.BaseURL), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var u model.Ubicacion
-	if err := json.NewDecoder(resp.Body).Decode(&u); err != nil {
-		return nil, err
-	}
-	return &u, nil
-}
-
-func (c *DummyRestClient) UpdateUbicacion(ctx context.Context, id string, input model.UbicacionInput) (*model.Ubicacion, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/api/ubicaciones/%s/", c.BaseURL, id), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var u model.Ubicacion
-	if err := json.NewDecoder(resp.Body).Decode(&u); err != nil {
-		return nil, err
-	}
-	return &u, nil
-}
-
-func (c *DummyRestClient) DeleteUbicacion(ctx context.Context, id string) (bool, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fmt.Sprintf("%s/api/ubicaciones/%s/", c.BaseURL, id), nil)
-	if err != nil {
-		return false, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return false, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusNoContent {
-		return false, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	return true, nil
-}
-
-// CRUD Categoria
-func (c *DummyRestClient) CreateCategoria(ctx context.Context, input model.CategoriaInput) (*model.Categoria, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s/api/categorias/", c.BaseURL), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var cat model.Categoria
-	if err := json.NewDecoder(resp.Body).Decode(&cat); err != nil {
-		return nil, err
-	}
-	return &cat, nil
-}
-
-func (c *DummyRestClient) UpdateCategoria(ctx context.Context, id string, input model.CategoriaInput) (*model.Categoria, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/api/categorias/%s/", c.BaseURL, id), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var cat model.Categoria
-	if err := json.NewDecoder(resp.Body).Decode(&cat); err != nil {
-		return nil, err
-	}
-	return &cat, nil
-}
-
-func (c *DummyRestClient) DeleteCategoria(ctx context.Context, id string) (bool, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fmt.Sprintf("%s/api/categorias/%s/", c.BaseURL, id), nil)
-	if err != nil {
-		return false, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return false, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusNoContent {
-		return false, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	return true, nil
-}
-
-// CRUD Calificacion
-func (c *DummyRestClient) CreateCalificacion(ctx context.Context, input model.CalificacionInput) (*model.Calificacion, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s/api/calificaciones/", c.BaseURL), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var cal model.Calificacion
-	if err := json.NewDecoder(resp.Body).Decode(&cal); err != nil {
-		return nil, err
-	}
-	return &cal, nil
-}
-
-func (c *DummyRestClient) UpdateCalificacion(ctx context.Context, id string, input model.CalificacionInput) (*model.Calificacion, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/api/calificaciones/%s/", c.BaseURL, id), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var cal model.Calificacion
-	if err := json.NewDecoder(resp.Body).Decode(&cal); err != nil {
-		return nil, err
-	}
-	return &cal, nil
-}
-
-func (c *DummyRestClient) DeleteCalificacion(ctx context.Context, id string) (bool, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fmt.Sprintf("%s/api/calificaciones/%s/", c.BaseURL, id), nil)
-	if err != nil {
-		return false, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return false, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusNoContent {
-		return false, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	return true, nil
-}
-
-// CRUD Comentario
-func (c *DummyRestClient) CreateComentario(ctx context.Context, input model.ComentarioInput) (*model.Comentario, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s/api/comentarios/", c.BaseURL), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var com model.Comentario
-	if err := json.NewDecoder(resp.Body).Decode(&com); err != nil {
-		return nil, err
-	}
-	return &com, nil
-}
-
-func (c *DummyRestClient) UpdateComentario(ctx context.Context, id string, input model.ComentarioInput) (*model.Comentario, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/api/comentarios/%s/", c.BaseURL, id), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var com model.Comentario
-	if err := json.NewDecoder(resp.Body).Decode(&com); err != nil {
-		return nil, err
-	}
-	return &com, nil
-}
-
-func (c *DummyRestClient) DeleteComentario(ctx context.Context, id string) (bool, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fmt.Sprintf("%s/api/comentarios/%s/", c.BaseURL, id), nil)
-	if err != nil {
-		return false, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return false, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusNoContent {
-		return false, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	return true, nil
-}
-
-// Reports / metrics / advanced endpoints (best-effort using conventional endpoints)
-func (c *DummyRestClient) ReporteVentas(ctx context.Context, filter *model.ReporteFilter) (*model.ReporteVentas, error) {
-	u, _ := url.Parse(c.BaseURL)
-	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/reportes/ventas"
-	} else {
-		u.Path = u.Path + "/api/reportes/ventas"
-	}
-	q := u.Query()
-	if filter != nil {
-		if filter.FechaDesde != nil {
-			q.Set("fechaDesde", *filter.FechaDesde)
-		}
-		if filter.FechaHasta != nil {
-			q.Set("fechaHasta", *filter.FechaHasta)
-		}
-		if filter.CategoriaID != nil {
-			q.Set("categoriaId", strconv.Itoa(int(*filter.CategoriaID)))
-		}
-		if filter.ProveedorID != nil {
-			q.Set("proveedorId", strconv.Itoa(int(*filter.ProveedorID)))
-		}
-		if filter.Ciudad != nil {
-			q.Set("ciudad", *filter.Ciudad)
-		}
-		if filter.EstadoReserva != nil {
-			q.Set("estadoReserva", *filter.EstadoReserva)
-		}
-	}
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var rv model.ReporteVentas
-	if err := json.NewDecoder(resp.Body).Decode(&rv); err != nil {
-		return nil, err
-	}
-	return &rv, nil
-}
-
-func (c *DummyRestClient) ReporteSatisfaccion(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteSatisfaccion, error) {
-	u, _ := url.Parse(c.BaseURL)
-	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/reportes/satisfaccion"
-	} else {
-		u.Path = u.Path + "/api/reportes/satisfaccion"
-	}
-	q := u.Query()
-	if filter != nil {
-		if filter.FechaDesde != nil {
-			q.Set("fechaDesde", *filter.FechaDesde)
-		}
-		if filter.FechaHasta != nil {
-			q.Set("fechaHasta", *filter.FechaHasta)
-		}
-	}
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var list []*model.ReporteSatisfaccion
-	if err := json.NewDecoder(resp.Body).Decode(&list); err != nil {
-		return nil, err
-	}
-	return list, nil
-}
-
-func (c *DummyRestClient) ReporteProveedores(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteProveedor, error) {
-	u, _ := url.Parse(c.BaseURL)
-	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/reportes/proveedores"
-	} else {
-		u.Path = u.Path + "/api/reportes/proveedores"
-	}
-	q := u.Query()
-	if filter != nil {
-		if filter.FechaDesde != nil {
-			q.Set("fechaDesde", *filter.FechaDesde)
-		}
-		if filter.FechaHasta != nil {
-			q.Set("fechaHasta", *filter.FechaHasta)
-		}
-	}
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var list []*model.ReporteProveedor
-	if err := json.NewDecoder(resp.Body).Decode(&list); err != nil {
-		return nil, err
-	}
-	return list, nil
-}
-
-func (c *DummyRestClient) ReporteClientes(ctx context.Context, filter *model.ReporteFilter) ([]*model.ReporteCliente, error) {
-	u, _ := url.Parse(c.BaseURL)
-	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/reportes/clientes"
-	} else {
-		u.Path = u.Path + "/api/reportes/clientes"
-	}
-	q := u.Query()
-	if filter != nil {
-		if filter.FechaDesde != nil {
-			q.Set("fechaDesde", *filter.FechaDesde)
-		}
-		if filter.FechaHasta != nil {
-			q.Set("fechaHasta", *filter.FechaHasta)
-		}
-	}
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var list []*model.ReporteCliente
-	if err := json.NewDecoder(resp.Body).Decode(&list); err != nil {
-		return nil, err
-	}
-	return list, nil
-}
-
-func (c *DummyRestClient) MetricasGenerales(ctx context.Context, filter *model.MetricasFilter) (*model.MetricasGenerales, error) {
-	u, _ := url.Parse(c.BaseURL)
-	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/metricas/generales"
-	} else {
-		u.Path = u.Path + "/api/metricas/generales"
-	}
-	q := u.Query()
-	if filter != nil {
-		if filter.FechaDesde != nil {
-			q.Set("fechaDesde", *filter.FechaDesde)
-		}
-		if filter.FechaHasta != nil {
-			q.Set("fechaHasta", *filter.FechaHasta)
-		}
-	}
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var m model.MetricasGenerales
-	if err := json.NewDecoder(resp.Body).Decode(&m); err != nil {
-		return nil, err
-	}
-	return &m, nil
-}
-
-func (c *DummyRestClient) ServiciosMasPopulares(ctx context.Context, limit *int32) ([]*model.ServicioVendido, error) {
-	u, _ := url.Parse(c.BaseURL)
-	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/servicios/mas-populares"
-	} else {
-		u.Path = u.Path + "/api/servicios/mas-populares"
-	}
-	q := u.Query()
-	if limit != nil {
-		q.Set("limit", strconv.Itoa(int(*limit)))
-	}
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var list []*model.ServicioVendido
-	if err := json.NewDecoder(resp.Body).Decode(&list); err != nil {
-		return nil, err
-	}
-	return list, nil
-}
-
-func (c *DummyRestClient) ProveedoresMejorCalificados(ctx context.Context, limit *int32) ([]*model.ReporteProveedor, error) {
-	u, _ := url.Parse(c.BaseURL)
-	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/proveedores/mejor-calificados"
-	} else {
-		u.Path = u.Path + "/api/proveedores/mejor-calificados"
-	}
-	q := u.Query()
-	if limit != nil {
-		q.Set("limit", strconv.Itoa(int(*limit)))
-	}
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var list []*model.ReporteProveedor
-	if err := json.NewDecoder(resp.Body).Decode(&list); err != nil {
-		return nil, err
-	}
-	return list, nil
-}
-
-func (c *DummyRestClient) ClientesMasActivos(ctx context.Context, limit *int32) ([]*model.ReporteCliente, error) {
-	u, _ := url.Parse(c.BaseURL)
-	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/clientes/mas-activos"
-	} else {
-		u.Path = u.Path + "/api/clientes/mas-activos"
-	}
-	q := u.Query()
-	if limit != nil {
-		q.Set("limit", strconv.Itoa(int(*limit)))
-	}
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var list []*model.ReporteCliente
-	if err := json.NewDecoder(resp.Body).Decode(&list); err != nil {
-		return nil, err
-	}
-	return list, nil
-}
-
-func (c *DummyRestClient) TendenciasVentas(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error) {
-	u, _ := url.Parse(c.BaseURL)
-	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/tendencias/ventas"
-	} else {
-		u.Path = u.Path + "/api/tendencias/ventas"
-	}
-	q := u.Query()
-	if filter != nil {
-		if filter.FechaDesde != nil {
-			q.Set("fechaDesde", *filter.FechaDesde)
-		}
-		if filter.FechaHasta != nil {
-			q.Set("fechaHasta", *filter.FechaHasta)
-		}
-	}
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var list []*model.PuntoTendencia
-	if err := json.NewDecoder(resp.Body).Decode(&list); err != nil {
-		return nil, err
-	}
-	return list, nil
-}
-
-// ServicioUbicacion
-func (c *DummyRestClient) CreateServicioUbicacion(ctx context.Context, input model.ServicioUbicacionInput) (*model.ServicioUbicacion, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s/api_rest/api/v1/servicioUbicacion/", c.BaseURL), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var servicioUb model.ServicioUbicacion
-	if err := json.NewDecoder(resp.Body).Decode(&servicioUb); err != nil {
-		return nil, err
-	}
-	return &servicioUb, nil
-}
-
-func (c *DummyRestClient) UpdateServicioUbicacion(ctx context.Context, id string, input model.ServicioUbicacionInput) (*model.ServicioUbicacion, error) {
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/api_rest/api/v1/servicioUbicacion/%s/", c.BaseURL, id), bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	var servicioUb model.ServicioUbicacion
-	if err := json.NewDecoder(resp.Body).Decode(&servicioUb); err != nil {
-		return nil, err
-	}
-	return &servicioUb, nil
-}
-
-func (c *DummyRestClient) DeleteServicioUbicacion(ctx context.Context, id string) (bool, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fmt.Sprintf("%s/api_rest/api/v1/servicioUbicacion/%s/", c.BaseURL, id), nil)
-	if err != nil {
-		return false, err
-	}
-
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return false, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusNoContent {
-		return false, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-
-	return true, nil
-}
-
+// Funcion para llamar a un servicioUbicacion a través de la API REST
 func (c *DummyRestClient) GetServicioUbicacion(ctx context.Context, id string) (*model.ServicioUbicacion, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api_rest/api/v1/servicioUbicacion/%s/", c.BaseURL, id), nil)
 	if err != nil {
@@ -1990,6 +701,7 @@ func (c *DummyRestClient) GetServicioUbicacion(ctx context.Context, id string) (
 	return &servicioUb, nil
 }
 
+// Función para llamar a todos los servicioUbicaciones a través de la API REST
 func (c *DummyRestClient) ListServicioUbicaciones(ctx context.Context, pagination *model.Pagination) ([]*model.ServicioUbicacion, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
@@ -2030,38 +742,623 @@ func (c *DummyRestClient) ListServicioUbicaciones(ctx context.Context, paginatio
 	return list, nil
 }
 
-func (c *DummyRestClient) TendenciasSatisfaccion(ctx context.Context, filter *model.MetricasFilter) ([]*model.PuntoTendencia, error) {
-	u, _ := url.Parse(c.BaseURL)
-	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/tendencias/satisfaccion"
-	} else {
-		u.Path = u.Path + "/api/tendencias/satisfaccion"
+// Reportes / Métricas para carga de reportes en el Frontend
+// =====================================
+// Función para llamar al reporte de ventas a través de la API REST
+func (c *DummyRestClient) ReporteVentas(ctx context.Context, pagination *model.Pagination) (*model.ReporteVentas, error) {
+	// 1️⃣ Traer todas las reservas
+	reservas, err := c.ListReservas(ctx, nil, pagination)
+	if err != nil {
+		return nil, err
 	}
-	q := u.Query()
+
+	totalVentas := decimal.Zero
+	cantidadReservas := int32(len(reservas))
+
+	// Mapa para calcular servicios más vendidos
+	serviciosMap := make(map[int32]*model.ServicioVendido)
+
+	for _, r := range reservas {
+		// TotalEstimado ya es decimal.Decimal
+		totalVentas = totalVentas.Add(r.TotalEstimado)
+
+		for _, detalle := range r.Detalles {
+			if detalle == nil || detalle.Servicio == nil {
+				continue
+			}
+
+			sid := detalle.Servicio.ID
+			subtotal := detalle.Subtotal // subtotal ya es decimal.Decimal
+
+			if sv, ok := serviciosMap[sid]; ok {
+				sv.CantidadVendida += detalle.Cantidad
+				sv.IngresosGenerados = sv.IngresosGenerados.Add(subtotal)
+			} else {
+				serviciosMap[sid] = &model.ServicioVendido{
+					Servicio:          detalle.Servicio,
+					CantidadVendida:   detalle.Cantidad,
+					IngresosGenerados: subtotal,
+				}
+			}
+		}
+	}
+
+	// Promedio por reserva
+	promedioPorReserva := decimal.Zero
+	if cantidadReservas > 0 {
+		promedioPorReserva = totalVentas.Div(decimal.NewFromInt(int64(cantidadReservas)))
+	}
+
+	// Convertir el mapa de servicios a slice
+	serviciosMasVendidos := make([]*model.ServicioVendido, 0, len(serviciosMap))
+	for _, sv := range serviciosMap {
+		serviciosMasVendidos = append(serviciosMasVendidos, sv)
+	}
+
+	// Ordenar por cantidad vendida (desc)
+	sort.Slice(serviciosMasVendidos, func(i, j int) bool {
+		return serviciosMasVendidos[i].CantidadVendida > serviciosMasVendidos[j].CantidadVendida
+	})
+
+	// 2️⃣ Construir ReporteVentas
+	reporte := &model.ReporteVentas{
+		Periodo:              "Estimado",
+		TotalVentas:          totalVentas,
+		CantidadReservas:     cantidadReservas,
+		PromedioPorReserva:   promedioPorReserva,
+		ServiciosMasVendidos: serviciosMasVendidos,
+	}
+
+	return reporte, nil
+}
+
+// Función para llamar al reporte de satisfacción a través de la API REST
+func (c *DummyRestClient) ReporteSatisfaccion(ctx context.Context, pagination *model.Pagination) ([]*model.ReporteSatisfaccion, error) {
+	// 1️⃣ Traer todas las calificaciones
+	calificaciones, err := c.ListCalificaciones(ctx, pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	// Mapa para agrupar por servicio (ahora con int32)
+	serviciosMap := make(map[int32]*model.ReporteSatisfaccion)
+
+	for _, cal := range calificaciones {
+		if cal.Servicio == nil {
+			continue
+		}
+
+		sid := cal.Servicio.ID // int32
+
+		if rs, ok := serviciosMap[sid]; ok {
+			rs.TotalCalificaciones++
+			rs.PromedioCalificacion += float64(cal.Puntuacion)
+
+			// Distribución por puntuación
+			found := false
+			for i := range rs.DistribucionCalificaciones {
+				if rs.DistribucionCalificaciones[i].Puntuacion == cal.Puntuacion {
+					rs.DistribucionCalificaciones[i].Cantidad++
+					found = true
+					break
+				}
+			}
+			if !found {
+				rs.DistribucionCalificaciones = append(
+					rs.DistribucionCalificaciones,
+					&model.DistribucionCalificacion{
+						Puntuacion: cal.Puntuacion,
+						Cantidad:   1,
+					},
+				)
+			}
+
+		} else {
+			// Nuevo servicio
+			serviciosMap[sid] = &model.ReporteSatisfaccion{
+				Servicio:             cal.Servicio,
+				TotalCalificaciones:  1,
+				PromedioCalificacion: float64(cal.Puntuacion),
+				DistribucionCalificaciones: []*model.DistribucionCalificacion{
+					{
+						Puntuacion: cal.Puntuacion,
+						Cantidad:   1,
+					},
+				},
+			}
+		}
+	}
+
+	// Calcular promedio y porcentajes
+	result := make([]*model.ReporteSatisfaccion, 0, len(serviciosMap))
+	for _, rs := range serviciosMap {
+		if rs.TotalCalificaciones > 0 {
+			rs.PromedioCalificacion = rs.PromedioCalificacion / float64(rs.TotalCalificaciones)
+		}
+
+		for _, d := range rs.DistribucionCalificaciones {
+			d.Porcentaje = (float64(d.Cantidad) / float64(rs.TotalCalificaciones)) * 100
+		}
+
+		result = append(result, rs)
+	}
+
+	return result, nil
+}
+
+// Función para llamar al reporte de proveedores a través de la API REST
+func (c *DummyRestClient) ReporteProveedores(ctx context.Context, pagination *model.Pagination) ([]*model.ReporteProveedor, error) {
+	// 1️⃣ Traer todos los proveedores
+	proveedores, err := c.ListProveedores(ctx, pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	// 2️⃣ Traer todos los servicios y calificaciones
+	servicios, err := c.ListServicios(ctx, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+	calificaciones, err := c.ListCalificaciones(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]*model.ReporteProveedor, 0, len(proveedores))
+
+	for _, p := range proveedores {
+		rp := &model.ReporteProveedor{
+			Proveedor:            p,
+			TotalServicios:       0,
+			IngresosTotales:      decimal.Zero,
+			PromedioCalificacion: 0,
+			ServiciosActivos:     0,
+		}
+
+		var sumaCalificaciones float64
+		var totalCalificaciones int
+
+		for _, s := range servicios {
+			if s.Proveedor.ID != p.ID {
+				continue
+			}
+
+			rp.TotalServicios++
+			rp.ServiciosActivos++ // ajustar según tu modelo si hay campo "activo"
+
+			// sumar ingresos de todas las reservas usando decimal
+			for _, rs := range s.DetallesReserva {
+				rp.IngresosTotales = rp.IngresosTotales.Add(rs.Subtotal)
+			}
+
+			// calificaciones del servicio
+			for _, cal := range calificaciones {
+				if cal.Servicio.ID == s.ID {
+					sumaCalificaciones += float64(cal.Puntuacion)
+					totalCalificaciones++
+				}
+			}
+		}
+
+		if totalCalificaciones > 0 {
+			rp.PromedioCalificacion = sumaCalificaciones / float64(totalCalificaciones)
+		}
+
+		result = append(result, rp)
+	}
+
+	return result, nil
+}
+
+// Función para llamar al reporte de clientes a través de la API REST
+func (c *DummyRestClient) ReporteClientes(ctx context.Context, pagination *model.Pagination) ([]*model.ReporteCliente, error) {
+	clientes, err := c.ListClientes(ctx, pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	reservas, err := c.ListReservas(ctx, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]*model.ReporteCliente, 0, len(clientes))
+	for _, cl := range clientes {
+		rc := &model.ReporteCliente{
+			Cliente:            cl,
+			TotalReservas:      0,
+			GastoTotal:         decimal.Zero,
+			PromedioPorReserva: decimal.Zero,
+			UltimaReserva:      nil,
+		}
+
+		var ultima time.Time
+
+		for _, r := range reservas {
+			if r.Cliente.ID != cl.ID {
+				continue
+			}
+
+			rc.TotalReservas++
+			rc.GastoTotal = rc.GastoTotal.Add(r.TotalEstimado) // TotalEstimado es decimal.Decimal
+
+			// r.Fecha ya es time.Time, solo comparamos
+			if r.Fecha.After(ultima) {
+				ultima = r.Fecha
+			}
+		}
+
+		if rc.TotalReservas > 0 {
+			rc.PromedioPorReserva = rc.GastoTotal.Div(decimal.NewFromInt(int64(rc.TotalReservas)))
+			rc.UltimaReserva = &ultima // *time.Time
+		}
+
+		result = append(result, rc)
+	}
+
+	return result, nil
+}
+
+// Función para llamar a las métricas generales a través de la API REST
+func (c *DummyRestClient) MetricasGenerales(ctx context.Context, pagination *model.Pagination) (*model.MetricasGenerales, error) {
+	// 1️⃣ Traer todos los usuarios, clientes y proveedores
+	users, err := c.ListUsers(ctx, pagination)
+	if err != nil {
+		return nil, err
+	}
+	clientes, err := c.ListClientes(ctx, pagination)
+	if err != nil {
+		return nil, err
+	}
+	proveedores, err := c.ListProveedores(ctx, pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	// 2️⃣ Traer todos los servicios y reservas
+	servicios, err := c.ListServicios(ctx, nil, pagination)
+	if err != nil {
+		return nil, err
+	}
+	reservas, err := c.ListReservas(ctx, nil, pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	// 3️⃣ Calcular métricas
+	ingresosTotales := decimal.Zero
+	totalSatisfaccion := decimal.Zero
+	totalCalificaciones := int32(0)
+
+	for _, r := range reservas {
+		ingresosTotales = ingresosTotales.Add(r.TotalEstimado)
+
+		for _, detalle := range r.Detalles {
+			for _, cal := range detalle.Servicio.Calificaciones {
+				// sumar puntuación como decimal
+				totalSatisfaccion = totalSatisfaccion.Add(
+					decimal.NewFromInt32(int32(cal.Puntuacion)),
+				)
+				totalCalificaciones++
+			}
+		}
+	}
+
+	// promedioDecimal = totalSatisfaccion / totalCalificaciones
+	promedioSatisfaccion := decimal.Zero
+	if totalCalificaciones > 0 {
+		divisor := decimal.NewFromInt32(totalCalificaciones)
+		promedioSatisfaccion = totalSatisfaccion.Div(divisor)
+	}
+
+	metricas := &model.MetricasGenerales{
+		TotalUsuarios:        int32(len(users)),
+		TotalClientes:        int32(len(clientes)),
+		TotalProveedores:     int32(len(proveedores)),
+		TotalServicios:       int32(len(servicios)),
+		TotalReservas:        int32(len(reservas)),
+		IngresosTotales:      ingresosTotales,
+		PromedioSatisfaccion: promedioSatisfaccion,
+	}
+
+	return metricas, nil
+}
+
+// Funciones para reportes específicos
+// =====================================
+// Funcion para mostrar los servicios más populares
+func (c *DummyRestClient) ServiciosMasPopulares(ctx context.Context, limit *int32) ([]*model.ServicioVendido, error) {
+	// Traer todas las reservas con sus detalles
+	reservas, err := c.ListReservas(ctx, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	type stats struct {
+		cantidad int32
+		ingresos decimal.Decimal
+		servicio *model.Servicio
+	}
+	servicioMap := make(map[int32]*stats)
+
+	for _, r := range reservas {
+		for _, detalle := range r.Detalles {
+			if detalle == nil || detalle.Servicio == nil {
+				continue
+			}
+			sID := detalle.Servicio.ID
+			if _, ok := servicioMap[sID]; !ok {
+				servicioMap[sID] = &stats{
+					cantidad: 0,
+					ingresos: decimal.Zero,
+					servicio: detalle.Servicio,
+				}
+			}
+			servicioMap[sID].cantidad += detalle.Cantidad
+			servicioMap[sID].ingresos = servicioMap[sID].ingresos.Add(detalle.Subtotal)
+		}
+	}
+
+	list := make([]*model.ServicioVendido, 0, len(servicioMap))
+	for _, v := range servicioMap {
+		list = append(list, &model.ServicioVendido{
+			Servicio:          v.servicio,
+			CantidadVendida:   v.cantidad,
+			IngresosGenerados: v.ingresos,
+		})
+	}
+
+	// Ordenar por cantidad vendida (desc)
+	sort.Slice(list, func(i, j int) bool {
+		return list[i].CantidadVendida > list[j].CantidadVendida
+	})
+
+	if limit != nil && int(*limit) < len(list) {
+		list = list[:*limit]
+	}
+
+	return list, nil
+}
+
+// Función para obtener los proveedores mejor calificados
+func (c *DummyRestClient) ProveedoresMejorCalificados(ctx context.Context, limit *int32) ([]*model.ReporteProveedor, error) {
+	// 1️⃣ Traer todos los proveedores
+	proveedores, err := c.ListProveedores(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	// 2️⃣ Inicializar slice de resultados
+	result := make([]*model.ReporteProveedor, 0, len(proveedores))
+
+	// 3️⃣ Calcular promedio de calificación, total de servicios, ingresos y servicios activos
+	for _, p := range proveedores {
+		totalServicios := int32(len(p.Servicios))
+		numCalif := 0
+		var sumaCalif float64
+		ingresosTotales := decimal.Zero
+		serviciosActivos := int32(0)
+
+		for _, s := range p.Servicios {
+			if s.RatingPromedio > 0 {
+				sumaCalif += s.RatingPromedio
+				numCalif++
+			}
+			// Ingresos estimados sumando subtotal de reservas (decimal)
+			for _, detalle := range s.DetallesReserva {
+				ingresosTotales = ingresosTotales.Add(detalle.Subtotal)
+			}
+			// Contar servicios activos
+			serviciosActivos++
+		}
+
+		promedioCalif := 0.0
+		if numCalif > 0 {
+			promedioCalif = sumaCalif / float64(numCalif)
+		}
+
+		result = append(result, &model.ReporteProveedor{
+			Proveedor:            p,
+			TotalServicios:       totalServicios,
+			IngresosTotales:      ingresosTotales,
+			PromedioCalificacion: promedioCalif,
+			ServiciosActivos:     serviciosActivos,
+		})
+	}
+
+	// 4️⃣ Ordenar por promedio de calificación descendente
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].PromedioCalificacion > result[j].PromedioCalificacion
+	})
+
+	// 5️⃣ Aplicar el límite si existe
+	if limit != nil && int(*limit) < len(result) {
+		result = result[:*limit]
+	}
+
+	return result, nil
+}
+
+// Función para obtener los clientes más activos
+func (c *DummyRestClient) ClientesMasActivos(ctx context.Context, limit *int32) ([]*model.ReporteCliente, error) {
+	// 1️⃣ Traer todos los clientes
+	clientes, err := c.ListClientes(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	// 2️⃣ Inicializar slice de resultados
+	result := make([]*model.ReporteCliente, 0, len(clientes))
+
+	// 3️⃣ Calcular total de reservas, gasto total y promedio por reserva
+	for _, cl := range clientes {
+		totalReservas := int32(len(cl.Reservas))
+		gastoTotal := decimal.Zero
+		var ultimaReserva time.Time
+
+		for _, r := range cl.Reservas {
+			gastoTotal = gastoTotal.Add(r.TotalEstimado) // TotalEstimado es decimal.Decimal
+			if r.Fecha.After(ultimaReserva) {
+				ultimaReserva = r.Fecha
+			}
+		}
+
+		promedioPorReserva := decimal.Zero
+		if totalReservas > 0 {
+			promedioPorReserva = gastoTotal.Div(decimal.NewFromInt(int64(totalReservas)))
+		}
+
+		// Crear un puntero a la fecha
+		var ultimaPtr *time.Time
+		if !ultimaReserva.IsZero() {
+			ultimaPtr = &ultimaReserva
+		}
+
+		result = append(result, &model.ReporteCliente{
+			Cliente:            cl,
+			TotalReservas:      totalReservas,
+			GastoTotal:         gastoTotal,
+			PromedioPorReserva: promedioPorReserva,
+			UltimaReserva:      ultimaPtr,
+		})
+	}
+
+	// 4️⃣ Ordenar por total de reservas descendente
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].TotalReservas > result[j].TotalReservas
+	})
+
+	// 5️⃣ Aplicar el límite si existe
+	if limit != nil && int(*limit) < len(result) {
+		result = result[:*limit]
+	}
+
+	return result, nil
+}
+
+// Funciones para gráficos de tendencias
+// =====================================
+// Función para obtener las tendencias de ventas
+func (c *DummyRestClient) TendenciasVentas(ctx context.Context, filter *model.TendenciasFilter) ([]*model.PuntoTendencia, error) {
+	// 1️⃣ Traer reservas
+	reservas, err := c.ListReservas(ctx, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var fechaDesde, fechaHasta time.Time
 	if filter != nil {
 		if filter.FechaDesde != nil {
-			q.Set("fechaDesde", *filter.FechaDesde)
+			fechaDesde = *filter.FechaDesde
 		}
 		if filter.FechaHasta != nil {
-			q.Set("fechaHasta", *filter.FechaHasta)
+			fechaHasta = *filter.FechaHasta
 		}
 	}
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
+
+	ventasPorFecha := make(map[string]decimal.Decimal)
+
+	for _, r := range reservas {
+		if !fechaDesde.IsZero() && r.Fecha.Before(fechaDesde) {
+			continue
+		}
+		if !fechaHasta.IsZero() && r.Fecha.After(fechaHasta) {
+			continue
+		}
+
+		fechaStr := r.Fecha.Format("2006-01-02")
+
+		// Sumamos usando .Add()
+		if v, ok := ventasPorFecha[fechaStr]; ok {
+			ventasPorFecha[fechaStr] = v.Add(r.TotalEstimado)
+		} else {
+			ventasPorFecha[fechaStr] = r.TotalEstimado
+		}
+	}
+
+	// Ordenar claves (fechas)
+	var fechas []string
+	for f := range ventasPorFecha {
+		fechas = append(fechas, f)
+	}
+	sort.Strings(fechas)
+
+	// Construir puntos
+	tendencias := make([]*model.PuntoTendencia, 0, len(fechas))
+	for _, f := range fechas {
+		etiqueta := fmt.Sprintf("Ventas del %s", f)
+
+		tendencias = append(tendencias, &model.PuntoTendencia{
+			Fecha:    f,
+			Valor:    ventasPorFecha[f], // AHORA ES decimal.Decimal
+			Etiqueta: &etiqueta,
+		})
+	}
+
+	return tendencias, nil
+}
+
+// Función para obtener las tendencias de satisfacción
+func (c *DummyRestClient) TendenciasSatisfaccion(ctx context.Context, filter *model.TendenciasFilter) ([]*model.PuntoTendencia, error) {
+
+	calificaciones, err := c.ListCalificaciones(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
+
+	var fechaDesde, fechaHasta time.Time
+	if filter != nil {
+		if filter.FechaDesde != nil {
+			fechaDesde = *filter.FechaDesde
+		}
+		if filter.FechaHasta != nil {
+			fechaHasta = *filter.FechaHasta
+		}
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
+
+	calificacionesPorFecha := map[string][]int32{}
+
+	for _, c := range calificaciones {
+		if !fechaDesde.IsZero() && c.Fecha.Before(fechaDesde) {
+			continue
+		}
+		if !fechaHasta.IsZero() && c.Fecha.After(fechaHasta) {
+			continue
+		}
+
+		fechaStr := c.Fecha.Format("2006-01-02")
+		calificacionesPorFecha[fechaStr] = append(calificacionesPorFecha[fechaStr], c.Puntuacion)
 	}
-	var list []*model.PuntoTendencia
-	if err := json.NewDecoder(resp.Body).Decode(&list); err != nil {
-		return nil, err
+
+	var fechas []string
+	for f := range calificacionesPorFecha {
+		fechas = append(fechas, f)
 	}
-	return list, nil
+	sort.Strings(fechas)
+
+	tendencias := make([]*model.PuntoTendencia, 0, len(fechas))
+
+	for _, f := range fechas {
+
+		lista := calificacionesPorFecha[f]
+
+		// SUMA CON DECIMAL
+		suma := decimal.NewFromInt(0)
+		for _, p := range lista {
+			suma = suma.Add(decimal.NewFromInt(int64(p)))
+		}
+
+		// PROMEDIO = suma / cantidad
+		promedio := suma.Div(decimal.NewFromInt(int64(len(lista))))
+
+		etiqueta := fmt.Sprintf("Promedio de satisfacción del %s", f)
+
+		tendencias = append(tendencias, &model.PuntoTendencia{
+			Fecha:    f,
+			Valor:    promedio, // decimal.Decimal
+			Etiqueta: &etiqueta,
+		})
+	}
+
+	return tendencias, nil
 }

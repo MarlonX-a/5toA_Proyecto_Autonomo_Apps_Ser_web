@@ -1,9 +1,50 @@
-# Variables especiales para el modelo
-scalar Time
+# ====================================
+# ESCALARES
+# ====================================
 scalar Date
+scalar Time
 scalar Decimal
 
-# User
+# ====================================
+# INPUTS PARA LOS FILTROS Y PAGINACIÓN
+# ====================================
+
+input Pagination {
+  limit: Int
+  offset: Int
+}
+
+input ReservaFilterInput {
+    clienteId: Int
+    estado: String
+    fechaDesde: String
+    fechaHasta: String
+}
+
+input ServicioFilterInput {
+    soloMios: Boolean
+    proveedorId: Int
+    categoriaId: Int
+
+    # Filtros adicionales que faltaban 
+    ciudad: String
+    minRating: Float
+    precioMin: Float
+    precioMax: Float
+    q: String
+}
+
+
+input TendenciasFilter {
+  fechaDesde: Date
+  fechaHasta: Date
+}
+
+
+# ====================================
+# MODELOS
+# ====================================
+
 type User {
   id: Int!
   username: String!
@@ -17,7 +58,6 @@ type User {
   proveedor: Proveedor
 }
 
-# Ubicacion
 type Ubicacion {
   id: Int!
   direccion: String!
@@ -31,7 +71,6 @@ type Ubicacion {
   servicios: [Servicio!]
 }
 
-# Cliente
 type Cliente {
   id: Int!
   user: User!
@@ -44,7 +83,6 @@ type Cliente {
   comentarios: [Comentario!]
 }
 
-# Proveedor
 type Proveedor {
   id: Int!
   user: User!
@@ -56,7 +94,6 @@ type Proveedor {
   servicios: [Servicio!]
 }
 
-# Categoria
 type Categoria {
   id: Int!
   nombre: String!
@@ -66,7 +103,6 @@ type Categoria {
   servicios: [Servicio!]
 }
 
-# Servicio
 type Servicio {
   id: Int!
   proveedor: Proveedor!
@@ -85,7 +121,6 @@ type Servicio {
   updatedAt: Time!
 }
 
-# ServicioUbicacion
 type ServicioUbicacion {
   id: Int!
   servicio: Servicio!
@@ -94,7 +129,6 @@ type ServicioUbicacion {
   updatedAt: Time!
 }
 
-# FotoServicio
 type FotoServicio {
   id: Int!
   servicio: Servicio!
@@ -104,7 +138,6 @@ type FotoServicio {
   updatedAt: Time!
 }
 
-# Reserva
 type Reserva {
   id: Int!
   cliente: Cliente!
@@ -118,7 +151,6 @@ type Reserva {
   updatedAt: Time!
 }
 
-# ReservaServicio
 type ReservaServicio {
   id: Int!
   reserva: Reserva!
@@ -130,7 +162,6 @@ type ReservaServicio {
   updatedAt: Time!
 }
 
-# Pago
 type Pago {
   id: Int!
   reserva: Reserva!
@@ -143,7 +174,6 @@ type Pago {
   updatedAt: Time!
 }
 
-# Calificacion
 type Calificacion {
   id: Int!
   cliente: Cliente!
@@ -154,7 +184,6 @@ type Calificacion {
   updatedAt: Time!
 }
 
-# Comentario
 type Comentario {
   id: Int!
   cliente: Cliente!
@@ -167,143 +196,16 @@ type Comentario {
   updatedAt: Time!
 }
 
-# Inputs
-input UserInput {
-  username: String!
-  email: String!
-  firstName: String
-  lastName: String
-  rol: String!
+# ====================================
+# REPORTES
+# ====================================
+
+type ServicioVendido {
+  servicio: Servicio!
+  cantidadVendida: Int!
+  ingresosGenerados: Decimal!
 }
 
-input UbicacionInput {
-  direccion: String!
-  ciudad: String!
-  provincia: String!
-  pais: String!
-}
-
-input ClienteInput {
-  userId: Int!
-  telefono: String!
-  ubicacionId: Int
-}
-
-input ProveedorInput {
-  userId: Int!
-  telefono: String!
-  descripcion: String
-  ubicacionId: Int
-}
-
-input CategoriaInput {
-  nombre: String!
-  descripcion: String
-}
-
-input ServicioInput {
-  proveedorId: Int!
-  categoriaId: Int!
-  nombreServicio: String!
-  descripcion: String
-  duracion: String
-  ratingPromedio: Float
-  precio: Decimal
-}
-
-input FotoServicioInput {
-  servicioId: Int!
-  urlFoto: String!
-  descripcion: String
-}
-
-input ReservaInput {
-  clienteId: Int!
-  fecha: Date!
-  hora: String!
-  estado: String!
-  totalEstimado: Decimal!
-}
-
-input ReservaServicioInput {
-  reservaId: Int!
-  servicioId: Int!
-  cantidad: Int!
-  precioUnitario: Decimal!
-}
-
-input PagoInput {
-  reservaId: Int!
-  metodoPago: String!
-  monto: Decimal!
-  estado: String!
-  referencia: String
-  fechaPago: Time
-}
-
-input CalificacionInput {
-  clienteId: Int!
-  servicioId: Int!
-  puntuacion: Int!
-}
-
-input ComentarioInput {
-  clienteId: Int!
-  servicioId: Int!
-  titulo: String!
-  texto: String!
-  respuesta: String
-}
-
-input ServicioUbicacionInput {
-  servicioId: Int!
-  ubicacionId: Int!
-}
-
-# Filters y búsquedas
-input ServicioFilter {
-  categoriaId: Int
-  proveedorId: Int
-  ciudad: String
-  minRating: Float
-  precioMin: Decimal
-  precioMax: Decimal
-  q: String
-}
-
-input ReservaFilter {
-  clienteId: Int
-  estado: String
-  fechaDesde: Date
-  fechaHasta: Date
-}
-
-input ServicioSearchInput {
-  q: String
-  categoriaId: Int
-  proveedorId: Int
-  ciudad: String
-  precioMin: Decimal
-  precioMax: Decimal
-  minRating: Float
-  tags: [String!]
-}
-
-enum ServicioSort {
-  RELEVANCIA
-  PRECIO_ASC
-  PRECIO_DESC
-  RATING_DESC
-  CREATED_AT_DESC
-}
-
-# Pagination
-input Pagination {
-  limit: Int
-  offset: Int
-}
-
-# Reportes
 type ReporteVentas {
   periodo: String!
   totalVentas: Decimal!
@@ -312,10 +214,10 @@ type ReporteVentas {
   serviciosMasVendidos: [ServicioVendido!]!
 }
 
-type ServicioVendido {
-  servicio: Servicio!
-  cantidadVendida: Int!
-  ingresosGenerados: Decimal!
+type DistribucionCalificacion {
+  puntuacion: Int!
+  cantidad: Int!
+  porcentaje: Float!
 }
 
 type ReporteSatisfaccion {
@@ -323,12 +225,6 @@ type ReporteSatisfaccion {
   promedioCalificacion: Float!
   totalCalificaciones: Int!
   distribucionCalificaciones: [DistribucionCalificacion!]!
-}
-
-type DistribucionCalificacion {
-  puntuacion: Int!
-  cantidad: Int!
-  porcentaje: Float!
 }
 
 type ReporteProveedor {
@@ -347,44 +243,27 @@ type ReporteCliente {
   ultimaReserva: Date
 }
 
+type PuntoTendencia {
+  fecha: String!
+  valor: Decimal!
+  etiqueta: String
+}
+
 type MetricasGenerales {
   totalUsuarios: Int!
+  totalClientes: Int!
   totalProveedores: Int!
   totalServicios: Int!
   totalReservas: Int!
   ingresosTotales: Decimal!
-  promedioSatisfaccion: Float!
+  promedioSatisfaccion: Decimal!
 }
 
-input ReporteFilter {
-  fechaDesde: Date
-  fechaHasta: Date
-  categoriaId: Int
-  proveedorId: Int
-  ciudad: String
-  estadoReserva: String
-}
 
-input MetricasFilter {
-  fechaDesde: Date
-  fechaHasta: Date
-  agruparPor: AgrupacionTipo
-}
+# ====================================
+# QUERIES
+# ====================================
 
-enum AgrupacionTipo {
-  DIA
-  SEMANA
-  MES
-  ANO
-}
-
-type PuntoTendencia {
-  fecha: String!
-  valor: Float!
-  etiqueta: String
-}
-
-# Queries
 type Query {
   users(pagination: Pagination): [User!]!
   user(id: Int!): User
@@ -401,10 +280,10 @@ type Query {
   categorias(pagination: Pagination): [Categoria!]!
   categoria(id: Int!): Categoria
 
-  servicios(filter: ServicioFilter, pagination: Pagination): [Servicio!]!
+  servicios(filter: ServicioFilterInput, pagination: Pagination): [Servicio!]!
   servicio(id: Int!): Servicio
 
-  reservas(filter: ReservaFilter, pagination: Pagination): [Reserva!]!
+  reservas(filter: ReservaFilterInput, pagination: Pagination): [Reserva!]!
   reserva(id: Int!): Reserva
 
   pagos(pagination: Pagination): [Pago!]!
@@ -413,71 +292,16 @@ type Query {
   calificaciones(pagination: Pagination): [Calificacion!]!
   comentarios(pagination: Pagination): [Comentario!]!
 
-  reporteVentas(filter: ReporteFilter): ReporteVentas!
-  reporteSatisfaccion(filter: ReporteFilter): [ReporteSatisfaccion!]!
-  reporteProveedores(filter: ReporteFilter): [ReporteProveedor!]!
-  reporteClientes(filter: ReporteFilter): [ReporteCliente!]!
-  metricasGenerales(filter: MetricasFilter): MetricasGenerales!
-  
+  reporteVentas(pagination: Pagination): ReporteVentas!
+  reporteSatisfaccion(pagination: Pagination): [ReporteSatisfaccion!]!
+  reporteProveedores(pagination: Pagination): [ReporteProveedor!]!
+  reporteClientes(pagination: Pagination): [ReporteCliente!]!
+  metricasGenerales(pagination: Pagination): MetricasGenerales!
+
   serviciosMasPopulares(limit: Int): [ServicioVendido!]!
   proveedoresMejorCalificados(limit: Int): [ReporteProveedor!]!
   clientesMasActivos(limit: Int): [ReporteCliente!]!
-  
-  tendenciasVentas(filter: MetricasFilter): [PuntoTendencia!]!
-  tendenciasSatisfaccion(filter: MetricasFilter): [PuntoTendencia!]!
-}
 
-# Mutations
-type Mutation {
-  createUser(input: UserInput!): User!
-  updateUser(id: Int!, input: UserInput!): User!
-  deleteUser(id: Int!): Boolean!
-
-  createUbicacion(input: UbicacionInput!): Ubicacion!
-  updateUbicacion(id: Int!, input: UbicacionInput!): Ubicacion!
-  deleteUbicacion(id: Int!): Boolean!
-
-  createCliente(input: ClienteInput!): Cliente!
-  updateCliente(id: Int!, input: ClienteInput!): Cliente!
-  deleteCliente(id: Int!): Boolean!
-
-  createProveedor(input: ProveedorInput!): Proveedor!
-  updateProveedor(id: Int!, input: ProveedorInput!): Proveedor!
-  deleteProveedor(id: Int!): Boolean!
-
-  createCategoria(input: CategoriaInput!): Categoria!
-  updateCategoria(id: Int!, input: CategoriaInput!): Categoria!
-  deleteCategoria(id: Int!): Boolean!
-
-  createServicio(input: ServicioInput!): Servicio!
-  updateServicio(id: Int!, input: ServicioInput!): Servicio!
-  deleteServicio(id: Int!): Boolean!
-
-  createFotoServicio(input: FotoServicioInput!): FotoServicio!
-  updateFotoServicio(id: Int!, input: FotoServicioInput!): FotoServicio!
-  deleteFotoServicio(id: Int!): Boolean!
-
-  createReserva(input: ReservaInput!): Reserva!
-  updateReserva(id: Int!, input: ReservaInput!): Reserva!
-  deleteReserva(id: Int!): Boolean!
-
-  createReservaServicio(input: ReservaServicioInput!): ReservaServicio!
-  updateReservaServicio(id: Int!, input: ReservaServicioInput!): ReservaServicio!
-  deleteReservaServicio(id: Int!): Boolean!
-
-  createPago(input: PagoInput!): Pago!
-  updatePago(id: Int!, input: PagoInput!): Pago!
-  deletePago(id: Int!): Boolean!
-
-  createCalificacion(input: CalificacionInput!): Calificacion!
-  updateCalificacion(id: Int!, input: CalificacionInput!): Calificacion!
-  deleteCalificacion(id: Int!): Boolean!
-
-  createComentario(input: ComentarioInput!): Comentario!
-  updateComentario(id: Int!, input: ComentarioInput!): Comentario!
-  deleteComentario(id: Int!): Boolean!
-
-  createServicioUbicacion(input: ServicioUbicacionInput!): ServicioUbicacion!
-  updateServicioUbicacion(id: Int!, input: ServicioUbicacionInput!): ServicioUbicacion!
-  deleteServicioUbicacion(id: Int!): Boolean!
+  tendenciasVentas(filter: TendenciasFilter, pagination: Pagination): [PuntoTendencia!]!
+  tendenciasSatisfaccion(filter: TendenciasFilter, pagination: Pagination): [PuntoTendencia!]!
 }

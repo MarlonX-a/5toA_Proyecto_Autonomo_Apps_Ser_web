@@ -1,5 +1,5 @@
 export const QUERY_SERVICIOS = `
-  query Servicios($filter: ServicioFilter, $pagination: Pagination) {
+  query Servicios($filter: ServicioFilterInput, $pagination: Pagination) {
     servicios(filter: $filter, pagination: $pagination) {
       id
       nombreServicio
@@ -14,7 +14,7 @@ export const QUERY_SERVICIOS = `
 `;
 
 export const QUERY_RESERVAS = `
-  query Reservas($filter: ReservaFilter, $pagination: Pagination) {
+  query Reservas($filter: ReservaFilterInput, $pagination: Pagination) {
     reservas(filter: $filter, pagination: $pagination) {
       id
       fecha

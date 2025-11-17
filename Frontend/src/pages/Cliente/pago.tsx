@@ -62,8 +62,18 @@ export default function Pago() {
 
     try {
       const res = await createPago(pagoData, token);
-      setPagoId(res.data.id);
-      alert("Pago registrado exitosamente ✅");
+      const nuevoPageoId = res.data.id;
+      setPagoId(nuevoPageoId);
+      
+      // Automáticamente marcar el pago como pagado
+      try {
+        await markPagoAsPagado(nuevoPageoId, token);
+        alert("Pago procesado exitosamente ✅");
+        setTimeout(() => navigate("/servicios/reserva-list/"), 1500);
+      } catch (err: any) {
+        console.error("Error procesando pago:", err.response?.data || err);
+        alert("Pago registrado pero hubo un error al procesarlo. Intenta de nuevo.");
+      }
     } catch (err: any) {
       console.error("Error registrando pago:", err.response?.data || err);
       alert("Error al registrar el pago. Revisa los datos.");

@@ -1,10 +1,9 @@
 import axios from "axios";
 import type { Iservicio } from "../interfaces/servicio";
+import { createApiClient } from "./axiosConfig";
 
 // Base URL apuntando al endpoint correcto
-const servicioApi = axios.create({
-  baseURL: "http://127.0.0.1:8000/api_rest/api/v1/servicio/",
-});
+const servicioApi = createApiClient("http://127.0.0.1:8000/api_rest/api/v1/servicio/");
 
 // Crear un nuevo servicio
 export const createServicio = (servicio: Partial<Iservicio>, token: string) => {

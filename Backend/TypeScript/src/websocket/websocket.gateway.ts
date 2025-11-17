@@ -1,319 +1,146 @@
 import {
-  WebSocketGateway,
+  WebSocketGateway as WSGateway,
   WebSocketServer,
   SubscribeMessage,
+  OnGatewayInit,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  MessageBody,
   ConnectedSocket,
+  MessageBody,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { ClientManagerService } from './client-manager.service';
-import { EventEmitterService } from './event-emitter.service';
-import { RoomManagerService } from './room-manager.service';
-import { DjangoApiService } from '../services/django-api.service';
+import { WebSocketService } from './websocket.service';
+import { AuthPayload, UserRole } from './types';
 import { Logger } from '@nestjs/common';
 
-export interface AuthenticatedSocket extends Socket {
-  userId?: string;
-  userRole?: 'cliente' | 'proveedor' | 'admin';
-  isAuthenticated?: boolean;
-}
-
-@WebSocketGateway({
+@WSGateway({
   cors: {
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:8000',
-      'http://localhost:5173',
-      'http://127.0.0.1:5173',
-    ],
+    origin: ['http://localhost:5173', 'http://localhost:3000'],
     credentials: true,
   },
-  namespace: '/',
+  namespace: '/ws',
 })
-export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer()
-  server!: Server;
+export class WebSocketGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
+  @WebSocketServer() server: Server;
+  private logger = new Logger('WebSocketGateway');
+  private authenticatedSockets = new Set<string>();
 
-  private readonly logger = new Logger(WebsocketGateway.name);
-
-  constructor(
-    private readonly clientManager: ClientManagerService,
-    private readonly eventEmitter: EventEmitterService,
-    private readonly roomManager: RoomManagerService,
-    private readonly djangoApi: DjangoApiService,
-  ) {}
+  constructor(private webSocketService: WebSocketService) {}
 
   afterInit(server: Server) {
-    this.eventEmitter.setServer(server);
-    this.logger.log('🚀 WebSocket Gateway inicializado');
+    this.webSocketService.setServer(server);
+    this.logger.log('WebSocket Gateway inicializado');
   }
 
-  async handleConnection(client: AuthenticatedSocket) {
-    this.logger.log(`🔌 Cliente conectado: ${client.id}`);
-    
-    // Enviar evento de conexión al dashboard
-    this.eventEmitter.emitToDashboard('client_connected', {
-      socketId: client.id,
-      timestamp: new Date().toISOString(),
-    });
+  handleConnection(socket: Socket) {
+    this.logger.log(`Cliente conectado: ${socket.id}`);
   }
 
-  async handleDisconnect(client: AuthenticatedSocket) {
-    this.logger.log(`🔌 Cliente desconectado: ${client.id}`);
-    
-    // Limpiar datos del cliente
-    if (client.isAuthenticated && client.userId) {
-      await this.clientManager.removeClient(client.userId);
-      await this.roomManager.leaveAllRooms(client.userId);
-    }
-
-    // Enviar evento de desconexión al dashboard
-    this.eventEmitter.emitToDashboard('client_disconnected', {
-      socketId: client.id,
-      timestamp: new Date().toISOString(),
-    });
+  handleDisconnect(socket: Socket) {
+    this.logger.log(`Cliente desconectado: ${socket.id}`);
+    this.webSocketService.unregisterClient(socket.id);
+    this.authenticatedSockets.delete(socket.id);
   }
 
   @SubscribeMessage('authenticate')
-  async handleAuthentication(
-    @MessageBody() data: { token: string; userId: string; role: 'cliente' | 'proveedor' | 'admin' },
-    @ConnectedSocket() client: AuthenticatedSocket,
+  handleAuthenticate(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: AuthPayload,
   ) {
     try {
-      // Verificar token con Django API
-      const isValid = await this.djangoApi.verifyToken(data.token);
-      
-      if (!isValid) {
-        client.emit('auth_error', { message: 'Token inválido' });
-        return;
-      }
+      // Aquí se podría validar el token JWT
+      // Por ahora, simplemente registramos el cliente
+      const role = data.role as UserRole;
+      this.webSocketService.registerClient(socket.id, data.userId, role);
+      this.authenticatedSockets.add(socket.id);
 
-      // Registrar cliente autenticado
-      client.userId = data.userId;
-      client.userRole = data.role;
-      client.isAuthenticated = true;
+      // El cliente se une a una sala según su rol
+      socket.join(role);
+      socket.join(`user:${data.userId}`);
 
-      await this.clientManager.addClient({
-        socketId: client.id,
-        userId: data.userId,
-        role: data.role,
-        socket: client,
-        connectedAt: new Date(),
-        lastActivity: new Date(),
-        rooms: new Set<string>(),
-      });
-
-      // Unir a salas según el rol
-      await this.joinRoleBasedRooms(client);
-
-      client.emit('auth_success', { 
+      socket.emit('auth_success', {
         message: 'Autenticación exitosa',
-        userId: data.userId,
-        role: data.role,
+        socketId: socket.id,
+        role,
       });
 
-      this.logger.log(`✅ Cliente autenticado: ${data.userId} (${data.role})`);
+      this.logger.log(
+        `Usuario autenticado: ${data.userId} (${role}) - Socket: ${socket.id}`,
+      );
 
-      // Notificar al dashboard
-      this.eventEmitter.emitToDashboard('client_authenticated', {
-        userId: data.userId,
-        role: data.role,
-        socketId: client.id,
-        timestamp: new Date().toISOString(),
-      });
-
+      // Emitir actualización de métricas
+      this.webSocketService.broadcastMetricsUpdate();
     } catch (error) {
       this.logger.error('Error en autenticación:', error);
-      client.emit('auth_error', { message: 'Error en autenticación' });
+      socket.emit('auth_error', {
+        message: 'Error de autenticación',
+        error: error.message,
+      });
     }
   }
 
   @SubscribeMessage('join_room')
-  async handleJoinRoom(
-    @MessageBody() data: { roomName: string },
-    @ConnectedSocket() client: AuthenticatedSocket,
+  handleJoinRoom(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: { room: string },
   ) {
-    if (!client.isAuthenticated) {
-      client.emit('error', { message: 'No autenticado' });
+    if (!this.authenticatedSockets.has(socket.id)) {
+      socket.emit('error', { message: 'No autenticado' });
       return;
     }
 
-    try {
-      if (!client.userId) {
-        client.emit('error', { message: 'Usuario no identificado' });
-        return;
-      }
-      await this.roomManager.joinRoom(client.userId, data.roomName);
-      client.emit('room_joined', { roomName: data.roomName });
-      
-      this.logger.log(`🏠 ${client.userId} se unió a la sala: ${data.roomName}`);
-    } catch (error) {
-      client.emit('error', { message: 'Error al unirse a la sala' });
-    }
+    socket.join(data.room);
+    this.logger.log(`Socket ${socket.id} se unió a la sala: ${data.room}`);
+    socket.emit('room_joined', { room: data.room });
   }
 
   @SubscribeMessage('leave_room')
-  async handleLeaveRoom(
-    @MessageBody() data: { roomName: string },
-    @ConnectedSocket() client: AuthenticatedSocket,
+  handleLeaveRoom(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: { room: string },
   ) {
-    if (!client.isAuthenticated) {
-      client.emit('error', { message: 'No autenticado' });
-      return;
-    }
-
-    try {
-      if (!client.userId) {
-        client.emit('error', { message: 'Usuario no identificado' });
-        return;
-      }
-      await this.roomManager.leaveRoom(client.userId, data.roomName);
-      client.emit('room_left', { roomName: data.roomName });
-      
-      this.logger.log(`🚪 ${client.userId} salió de la sala: ${data.roomName}`);
-    } catch (error) {
-      client.emit('error', { message: 'Error al salir de la sala' });
-    }
+    socket.leave(data.room);
+    this.logger.log(`Socket ${socket.id} salió de la sala: ${data.room}`);
   }
 
-  @SubscribeMessage('reservation_created')
-  async handleReservationCreated(
+  @SubscribeMessage('ping')
+  handlePing(
+    @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
-    @ConnectedSocket() client: AuthenticatedSocket,
   ) {
-    if (!client.isAuthenticated) {
-      client.emit('error', { message: 'No autenticado' });
-      return;
-    }
-
-    try {
-      // Emitir evento a la sala del proveedor
-      const roomName = `proveedor_${data.proveedorId}`;
-      await this.eventEmitter.emitToRoom(roomName, {
-        type: 'reservation_created',
-        data: data,
-        from: client.userId,
-        timestamp: new Date().toISOString(),
-      });
-
-      this.logger.log(`📅 Reserva creada por ${client.userId} para proveedor ${data.proveedorId}`);
-    } catch (error) {
-      client.emit('error', { message: 'Error al procesar reserva' });
+    if (this.authenticatedSockets.has(socket.id)) {
+      this.webSocketService.updateClientActivity(socket.id);
+      socket.emit('pong', { data, timestamp: new Date() });
     }
   }
 
-  @SubscribeMessage('reservation_accepted')
-  async handleReservationAccepted(
-    @MessageBody() data: any,
-    @ConnectedSocket() client: AuthenticatedSocket,
+  @SubscribeMessage('get_dashboard_summary')
+  handleGetDashboardSummary(
+    @ConnectedSocket() socket: Socket,
   ) {
-    if (!client.isAuthenticated) {
-      client.emit('error', { message: 'No autenticado' });
+    if (!this.authenticatedSockets.has(socket.id)) {
+      socket.emit('error', { message: 'No autenticado' });
       return;
     }
 
-    try {
-      // Emitir evento al cliente
-      const roomName = `cliente_${data.clienteId}`;
-      await this.eventEmitter.emitToRoom(roomName, {
-        type: 'reservation_accepted',
-        data: data,
-        from: client.userId,
-        timestamp: new Date().toISOString(),
-      });
-
-      this.logger.log(`✅ Reserva aceptada por ${client.userId} para cliente ${data.clienteId}`);
-    } catch (error) {
-      client.emit('error', { message: 'Error al procesar aceptación' });
-    }
+    const summary = this.webSocketService.getDashboardSummary();
+    socket.emit('dashboard_summary', summary);
   }
 
-  @SubscribeMessage('payment_created')
-  async handlePaymentCreated(
-    @MessageBody() data: any,
-    @ConnectedSocket() client: AuthenticatedSocket,
+  @SubscribeMessage('get_recent_events')
+  handleGetRecentEvents(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: { limit?: number },
   ) {
-    if (!client.isAuthenticated) {
-      client.emit('error', { message: 'No autenticado' });
+    if (!this.authenticatedSockets.has(socket.id)) {
+      socket.emit('error', { message: 'No autenticado' });
       return;
     }
 
-    try {
-      const roomName = `proveedor_${data.proveedorId}`;
-      await this.eventEmitter.emitToRoom(roomName, {
-        type: 'payment_created',
-        data: data,
-        from: client.userId,
-        timestamp: new Date().toISOString(),
-      });
-
-      this.logger.log(`💰 Pago creado por ${client.userId} para proveedor ${data.proveedorId}`);
-    } catch (error) {
-      client.emit('error', { message: 'Error al procesar pago' });
-    }
-  }
-
-  @SubscribeMessage('comment_created')
-  async handleCommentCreated(
-    @MessageBody() data: any,
-    @ConnectedSocket() client: AuthenticatedSocket,
-  ) {
-    if (!client.isAuthenticated) {
-      client.emit('error', { message: 'No autenticado' });
-      return;
-    }
-
-    try {
-      const roomName = `proveedor_${data.proveedorId}`;
-      await this.eventEmitter.emitToRoom(roomName, {
-        type: 'comment_created',
-        data: data,
-        from: client.userId,
-        timestamp: new Date().toISOString(),
-      });
-
-      this.logger.log(`💬 Comentario creado por ${client.userId} para proveedor ${data.proveedorId}`);
-    } catch (error) {
-      client.emit('error', { message: 'Error al procesar comentario' });
-    }
-  }
-
-  private async joinRoleBasedRooms(client: AuthenticatedSocket) {
-    const userId = client.userId;
-    const role = client.userRole;
-
-    if (!userId || !role) {
-      this.logger.error('Usuario o rol no definido');
-      return;
-    }
-
-    // Sala personal del usuario
-    await this.roomManager.joinRoom(userId, `${role}_${userId}`);
-
-    // Sala general según rol
-    await this.roomManager.joinRoom(userId, `all_${role}s`);
-
-    // Sala de administradores si es admin
-    if (role === 'admin') {
-      await this.roomManager.joinRoom(userId, 'admin_dashboard');
-    }
-  }
-
-  // Métodos públicos para ser llamados desde otros servicios
-  async emitToUser(userId: string, event: string, data: any) {
-    const client = this.clientManager.getClientByUserId(userId);
-    if (client && client.socket) {
-      client.socket.emit(event, data);
-    }
-  }
-
-  async emitToRoom(roomName: string, event: string, data: any) {
-    await this.eventEmitter.emitToRoom(roomName, {
-      type: event,
-      data: data,
-      timestamp: new Date().toISOString(),
-    });
+    const limit = data?.limit || 50;
+    const events = this.webSocketService.getRecentEvents(limit);
+    socket.emit('recent_events', { events });
   }
 }

@@ -1,22 +1,19 @@
 import { Module } from '@nestjs/common';
-import { WebsocketGateway } from './websocket/websocket.gateway';
-import { DashboardController, DashboardWebController } from './dashboard/dashboard.controller';
-import { DashboardService } from './dashboard/dashboard.service';
-import { ClientManagerService } from './websocket/client-manager.service';
-import { EventEmitterService } from './websocket/event-emitter.service';
-import { RoomManagerService } from './websocket/room-manager.service';
-import { DjangoApiService } from './services/django-api.service';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from 'path';
+import { WebSocketModule } from './websocket/websocket.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { HealthController } from './health/health.controller';
 
 @Module({
-  imports: [],
-  controllers: [DashboardController, DashboardWebController],
-  providers: [
-    WebsocketGateway,
-    DashboardService,
-    ClientManagerService,
-    EventEmitterService,
-    RoomManagerService,
-    DjangoApiService,
+  imports: [
+    ServeStaticModule.forRoot({
+      rootPath: path.join(__dirname, '..', 'public'),
+      serveRoot: '/',
+    }),
+    WebSocketModule,
+    DashboardModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}

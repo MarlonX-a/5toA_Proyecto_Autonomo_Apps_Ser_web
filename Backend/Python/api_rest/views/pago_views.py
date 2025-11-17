@@ -1,4 +1,4 @@
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import viewsets
 from .. import models, serializers
@@ -13,10 +13,15 @@ class PagoView(viewsets.ModelViewSet):
     serializer_class = serializers.PagoSerializer
     queryset = models.Pago.objects.all()
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    
+    def get_permissions(self):
+        """
+        Permitir lectura (GET) sin autenticación para que el dashboard pueda obtener pagos.
+        Mantener autenticación para crear, actualizar y eliminar.
+        """
+        if self.request.method in ['GET', 'HEAD', 'OPTIONS']:
+            return [AllowAny()]
+        return [IsAuthenticated()]
 
     def perform_create(self, serializer):
         pago = serializer.save()

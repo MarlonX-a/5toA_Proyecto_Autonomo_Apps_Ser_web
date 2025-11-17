@@ -133,6 +133,19 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:4000",
 ]
 
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "x-dashboard",  # Permitir header personalizado para dashboard
+]
+
 AUTH_USER_MODEL = 'api_rest.User'
 
 REST_FRAMEWORK = {

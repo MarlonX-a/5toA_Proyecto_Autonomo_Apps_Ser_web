@@ -94,12 +94,13 @@ export function ReservaServicio() {
         }
         await updateReservaServicio(Number(params.id), modifiedData, token);
         alert("✅ Reserva de servicio actualizada correctamente");
+        navigate(`/servicios/reserva-list/reservados/${params.id}`);
       } else {
-        await createReservaServicio(modifiedData as IreservaServicio, token);
+        const response = await createReservaServicio(modifiedData as IreservaServicio, token);
         alert("✅ Reserva de servicio creada correctamente");
-        
+        const reservaServicioId = response.data.id;
+        navigate(`/servicios/reserva-list/reservados/${reservaServicioId+1}`);
       }
-      navigate("/servicios/reserva-list/reservados/23");
     } catch (err) {
       console.error("Error al guardar reserva de servicio:", err);
       alert("❌ No se pudo guardar la reserva de servicio");

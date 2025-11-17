@@ -2,12 +2,13 @@ from rest_framework import viewsets
 from .. import serializers, models
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
+from ..permissions import DashboardReadOnly
 
 class ServicioViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ServicioSerializer
     queryset = models.Servicio.objects.all()
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [DashboardReadOnly]
 
     def get_queryset(self):
         queryset = super().get_queryset()

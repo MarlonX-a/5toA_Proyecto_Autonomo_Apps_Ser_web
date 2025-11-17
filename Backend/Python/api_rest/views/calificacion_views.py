@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from .. import models, serializers
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from ..permissions import DashboardReadOnly
 
 
 
@@ -11,7 +12,7 @@ class CalificacionView(viewsets.ModelViewSet):
     serializer_class = serializers.CalificacionSerializer
     queryset = models.Calificacion.objects.all()
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [DashboardReadOnly]
 
 
     def perform_create(self, serializer):

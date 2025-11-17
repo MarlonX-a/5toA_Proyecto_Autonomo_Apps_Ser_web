@@ -60,7 +60,7 @@ export function ReservaPage() {
     try {
       await createReserva(reservaData, token);
       alert("Reserva creada correctamente ✅");
-      Navigate("/servicios/reserva-list/")
+      Navigate("/servicios/reserva-list")
     } catch (error: any) {
       console.error("Error creando reserva:", error);
       if (error.response?.data) {
@@ -68,7 +68,7 @@ export function ReservaPage() {
       }
       alert("No se pudo crear la reserva ❌ — usando total 0 por defecto");
       // fuerza el total a 0 si falla
-      setTotal(0);
+      setTotal(1);
     }
   };
 

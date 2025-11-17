@@ -1,14 +1,11 @@
 import axios from 'axios';
 import type { IclienteRegister } from '../interfaces/cliente';
 import type { IproveedorRegister } from '../interfaces/proveedor';
+import { createApiClient } from './axiosConfig';
 
-const clienteApi = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api_rest/api/v1/cliente/'
-});
+const clienteApi = createApiClient('http://127.0.0.1:8000/api_rest/api/v1/cliente/');
 
-const proveedorApi = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api_rest/api/v1/proveedor/'
-});
+const proveedorApi = createApiClient('http://127.0.0.1:8000/api_rest/api/v1/proveedor/');
 
 
 

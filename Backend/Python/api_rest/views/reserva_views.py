@@ -2,12 +2,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import viewsets
 from .. import models, serializers
+from ..permissions import DashboardReadOnly
 
 class ReservaView(viewsets.ModelViewSet):
     serializer_class = serializers.ReservaSerializer
     queryset = models.Reserva.objects.all()
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [DashboardReadOnly]  # Permite dashboard sin autenticación
 
     def get_queryset(self):
         queryset = super().get_queryset()

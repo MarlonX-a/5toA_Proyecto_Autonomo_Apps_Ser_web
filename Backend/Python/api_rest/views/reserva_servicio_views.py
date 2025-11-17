@@ -4,12 +4,13 @@ from rest_framework import viewsets
 from .. import models, serializers
 from fastapi import logger
 from rest_framework.exceptions import PermissionDenied
+from ..permissions import DashboardReadOnly
 
 class ReservaServicioView(viewsets.ModelViewSet):
     serializer_class = serializers.ReservaServicioSerializer
     queryset = models.ReservaServicio.objects.all()
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [DashboardReadOnly]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -47,22 +48,24 @@ class ReservaServicioView(viewsets.ModelViewSet):
         updated = serializer.save()
 
         # Después de actualizar el estado de un ReservaServicio, ajustar el estado
-        # de la Reserva padre según reglas simples:
-        # - Si al menos un ReservaServicio queda 'confirmada' -> Reserva.estado = 'confirmada'
-        # - Si todos los ReservaServicio quedan 'rechazada' -> Reserva.estado = 'cancelada'
+        # de la Reserva padre según reglas de negocio:
+        # - Si todos los ReservaServicio están 'confirmada' -> Reserva.estado = 'confirmada'
+        # - Si al menos uno está 'rechazada' -> Reserva.estado = 'cancelada'
         try:
             reserva = updated.reserva
             hijos = reserva.detalles.all()
-            estados = set(h.estado for h in hijos)
+            
+            if hijos.exists():
+                estados = set(h.estado for h in hijos)
 
-            # Cambio de comportamiento: no marcar la Reserva como 'confirmada'
-            # automáticamente cuando un proveedor acepta su servicio. El flujo
-            # final de confirmación/pago debe ser realizado por el cliente cuando
-            # registre el pago. Conservamos la regla de cancelar la reserva si
-            # todos los servicios fueron rechazados.
-            if estados and all(s == 'rechazada' for s in estados):
-                reserva.estado = 'cancelada'
-                reserva.save()
+                # Si todos los servicios fueron confirmados por el proveedor
+                if all(s == 'confirmada' for s in estados):
+                    reserva.estado = 'confirmada'
+                    reserva.save()
+                # Si todos los servicios fueron rechazados
+                elif all(s == 'rechazada' for s in estados):
+                    reserva.estado = 'cancelada'
+                    reserva.save()
         except Exception:
             # No bloquear la operación por fallos en esta sincronización
             logger.exception('Error actualizando estado de la Reserva tras cambiar ReservaServicio')

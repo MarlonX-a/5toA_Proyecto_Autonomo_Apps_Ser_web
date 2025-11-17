@@ -24,7 +24,7 @@ export async function graphQLRequest<T = any>({
 
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`GraphQL HTTP error ${res.status}: ${text}`);
+    throw new Error(`error ${res.status}: ${text}`);
   }
 
   const json = (await res.json()) as { data?: T; errors?: Array<{ message: string }>; };

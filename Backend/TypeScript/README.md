@@ -1,223 +1,274 @@
-# 🚀 WebSocket Server para Django API
+# Servidor WebSocket - FindYourWork
 
-Este proyecto implementa un servidor WebSocket robusto en TypeScript que se conecta a tu API REST de Python Django, proporcionando funcionalidades de tiempo real para tu aplicación.
+Sistema de comunicación en tiempo real para la plataforma de servicios FindYourWork, implementado con NestJS y Socket.IO.
 
-## ✨ Características
+## 🚀 Características
 
-- **Dashboard en tiempo real** - Monitoreo de conexiones y eventos
-- **Gestión de conexiones** - Manejo avanzado de clientes con roles
-- **Sistema de salas/canales** - Organización por tipos de datos
-- **Emisión de eventos** - Notificaciones en tiempo real
-- **Integración con Django** - Sincronización con API REST
-- **Autenticación** - Verificación de tokens con Django
-- **Limpieza automática** - Gestión de conexiones inactivas
+- ✅ Comunicación bidireccional en tiempo real
+- ✅ Gestión automática de conexiones
+- ✅ Autenticación y autorización por roles
+- ✅ Sistema de salas para notificaciones segmentadas
+- ✅ Historial de eventos
+- ✅ Dashboard de monitoreo en tiempo real
+- ✅ Integración con Django REST API
 
-## 🏗️ Arquitectura
+## 📋 Requisitos
 
-```
-src/
-├── websocket/
-│   ├── websocket.gateway.ts      # Gateway principal de WebSocket
-│   ├── client-manager.service.ts # Gestión de clientes
-│   ├── room-manager.service.ts   # Gestión de salas
-│   └── event-emitter.service.ts  # Emisión de eventos
-├── dashboard/
-│   ├── dashboard.controller.ts   # API REST para dashboard
-│   └── dashboard.service.ts      # Lógica del dashboard
-├── services/
-│   └── django-api.service.ts     # Integración con Django
-├── test-clients/
-│   ├── websocket-client.ts        # Cliente de prueba
-│   └── test-runner.ts            # Ejecutor de pruebas
-└── config/
-    └── config.ts                 # Configuración
-```
+- Node.js 18+ (recomendado 20+)
+- npm 9+ o yarn
+- Acceso al puerto 4000
 
-## 🚀 Instalación y Uso
+## 🔧 Instalación
 
 ### 1. Instalar dependencias
+
 ```bash
-cd Backend/TypeScript
 npm install
 ```
 
-### 2. Configurar la API de Django
-Asegúrate de que tu API Django esté corriendo en `http://localhost:8000`
+### 2. Configurar variables de entorno
 
-### 3. Iniciar el servidor WebSocket
+Crea un archivo `.env` en la raíz del proyecto:
+
+```env
+PORT=4000
+NODE_ENV=development
+
+# URLs de la API Django
+DJANGO_API_URL=http://localhost:8000/api
+
+# CORS (Frontend)
+CORS_ORIGIN=http://localhost:5173,http://localhost:3000
+```
+
+### 3. Compilar TypeScript
+
+```bash
+npm run build
+```
+
+## 🏃 Ejecución
+
+### Modo desarrollo (con recarga en vivo)
+
 ```bash
 npm run start:dev
 ```
 
-El servidor se iniciará en `http://localhost:4000`
+### Modo producción
 
-### 4. Acceder al Dashboard
-Visita `http://localhost:4000/dashboard` para ver el dashboard en tiempo real
-
-### 5. Ejecutar clientes de prueba
 ```bash
-npm run test:clients
+npm run start:prod
 ```
 
-## 📡 API del Dashboard
+### En segundo plano
 
-### Endpoints disponibles:
+```bash
+npm run start &
+```
 
-- `GET /dashboard` - Datos generales del dashboard
-- `GET /dashboard/clients` - Lista de clientes conectados
-- `GET /dashboard/rooms` - Lista de salas activas
-- `GET /dashboard/events` - Historial de eventos
-- `GET /dashboard/api-status` - Estado de conexión con Django
-- `GET /dashboard/stats` - Estadísticas en tiempo real
-- `POST /dashboard/cleanup` - Limpiar datos inactivos
+## 📊 Acceder al Dashboard
 
-## 🔌 Eventos WebSocket
+Una vez que el servidor está corriendo:
 
-### Eventos del Cliente:
-- `authenticate` - Autenticación con token
+- **Dashboard Web**: http://localhost:4000/dashboard.html
+- **API Health**: http://localhost:4000/api/health
+
+## 🔌 WebSocket Endpoints
+
+El servidor WebSocket está disponible en `ws://localhost:4000/ws`
+
+### Eventos disponibles
+
+#### Cliente → Servidor
+
+- `authenticate` - Autenticar usuario
 - `join_room` - Unirse a una sala
 - `leave_room` - Salir de una sala
-- `reservation_created` - Crear reserva
-- `reservation_accepted` - Aceptar reserva
-- `payment_created` - Crear pago
-- `comment_created` - Crear comentario
+- `ping` - Mantener viva la conexión
 
-### Eventos del Servidor:
+#### Servidor → Cliente
+
 - `auth_success` - Autenticación exitosa
 - `auth_error` - Error de autenticación
-- `event` - Evento general
-- `room_joined` - Confirmación de unión a sala
-- `room_left` - Confirmación de salida de sala
+- `negocio:evento` - Evento de negocio general
+- `reserva:nueva` - Nueva reserva creada
+- `servicio:disponible` - Nuevo servicio disponible
+- `dashboard:update` - Actualización del dashboard
+- `dashboard:metrics` - Métricas en tiempo real
 
-## 🏠 Sistema de Salas
+## 🔌 REST API Endpoints
 
-### Tipos de salas automáticas:
-- `cliente_{userId}` - Sala personal del cliente
-- `proveedor_{userId}` - Sala personal del proveedor
-- `all_clientes` - Sala general de clientes
-- `all_proveedores` - Sala general de proveedores
-- `admin_dashboard` - Sala de administradores
+### Obtener Resumen del Dashboard
 
-### Salas específicas:
-- `service_{serviceId}` - Sala de un servicio específico
-- `location_{locationId}` - Sala de una ubicación específica
-
-## 🔐 Autenticación
-
-El sistema utiliza tokens de Django para autenticación:
-
-```typescript
-// Ejemplo de autenticación
-socket.emit('authenticate', {
-  token: 'tu_token_de_django',
-  userId: 'usuario_123',
-  role: 'cliente' // o 'proveedor' o 'admin'
-});
+```http
+GET /api/dashboard
 ```
 
-## 📊 Monitoreo
+### Obtener Estadísticas Detalladas
 
-### Métricas disponibles:
-- Conexiones activas por rol
-- Salas creadas y clientes por sala
-- Tiempo promedio de conexión
-- Eventos emitidos por minuto
-- Estado de la API de Django
-
-### Dashboard en tiempo real:
-- Actualización automática cada 5 segundos
-- Limpieza automática de datos inactivos
-- Estadísticas del sistema (memoria, uptime)
-- Logs de eventos en tiempo real
-
-## 🧪 Pruebas
-
-### Cliente de prueba incluido:
-```typescript
-import { createClient } from './test-clients/websocket-client';
-
-const client = createClient('usuario_1', 'cliente', 'token_123');
-client.createReservation({
-  clienteId: 'usuario_1',
-  proveedorId: 'proveedor_1',
-  servicioId: 'servicio_1',
-  fecha: new Date().toISOString(),
-  estado: 'pendiente'
-});
+```http
+GET /api/dashboard/stats
 ```
 
-### Ejecutar pruebas:
+### Obtener Estado de la Plataforma
+
+```http
+GET /api/dashboard/status
+```
+
+### Emitir Evento de Negocio
+
+```http
+POST /api/dashboard/emit-event
+Content-Type: application/json
+
+{
+  "type": "reserva:creada",
+  "data": { "reserva": {...} },
+  "timestamp": "2024-11-15T14:30:00Z"
+}
+```
+
+### Notificar a Rol Específico
+
+```http
+POST /api/dashboard/notify-role
+Content-Type: application/json
+
+{
+  "role": "proveedor",
+  "event": "nueva_solicitud",
+  "payload": {...}
+}
+```
+
+### Notificar a Usuario Específico
+
+```http
+POST /api/dashboard/notify-user
+Content-Type: application/json
+
+{
+  "userId": "user_123",
+  "event": "reserva_confirmada",
+  "payload": {...}
+}
+```
+
+## 📁 Estructura de Carpetas
+
+```
+src/
+├── main.ts                 # Punto de entrada
+├── app.module.ts           # Módulo principal
+├── websocket/             # Módulo WebSocket
+│   ├── websocket.gateway.ts
+│   ├── websocket.service.ts
+│   ├── websocket.module.ts
+│   └── types.ts
+├── dashboard/             # Módulo Dashboard
+│   ├── dashboard.service.ts
+│   ├── dashboard.controller.ts
+│   └── dashboard.module.ts
+└── health/               # Módulo Health Check
+    └── health.controller.ts
+
+public/
+└── dashboard.html         # Dashboard del servidor
+
+WEBSOCKET_INTEGRATION.md   # Guía de integración con Django
+```
+
+## 🔗 Integración con Django
+
+Ver `WEBSOCKET_INTEGRATION.md` para instrucciones detalladas sobre cómo integrar el servidor WebSocket con tu API REST de Django.
+
+Resumen rápido:
+
+1. Crea un servicio `WebSocketNotifier` en Django
+2. En tus signals de Django, emite eventos al servidor WebSocket
+3. Los eventos se difunden automáticamente a todos los clientes conectados
+
+## 🧪 Testing
+
+Ejecuta los tests:
+
 ```bash
-# Ejecutar clientes de prueba
-npm run test:clients
-
-# Ejecutar tests unitarios
 npm test
 ```
 
-## 🔧 Configuración
+Con cobertura:
 
-Edita `src/config/config.ts` para personalizar:
-
-```typescript
-export const config = {
-  websocket: {
-    port: 4000,
-    cors: { /* configuración CORS */ }
-  },
-  django: {
-    baseUrl: 'http://localhost:8000/api/v1/',
-    timeout: 10000
-  },
-  // ... más configuraciones
-};
+```bash
+npm run test:cov
 ```
 
-## 🚨 Solución de Problemas
+## 📚 Ejemplo de Uso - Frontend React
 
-### Error de conexión con Django:
-1. Verifica que Django esté corriendo en el puerto 8000
-2. Revisa la configuración CORS en Django
-3. Verifica que el endpoint `/api/v1/profile/` esté disponible
+```typescript
+import { useEffect, useState } from 'react';
+import { authenticateSocket, onReservaNueva, getSocket } from '../websocket/socket';
 
-### Problemas de autenticación:
-1. Asegúrate de que el token sea válido
-2. Verifica que el usuario exista en Django
-3. Revisa los logs del servidor para errores específicos
+export function MiComponente() {
+  const [reservas, setReservas] = useState([]);
 
-### Dashboard no carga:
-1. Verifica que el servidor esté corriendo en el puerto 4000
-2. Revisa la consola del navegador para errores
-3. Asegúrate de que el archivo `dashboard.html` esté en la carpeta `public`
+  useEffect(() => {
+    // Autenticar
+    authenticateSocket({
+      token: 'tu-token-jwt',
+      userId: 'usuario-123',
+      role: 'cliente'
+    });
 
-## 📝 Logs
+    // Escuchar nuevas reservas
+    const unsubscribe = onReservaNueva((data) => {
+      setReservas(prev => [...prev, data]);
+    });
 
-El sistema incluye logging detallado:
-- Conexiones y desconexiones de clientes
-- Eventos emitidos y recibidos
-- Errores de autenticación
-- Estado de la API de Django
-- Métricas del sistema
+    return unsubscribe;
+  }, []);
 
-## 🤝 Contribución
+  return <div>{/* Tu UI aquí */}</div>;
+}
+```
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit tus cambios (`git commit -am 'Agregar nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Crea un Pull Request
+## 🛠️ Troubleshooting
 
-## 📄 Licencia
+### "Puerto 4000 ya está en uso"
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+```bash
+# Encontrar y matar el proceso
+lsof -i :4000
+kill -9 <PID>
 
-## 🆘 Soporte
+# O cambiar el puerto en .env
+PORT=4001
+```
 
-Si tienes problemas o preguntas:
-1. Revisa la documentación
-2. Busca en los issues existentes
-3. Crea un nuevo issue con detalles del problema
+### "Cannot find module '@nestjs/'"
 
----
+```bash
+# Limpiar e reinstalar
+rm -rf node_modules package-lock.json
+npm install
+```
 
-**¡Disfruta usando tu WebSocket server! 🚀**
+### WebSocket no se conecta
+
+1. Verifica que el servidor esté corriendo: `npm run start:dev`
+2. Comprueba la consola del navegador para errores
+3. Verifica que CORS está configurado correctamente
+4. Asegúrate de usar `ws://` (no `http://`) para WebSocket
+
+## 📝 Licencia
+
+Proyecto de Universidad - Todos los derechos reservados
+
+## 👥 Contribuidores
+
+Desarrollado para el proyecto autónomo de Apps de Servicios Web (5to A)
+
+## 📞 Soporte
+
+Para preguntas sobre la integración WebSocket, consulta `WEBSOCKET_INTEGRATION.md`

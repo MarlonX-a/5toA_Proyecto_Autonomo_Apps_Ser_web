@@ -1,14 +1,15 @@
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
+from api_rest.authentication import JWTAuthentication
 from rest_framework import viewsets
 from .. import models, serializers
+from api_rest.permissions import IsAuthenticatedOrDashboard
 
 
 class ComentarioView(viewsets.ModelViewSet):
     serializer_class = serializers.ComentarioSerializer
     queryset = models.Comentario.objects.all()
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticatedOrDashboard]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -18,8 +19,14 @@ class ComentarioView(viewsets.ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        user = self.request.user
-        if hasattr(user, "cliente"):
-            serializer.save(cliente=user.cliente)
-        else:
-            serializer.save()
+        payload = self.request.jwt_payload
+        user_sub = payload.get('sub')
+
+        if not user_sub:
+            raise ValueError("Token inválido: sub no encontrado")
+
+        cliente = models.Cliente.objects.filter(user_id=user_sub).first()
+        if not cliente:
+            raise ValueError("Solo los clientes pueden crear comentarios")
+
+        serializer.save(cliente=cliente)

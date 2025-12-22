@@ -1,12 +1,10 @@
 from rest_framework import permissions
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.exceptions import AuthenticationFailed
 
 
 class IsAuthenticatedOrDashboard(permissions.BasePermission):
     """
-    Permite acceso autenticado O acceso anónimo desde el dashboard.
-    El dashboard se identifica con el header: X-Dashboard: true
+    Permite acceso autenticado vía JWT
+    O acceso anónimo desde el dashboard (X-Dashboard: true)
     """
 
     def has_permission(self, request, view):
@@ -15,7 +13,8 @@ class IsAuthenticatedOrDashboard(permissions.BasePermission):
             return True
         
         # Si es autenticado normalmente, permitir acceso
-        if request.user and request.user.is_authenticated:
+        payload= getattr(request, 'jwt_payload', None)
+        if payload and payload.get('sub'):
             return True
         
         # Rechazar acceso no autenticado
@@ -24,8 +23,8 @@ class IsAuthenticatedOrDashboard(permissions.BasePermission):
 
 class DashboardReadOnly(permissions.BasePermission):
     """
-    Permite lectura (GET) desde dashboard sin autenticación.
-    Permite POST/PUT/PATCH/DELETE solo con autenticación.
+    Permite lectura (GET) sin autenticación.
+    Permite escritura solo con JWT válido.
     """
 
     def has_permission(self, request, view):
@@ -34,7 +33,8 @@ class DashboardReadOnly(permissions.BasePermission):
             return True
         
         # Usuarios autenticados pueden hacer cualquier cosa
-        if request.user and request.user.is_authenticated:
+        payload = getattr(request, 'jwt_payload', None)
+        if payload and payload.get('sub'):
             return True
         
         return False

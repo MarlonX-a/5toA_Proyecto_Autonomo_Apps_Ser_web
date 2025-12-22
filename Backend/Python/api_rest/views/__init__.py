@@ -1,4 +1,3 @@
-from .auth_views import RegisterView, LoginView
 from .calificacion_views import CalificacionView
 from .categoria_views import CategoriaView
 from .cliente_views import ClienteView

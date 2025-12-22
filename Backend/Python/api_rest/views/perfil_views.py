@@ -1,48 +1,23 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
-from .. import serializers
+from api_rest.authentication import JWTAuthentication
 from rest_framework.generics import GenericAPIView
 from drf_spectacular.utils import extend_schema
 
 
-@extend_schema(
-    responses={200: serializers.UserSerializer}  
-)
+@extend_schema(responses={200: dict})
 class ProfileView(GenericAPIView):
-    serializer_class = serializers.UserSerializer
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
-        perfil_data = {"user": self.serializer_class(instance=user).data}
+        payload = request.jwt_payload
 
-        # Verificar primero si es administrador (staff o superuser)
-        if user.is_staff or user.is_superuser:
-            perfil_data.update({
-                "id": user.id,
-                "rol": "administrador"
-            })
-        elif hasattr(user, "cliente"):
-            cliente = user.cliente
-            perfil_data.update({
-                "id": cliente.id,
-                "rol": "cliente",
-                "telefono": cliente.telefono,
-                "ubicacion": serializers.UbicacionSerializer(cliente.ubicacion).data if cliente.ubicacion else None
-            })
-        elif hasattr(user, "proveedor"):
-            proveedor = user.proveedor
-            perfil_data.update({
-                "id": proveedor.id, 
-                "rol": "proveedor",
-                "telefono": proveedor.telefono,
-                "descripcion": proveedor.descripcion,
-                "ubicacion": serializers.UbicacionSerializer(proveedor.ubicacion).data if proveedor.ubicacion else None
-            })
-        else:
-            perfil_data.update({"rol": None})
+        perfil_data = {
+            "id": payload.get("sub"),      # 👈 ID REAL del usuario
+            "email": payload.get("email"),
+            "rol": payload.get("role"),
+        }
 
         return Response(perfil_data, status=status.HTTP_200_OK)

@@ -1,5 +1,4 @@
 from .ubicacion import UbicacionSerializer
-from .user import UserSerializer
 from .cliente import ClienteSerializer
 from .proveedor import ProveedorSerializer
 from .categoria import CategoriaSerializer

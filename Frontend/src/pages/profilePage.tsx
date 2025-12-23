@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { getUsers, updateCliente, updateProveedor } from "../api/usersApi";
+import { getUsers, updateCliente, updateProveedor, getClientePublic, getProveedorPublic } from "../api/usersApi";
 import { updateUbicacion } from "../api/ubicacion";
 import type { IclienteRegister } from "../interfaces/cliente";
 import type { IproveedorRegister } from "../interfaces/proveedor";
@@ -27,36 +27,57 @@ export function ProfilePage() {
         const res = await getUsers(savedToken);
         const data = res.data;
         let formValues: any = {};
+        let extendedData: any = null;
 
-        if ("telefono" in data && !("descripcion" in data)) {
-          setRol("cliente");
-          setRegistroId(data.id);
-          formValues = {
-            username: data.user.username,
-            first_name: data.user.first_name,
-            last_name: data.user.last_name,
-            email: data.user.email,
-            telefono: data.telefono,
-            direccion: data.ubicacion?.direccion || "",
-            ciudad: data.ubicacion?.ciudad || "",
-            provincia: data.ubicacion?.provincia || "",
-            pais: data.ubicacion?.pais || "",
-          };
-        } else if ("descripcion" in data) {
-          setRol("proveedor");
-          setRegistroId(data.id);
-          formValues = {
-            username: data.user.username,
-            first_name: data.user.first_name,
-            last_name: data.user.last_name,
-            email: data.user.email,
-            telefono: data.telefono,
-            descripcion: data.descripcion,
-            direccion: data.ubicacion?.direccion || "",
-            ciudad: data.ubicacion?.ciudad || "",
-            provincia: data.ubicacion?.provincia || "",
-            pais: data.ubicacion?.pais || "",
-          };
+        // Si el perfil no incluye campos extendidos, intentar recuperarlos desde el servicio Django
+        try {
+          if ((!data.telefono && data.telefono !== '') && (!data.descripcion && data.descripcion !== '')) {
+            if (data.rol === 'cliente') {
+              const ext = await getClientePublic(data.id);
+              extendedData = ext.data;
+            } else if (data.rol === 'proveedor') {
+              const ext = await getProveedorPublic(data.id);
+              extendedData = ext.data;
+            }
+          }
+        } catch (e) {
+          // No pasa nada si no existen datos públicos
+          extendedData = null;
+        }
+
+        const source = extendedData ?? data;
+
+        if (source) {
+          if ("telefono" in source && !("descripcion" in source)) {
+            setRol("cliente");
+            setRegistroId(source.id || data.id);
+            formValues = {
+              username: source.user?.username || data.user?.username,
+              first_name: source.user?.first_name || data.user?.first_name,
+              last_name: source.user?.last_name || data.user?.last_name,
+              email: source.user?.email || data.user?.email,
+              telefono: source.telefono || '',
+              direccion: source.ubicacion?.direccion || "",
+              ciudad: source.ubicacion?.ciudad || "",
+              provincia: source.ubicacion?.provincia || "",
+              pais: source.ubicacion?.pais || "",
+            };
+          } else if ("descripcion" in source) {
+            setRol("proveedor");
+            setRegistroId(source.id || data.id);
+            formValues = {
+              username: source.user?.username || data.user?.username,
+              first_name: source.user?.first_name || data.user?.first_name,
+              last_name: source.user?.last_name || data.user?.last_name,
+              email: source.user?.email || data.user?.email,
+              telefono: source.telefono || '',
+              descripcion: source.descripcion || '',
+              direccion: source.ubicacion?.direccion || "",
+              ciudad: source.ubicacion?.ciudad || "",
+              provincia: source.ubicacion?.provincia || "",
+              pais: source.ubicacion?.pais || "",
+            };
+          }
         }
 
         setInitialValues(formValues);

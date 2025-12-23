@@ -2,7 +2,7 @@ import axios from "axios";
 import type { Icomentario } from "../interfaces/comentario";
 import { createApiClient } from "./axiosConfig";
 
-const comentarioApi = createApiClient("http://127.0.0.1:8000/api_rest/api/v1/comentario/");
+const comentarioApi = createApiClient("http://127.0.0.1:8000/api_rest/api/v1/comentario/", 'Token');
 
 export const createComentario = (comentario: Icomentario, token: string) =>
   comentarioApi.post("/", comentario, {

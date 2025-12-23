@@ -2,7 +2,7 @@ import axios from "axios";
 import type { IreservaServicio } from "../interfaces/reservaServicio";
 import { createApiClient } from "./axiosConfig";
 
-const ReservaServicioApi = createApiClient("http://localhost:8000/api_rest/api/v1/reservaServicio/");
+const ReservaServicioApi = createApiClient("http://localhost:8000/api_rest/api/v1/reservaServicio/", 'Token');
 
 export const createReservaServicio = (data: IreservaServicio, token: string) => ReservaServicioApi.post("/", data, {headers: { Authorization: `Token ${token}` },});
 export const deleteReservaServicio = (id: number, token: string) =>

@@ -1,5 +1,4 @@
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
+from api_rest.authentication import JWTAuthentication
 from rest_framework import viewsets
 from .. import models, serializers
 from rest_framework.response import Response
@@ -11,12 +10,21 @@ from ..permissions import DashboardReadOnly
 class CalificacionView(viewsets.ModelViewSet):
     serializer_class = serializers.CalificacionSerializer
     queryset = models.Calificacion.objects.all()
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
     permission_classes = [DashboardReadOnly]
 
 
     def perform_create(self, serializer):
-        cliente = self.request.user.cliente  
+        payload = self.request.jwt_payload
+        user_sub = payload.get('sub')
+
+        if not user_sub:
+            raise ValueError("Token inválido: sub no encontrado")
+        
+        cliente = models.Cliente.objects.filter(user_id=user_sub).first()
+        if not cliente:
+            raise ValueError("Cliente no encontrado para este usuario")
+        
         serializer.save(cliente=cliente)
 
     # Endpoint extra opcional para obtener calificaciones por servicio

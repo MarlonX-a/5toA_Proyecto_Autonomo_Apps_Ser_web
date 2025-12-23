@@ -11,6 +11,13 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+
+
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -146,10 +153,12 @@ CORS_ALLOW_HEADERS = [
     "x-dashboard",  # Permitir header personalizado para dashboard
 ]
 
-AUTH_USER_MODEL = 'api_rest.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'api_rest.authentication.JWTAuthentication',
+    ],
 }
 
 SPECTACULAR_SETTINGS = {
@@ -159,3 +168,12 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
 }
+
+load_dotenv()
+
+JWT_PUBLIC_KEY = os.environ.get("JWT_PUBLIC_KEY")
+
+if not JWT_PUBLIC_KEY:
+    raise RuntimeError("JWT_PUBLIC_KEY no está definida en el entorno")
+JWT_PUBLIC_KEY = JWT_PUBLIC_KEY.replace("\\n", "\n")
+

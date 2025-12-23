@@ -2,7 +2,7 @@ import axios from "axios";
 import type { Ifoto } from "../interfaces/foto";
 import { createApiClient } from "./axiosConfig";
 
-const fotoApi = createApiClient("http://127.0.0.1:8000/api_rest/api/v1/fotoServicio/")
+const fotoApi = createApiClient("http://127.0.0.1:8000/api_rest/api/v1/fotoServicio/", 'Token')
 
 export const createFotoServicio = (foto: Ifoto, token: string) => fotoApi.post("/", foto, {headers: {Authorization: `Token ${token}`}});
 export const getFotosByServicio = (servicioId: number, token: string) => fotoApi.get(`/?servicio_id=${servicioId}`, {headers: { Authorization: `Token ${token}` },});

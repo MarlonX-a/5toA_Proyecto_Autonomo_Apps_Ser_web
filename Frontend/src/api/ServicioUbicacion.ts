@@ -3,7 +3,7 @@ import type { IservicioUbicacion } from "../interfaces/servicioUbicacion";
 import type { Icalificacion } from "../interfaces/califiacion";
 import { createApiClient } from "./axiosConfig";
 
-const servicioUbicacionApi = createApiClient("http://127.0.0.1:8000/api_rest/api/v1/servicioUbicacion/")
+const servicioUbicacionApi = createApiClient("http://127.0.0.1:8000/api_rest/api/v1/servicioUbicacion/", 'Token')
 
 export const getAllServicioUbicacion = (    token: string) => servicioUbicacionApi.get("/", { headers: { Authorization: `Token ${token}` } });
 export const getServicioUbicacio = (id: number, token: string) => servicioUbicacionApi.get(`/${id}/`, { headers: { Authorization: `Token ${token}` } });

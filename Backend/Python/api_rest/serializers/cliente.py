@@ -2,7 +2,6 @@ from rest_framework import serializers
 from .. import models
 from .ubicacion import UbicacionSerializer
 from django.db import transaction
-import uuid
 
 
 class ClienteSerializer(serializers.ModelSerializer):
@@ -11,7 +10,7 @@ class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Cliente
         fields = ['id', 'user_id', 'telefono', 'ubicacion']
-        read_only_fields = ['id', 'user_id']
+        read_only_fields = ['id']
 
     def validate_telefono(self, value):
         if not value:
@@ -22,13 +21,6 @@ class ClienteSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        request = self.context['request']
-        payload = request.jwt_payload
-
-        user_sub = payload.get('sub')
-        if not user_sub:
-            raise serializers.ValidationError("Token inválido: sub no encontrado")
-
         ubicacion_data = validated_data.pop('ubicacion', None)
         ubicacion = None
 
@@ -38,7 +30,6 @@ class ClienteSerializer(serializers.ModelSerializer):
             ubicacion = ubicacion_serializer.save()
 
         cliente = models.Cliente.objects.create(
-            user_id=user_sub,
             ubicacion=ubicacion,
             **validated_data
         )

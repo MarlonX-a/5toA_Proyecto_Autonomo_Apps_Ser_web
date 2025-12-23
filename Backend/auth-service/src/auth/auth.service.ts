@@ -1,16 +1,22 @@
 import {
   Injectable,
   UnauthorizedException,
+  ConflictException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
+import axios from 'axios';
 
 import { User } from '../users/user.entity';
 import { RefreshToken } from '../tokens/refresh-token.entity';
 import { RevokedToken } from '../tokens/revoked-token.entity';
+
+function getEnv(name: string, fallback?: string) {
+  return process.env[name] ?? fallback;
+}
 
 @Injectable()
 export class AuthService {
@@ -28,23 +34,87 @@ export class AuthService {
   ) {}
 
   // REGISTER
-  async register(email: string, password: string) {
+  async register(
+    username: string,
+    password: string,
+    email?: string,
+    firstName?: string,
+    lastName?: string,
+    role = 'user',
+    telefono?: string,
+    descripcion?: string,
+    ubicacion?: any,
+  ) {
+    // check duplicates first to return a friendly error
+    const existing = await this.userRepo.findOne({ where: [{ username }, { email }] });
+    if (existing) {
+      if (existing.username === username) throw new ConflictException('Username already exists');
+      if (email && existing.email === email) throw new ConflictException('Email already exists');
+    }
+
     const passwordHash = await bcrypt.hash(password, 10);
 
     const user = await this.userRepo.save({
+      username,
       email,
+      firstName,
+      lastName,
       passwordHash,
-      role: 'user',
+      role,
     });
 
+    // Sincronizar con Django: crear cliente o proveedor
+    await this.syncWithDjango(user, role, telefono, descripcion, ubicacion);
+
     return this.login(user);
+  }
+
+  // Sincronizar usuario con Django (crear cliente/proveedor)
+  private async syncWithDjango(
+    user: User,
+    role: string,
+    telefono?: string,
+    descripcion?: string,
+    ubicacion?: any,
+  ) {
+    const base = getEnv('DJANGO_API_BASE');
+    const serviceToken = getEnv('DJANGO_SERVICE_TOKEN');
+    
+    if (!base || !serviceToken) {
+      console.warn('Django integration not configured, skipping sync');
+      return;
+    }
+
+    try {
+      if (role === 'cliente') {
+        const url = `${base.replace(/\/$/, '')}/api_rest/api/v1/cliente/`;
+        const payload = {
+          user_id: user.id,
+          telefono: telefono || '0000000000',
+          ubicacion: ubicacion || null,
+        };
+        await axios.post(url, payload, { headers: { Authorization: `Token ${serviceToken}` } });
+      } else if (role === 'proveedor') {
+        const url = `${base.replace(/\/$/, '')}/api_rest/api/v1/proveedor/`;
+        const payload = {
+          user_id: user.id,
+          telefono: telefono || '0000000000',
+          descripcion: descripcion || 'Sin descripción',
+          ubicacion: ubicacion || null,
+        };
+        await axios.post(url, payload, { headers: { Authorization: `Token ${serviceToken}` } });
+      }
+    } catch (e: any) {
+      console.error('Failed to sync with Django:', e.response?.data ?? e.message);
+      // No lanzar error para no bloquear el registro
+    }
   }
 
   // LOGIN
   async login(user: User) {
     const payload = {
       sub: user.id,
-      email: user.email,
+      username: user.username,
       role: user.role,
       jti: uuidv4(),
     };
@@ -63,9 +133,9 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  // VALIDAR LOGIN
-  async validateUser(email: string, password: string) {
-    const user = await this.userRepo.findOne({ where: { email } });
+  // VALIDAR LOGIN (por username)
+  async validateUser(username: string, password: string) {
+    const user = await this.userRepo.findOne({ where: { username } });
     if (!user) throw new UnauthorizedException();
 
     const valid = await bcrypt.compare(password, user.passwordHash);

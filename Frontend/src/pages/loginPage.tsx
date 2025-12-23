@@ -16,7 +16,9 @@ export function LoginPage() {
   const onSubmit: SubmitHandler<Ilogin> = async (data) => {
     try {
         const res = await loginApi(data);
-        loginContext(res.data.token);
+        const token = res.data.token ?? res.data.accessToken;
+        if (!token) throw new Error('No token returned from login');
+        loginContext(token);
 
         navigate("/");
     } catch (err: any) {

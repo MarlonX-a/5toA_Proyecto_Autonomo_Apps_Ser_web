@@ -38,3 +38,23 @@ class DashboardReadOnly(permissions.BasePermission):
             return True
         
         return False
+
+
+class AllowCreateOrAuthenticated(permissions.BasePermission):
+    """
+    Permite crear (POST) sin autenticación para registro público.
+    Permite lectura (GET) sin autenticación.
+    Requiere JWT para PUT/PATCH/DELETE.
+    """
+
+    def has_permission(self, request, view):
+        # GET y POST permitidos sin autenticación
+        if request.method in permissions.SAFE_METHODS or request.method == 'POST':
+            return True
+        
+        # Para PUT/PATCH/DELETE, requiere JWT
+        payload = getattr(request, 'jwt_payload', None)
+        if payload and payload.get('sub'):
+            return True
+        
+        return False

@@ -1,7 +1,5 @@
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { registerCliente, registerProveedor } from '../api/register';
-import type { IclienteRegister } from '../interfaces/cliente';
-import type { IproveedorRegister } from '../interfaces/proveedor';
+import { registerAuth } from '../api/register';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -32,53 +30,33 @@ export function RegisterPage() {
 
   const onSubmit: SubmitHandler<RegisterFormValues> = async (data) => {
     try {
-      if (data.rol === 'cliente') {
-        const clienteData: IclienteRegister = {
-          rol: 'cliente',
-          user: {
-            username: data.username,
-            first_name: data.first_name,
-            last_name: data.last_name,
-            email: data.email,
-            password: data.password,
-            rol: 'cliente'
-          },
-          telefono: data.telefono || '',
-          ubicacion: data.direccion ? {
-            direccion: data.direccion,
-            ciudad: data.ciudad || '',
-            provincia: data.provincia || '',
-            pais: data.pais || ''
-          } : null
-        };
-        const res = await registerCliente(clienteData);
-        console.log('Cliente registrado', res.data);
-      } else {
-        const proveedorData: IproveedorRegister = {
-          rol: 'proveedor',
-          user: {
-            username: data.username,
-            first_name: data.first_name,
-            last_name: data.last_name,
-            email: data.email,
-            password: data.password,
-            rol: 'proveedor'
-          },
-          telefono: data.telefono || '',
-          descripcion: data.descripcion!,
-          ubicacion: data.direccion ? {
-            direccion: data.direccion,
-            ciudad: data.ciudad || '',
-            provincia: data.provincia || '',
-            pais: data.pais || ''
-          } : null
-        };
-        const res = await registerProveedor(proveedorData);
-        console.log('Proveedor registrado', res.data);
-      }
+      // Registrar en auth-service (este se encarga de sincronizar con Django)
+      const authPayload = {
+        username: data.username,
+        password: data.password,
+        email: data.email,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        role: data.rol,
+        telefono: data.telefono || '0000000000',
+        descripcion: data.descripcion || '',
+        ubicacion: data.direccion ? {
+          direccion: data.direccion,
+          ciudad: data.ciudad || '',
+          provincia: data.provincia || '',
+          pais: data.pais || ''
+        } : null
+      };
+      
+      const res = await registerAuth(authPayload);
+      console.log('Usuario registrado', res.data);
+
       navigate('/login'); // Redirige después de registro
     } catch (err: any) {
-      setApiError('Error al registrar, revisa tus datos');
+      const errorMsg = err.response?.data?.message || 
+                       err.response?.data?.detail ||
+                       'Error al registrar, revisa tus datos';
+      setApiError(errorMsg);
       console.log(err.response?.data);
       console.error(err);
     }

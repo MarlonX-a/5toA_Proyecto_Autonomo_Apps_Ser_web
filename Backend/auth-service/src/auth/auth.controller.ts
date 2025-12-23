@@ -14,13 +14,23 @@ export class AuthController {
 
   @Post('register')
   register(@Body() body) {
-    return this.authService.register(body.email, body.password);
+    return this.authService.register(
+      body.username,
+      body.password,
+      body.email,
+      body.firstName,
+      body.lastName,
+      body.role,
+      body.telefono,
+      body.descripcion,
+      body.ubicacion,
+    );
   }
 
   @Post('login')
   async login(@Body() body) {
     const user = await this.authService.validateUser(
-      body.email,
+      body.username,
       body.password,
     );
     return this.authService.login(user);

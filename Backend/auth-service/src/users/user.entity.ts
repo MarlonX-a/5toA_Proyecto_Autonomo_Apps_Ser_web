@@ -9,6 +9,15 @@ export class User {
     email: string;
 
     @Column()
+    firstName: string;
+
+    @Column()
+    lastName: string;
+
+    @Column({ unique: true})
+    username: string;
+
+    @Column()
     passwordHash: string;
 
     @Column({ default: 'user' })

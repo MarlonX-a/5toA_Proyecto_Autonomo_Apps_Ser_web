@@ -1,8 +1,8 @@
 import { useState, type  ReactNode, useEffect } from 'react';
 import { AuthContext } from './AuthContext';
-import { getUsers } from '../api/usersApi';
 import { authenticateSocket, disconnectSocket } from '../websocket/socket';
 import { useNavigate } from 'react-router-dom';
+import { parseJwt } from '../utils/jwt';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [token, setToken] = useState<string | null>(null);
@@ -18,17 +18,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem('token', newToken);
 
         try {
-            const profileRes = await getUsers(newToken);
-            const { id, rol } = profileRes.data as { id: number; rol: 'cliente' | 'proveedor' | 'admin' | null };
-            if (id && rol && (rol === 'cliente' || rol === 'proveedor' || rol === 'admin')) {
+            const payload = parseJwt(newToken) ?? {};
+            const id = payload.sub ?? payload.id;
+            const roleRaw = payload.role ?? payload.rol;
+            let rol: 'cliente' | 'proveedor' | 'admin' | null = null;
+            if (roleRaw === 'cliente' || roleRaw === 'proveedor' || roleRaw === 'admin') rol = roleRaw;
+            else if (roleRaw === 'user') rol = 'cliente';
+
+            if (id && rol) {
                 await authenticateSocket({ token: newToken, userId: String(id), role: rol });
             }
+
             // Redirigir al dashboard de proveedor si aplica
             if (rol === 'proveedor') {
                 navigate('/proveedor/dashboard');
             }
         } catch (e) {
-            // Silenciar errores de auth WS para no romper la UX de login
             console.error('WebSocket auth failed:', e);
         }
     };
@@ -45,9 +50,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (!savedToken) return;
         (async () => {
             try {
-                const profileRes = await getUsers(savedToken);
-                const { id, rol } = profileRes.data as { id: number; rol: 'cliente' | 'proveedor' | 'admin' | null };
-                if (id && rol && (rol === 'cliente' || rol === 'proveedor' || rol === 'admin')) {
+                const payload = parseJwt(savedToken) ?? {};
+                const id = payload.sub ?? payload.id;
+                const roleRaw = payload.role ?? payload.rol;
+                let rol: 'cliente' | 'proveedor' | 'admin' | null = null;
+                if (roleRaw === 'cliente' || roleRaw === 'proveedor' || roleRaw === 'admin') rol = roleRaw;
+                else if (roleRaw === 'user') rol = 'cliente';
+
+                if (id && rol) {
                     await authenticateSocket({ token: savedToken, userId: String(id), role: rol });
                 }
             } catch (e) {

@@ -10,7 +10,7 @@ class ProveedorSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Proveedor
         fields = ['id', 'user_id', 'telefono', 'descripcion', 'ubicacion']
-        read_only_fields = ['id', 'user_id']
+        read_only_fields = ['id']
 
     def validate_telefono(self, value):
         if not value:
@@ -21,13 +21,6 @@ class ProveedorSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        request = self.context['request']
-        payload = request.jwt_payload
-
-        user_sub = payload.get('sub')
-        if not user_sub:
-            raise serializers.ValidationError("Token inválido: sub no encontrado")
-
         ubicacion_data = validated_data.pop('ubicacion', None)
         ubicacion = None
 
@@ -37,7 +30,6 @@ class ProveedorSerializer(serializers.ModelSerializer):
             ubicacion = ubicacion_serializer.save()
 
         proveedor = models.Proveedor.objects.create(
-            user_id=user_sub,
             ubicacion=ubicacion,
             **validated_data
         )

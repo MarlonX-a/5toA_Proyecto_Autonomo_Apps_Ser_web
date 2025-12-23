@@ -17,6 +17,9 @@ export class UsersController {
     private readonly userRepo: Repository<User>,
   ) {}
 
+  /**
+   * @deprecated Use GET /auth/me instead. This endpoint is kept for backwards compatibility.
+   */
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   async me(@Req() req) {

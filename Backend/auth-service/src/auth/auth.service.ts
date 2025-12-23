@@ -85,27 +85,54 @@ export class AuthService {
       return;
     }
 
+    // Validar teléfono (Django requiere exactamente 10 dígitos)
+    let telefonoFinal = telefono || '0000000000';
+    if (telefonoFinal.length !== 10) {
+      telefonoFinal = telefonoFinal.padEnd(10, '0').substring(0, 10);
+    }
+
+    // Formatear ubicación para Django (debe tener direccion, ciudad, provincia, pais o ser null)
+    let ubicacionFinal: { direccion: string; ciudad: string; provincia: string; pais: string } | null = null;
+    if (ubicacion && typeof ubicacion === 'object') {
+      if (ubicacion.direccion || ubicacion.ciudad || ubicacion.provincia || ubicacion.pais) {
+        ubicacionFinal = {
+          direccion: ubicacion.direccion || 'Sin dirección',
+          ciudad: ubicacion.ciudad || 'Sin ciudad',
+          provincia: ubicacion.provincia || 'Sin provincia',
+          pais: ubicacion.pais || 'Ecuador',
+        };
+      }
+    }
+
     try {
       if (role === 'cliente') {
         const url = `${base.replace(/\/$/, '')}/api_rest/api/v1/cliente/`;
         const payload = {
           user_id: user.id,
-          telefono: telefono || '0000000000',
-          ubicacion: ubicacion || null,
+          telefono: telefonoFinal,
+          ubicacion: ubicacionFinal,
         };
-        await axios.post(url, payload, { headers: { Authorization: `Token ${serviceToken}` } });
+        console.log('Creating cliente in Django:', url, payload);
+        const response = await axios.post(url, payload, { headers: { Authorization: `Token ${serviceToken}` } });
+        console.log('Cliente created:', response.data);
       } else if (role === 'proveedor') {
         const url = `${base.replace(/\/$/, '')}/api_rest/api/v1/proveedor/`;
         const payload = {
           user_id: user.id,
-          telefono: telefono || '0000000000',
+          telefono: telefonoFinal,
           descripcion: descripcion || 'Sin descripción',
-          ubicacion: ubicacion || null,
+          ubicacion: ubicacionFinal,
         };
-        await axios.post(url, payload, { headers: { Authorization: `Token ${serviceToken}` } });
+        console.log('Creating proveedor in Django:', url, payload);
+        const response = await axios.post(url, payload, { headers: { Authorization: `Token ${serviceToken}` } });
+        console.log('Proveedor created:', response.data);
       }
     } catch (e: any) {
       console.error('Failed to sync with Django:', e.response?.data ?? e.message);
+      // Log más detallado para debugging
+      if (e.response?.data) {
+        console.error('Django error details:', JSON.stringify(e.response.data, null, 2));
+      }
       // No lanzar error para no bloquear el registro
     }
   }
@@ -119,16 +146,33 @@ export class AuthService {
       jti: uuidv4(),
     };
 
-    const accessToken = this.jwtService.sign(payload);
+    const expiresIn = process.env.ACCESS_TOKEN_EXPIRES_MINUTES ? `${process.env.ACCESS_TOKEN_EXPIRES_MINUTES}m` : '15m';
+    const accessToken = this.jwtService.sign(payload, { expiresIn } as any);
 
+    // create refresh token and store hash
     const refreshToken = uuidv4() + uuidv4();
     const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
+    const refreshExpiresDays = Number(process.env.REFRESH_TOKEN_EXPIRES_DAYS ?? 7);
 
     await this.refreshTokenRepo.save({
       userId: user.id,
       tokenHash: refreshTokenHash,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      expiresAt: new Date(Date.now() + refreshExpiresDays * 24 * 60 * 60 * 1000),
     });
+
+    // enforce max active refresh tokens per user
+    const maxPerUser = Number(process.env.REFRESH_TOKENS_MAX_PER_USER ?? 5);
+    if (maxPerUser > 0) {
+      const active = await this.refreshTokenRepo.find({ where: { userId: user.id, revokedAt: IsNull() } });
+      if (active.length > maxPerUser) {
+        // revoke oldest extra tokens
+        const sorted = active.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+        const toRevoke = sorted.slice(0, active.length - maxPerUser);
+        for (const t of toRevoke) {
+          await this.refreshTokenRepo.update({ id: t.id }, { revokedAt: new Date() });
+        }
+      }
+    }
 
     return { accessToken, refreshToken };
   }
@@ -146,42 +190,80 @@ export class AuthService {
 
   // LOGOUT
   async logout(payload: any) {
-    await this.revokedTokenRepo.save({
-      jti: payload.jti,
-      userId: payload.sub,
-      expiresAt: new Date(payload.exp * 1000),
-    });
+    // Perform logout atomically: insert revoked jti and revoke refresh tokens
+    await this.refreshTokenRepo.manager.transaction(async (manager) => {
+      await manager.getRepository(RevokedToken).save({
+        jti: payload.jti,
+        userId: payload.sub,
+        expiresAt: new Date(payload.exp * 1000),
+      });
 
-    await this.refreshTokenRepo.update(
-      { userId: payload.sub },
-      { revokedAt: new Date() },
-    );
+      await manager.getRepository(RefreshToken).update({ userId: payload.sub }, { revokedAt: new Date() });
+    });
   }
 
   // REFRESH TOKEN
   async refresh(refreshToken: string) {
-    const tokens = await this.refreshTokenRepo.find({
-      where: { revokedAt: IsNull() },
-    });
-
+    // find any token (including revoked) that matches
+    const tokens = await this.refreshTokenRepo.find({ where: {} });
+    let found: RefreshToken | null = null;
     for (const token of tokens) {
       const match = await bcrypt.compare(refreshToken, token.tokenHash);
       if (match) {
-        if (token.expiresAt < new Date()) {
-          throw new UnauthorizedException('Refresh token expirado');
-        }
-
-        const payload = {
-          sub: token.userId,
-          jti: uuidv4(),
-        };
-
-        return {
-          accessToken: this.jwtService.sign(payload),
-        };
+        found = token;
+        break;
       }
     }
 
-    throw new UnauthorizedException('Refresh token inválido');
+    if (!found) throw new UnauthorizedException('Refresh token inválido');
+
+    // if token was revoked -> possible replay attack: revoke all user's tokens
+    if (found.revokedAt) {
+      await this.refreshTokenRepo.update({ userId: found.userId }, { revokedAt: new Date() });
+      throw new UnauthorizedException('Refresh token reutilizado (posible ataque)');
+    }
+
+    if (found.expiresAt < new Date()) {
+      throw new UnauthorizedException('Refresh token expirado');
+    }
+
+    // Rotate: revoke the current refresh token and issue a new one
+    await this.refreshTokenRepo.update({ id: found.id }, { revokedAt: new Date() });
+
+    const newRefresh = uuidv4() + uuidv4();
+    const newHash = await bcrypt.hash(newRefresh, 10);
+    const refreshExpiresDays = Number(process.env.REFRESH_TOKEN_EXPIRES_DAYS ?? 7);
+    await this.refreshTokenRepo.save({
+      userId: found.userId,
+      tokenHash: newHash,
+      expiresAt: new Date(Date.now() + refreshExpiresDays * 24 * 60 * 60 * 1000),
+    });
+
+    const payload = {
+      sub: found.userId,
+      jti: uuidv4(),
+    };
+
+    const expiresIn = process.env.ACCESS_TOKEN_EXPIRES_MINUTES ? `${process.env.ACCESS_TOKEN_EXPIRES_MINUTES}m` : '15m';
+    const accessToken = this.jwtService.sign(payload, { expiresIn } as any);
+
+    return { accessToken, refreshToken: newRefresh };
+  }
+
+  // VALIDATE TOKEN (used by internal endpoint)
+  async validateToken(token: string) {
+    try {
+      const payload: any = this.jwtService.verify(token as string);
+
+      // check revoked tokens
+      const revoked = await this.revokedTokenRepo.findOne({ where: { jti: payload.jti } });
+      if (revoked) {
+        throw new UnauthorizedException('Token revocado');
+      }
+
+      return { valid: true, payload };
+    } catch (e: any) {
+      throw new UnauthorizedException(e.message ?? 'Token inválido');
+    }
   }
 }

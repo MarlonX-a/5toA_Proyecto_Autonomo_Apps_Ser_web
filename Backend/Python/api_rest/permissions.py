@@ -24,7 +24,7 @@ class IsAuthenticatedOrDashboard(permissions.BasePermission):
 class DashboardReadOnly(permissions.BasePermission):
     """
     Permite lectura (GET) sin autenticación.
-    Permite escritura solo con JWT válido.
+    Permite escritura solo con JWT válido o Token de servicio.
     """
 
     def has_permission(self, request, view):
@@ -32,9 +32,13 @@ class DashboardReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         
-        # Usuarios autenticados pueden hacer cualquier cosa
+        # Usuarios autenticados vía JWT pueden hacer cualquier cosa
         payload = getattr(request, 'jwt_payload', None)
         if payload and payload.get('sub'):
+            return True
+        
+        # Usuarios autenticados vía TokenAuthentication (service tokens) pueden hacer cualquier cosa
+        if request.user and request.user.is_authenticated:
             return True
         
         return False

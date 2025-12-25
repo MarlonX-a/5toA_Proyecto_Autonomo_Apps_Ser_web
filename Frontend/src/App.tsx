@@ -25,6 +25,7 @@ import { Footer } from './components/Footer';
 import DashboardCliente from './pages/Cliente/DashboardCliente';
 import { AdminDashboard } from './pages/AdminDashboard';
 import BusinessDashboard from './pages/BusinessDashboard';
+import AiChat from './pages/AiChat';
 
 function App() {
 
@@ -58,6 +59,7 @@ function App() {
           <Route path="/cliente/dashboard" element={<DashboardCliente />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/negocio/dashboard" element={<BusinessDashboard />} />
+          <Route path="/ai-chat" element={<AiChat />} />
 
         </Routes>
         <Footer />

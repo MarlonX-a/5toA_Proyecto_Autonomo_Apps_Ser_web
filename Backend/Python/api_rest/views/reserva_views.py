@@ -38,6 +38,12 @@ class ReservaView(viewsets.ModelViewSet):
                     ).distinct()
 
         # 🔎 FILTROS OPCIONALES (solo refinan lo permitido)
+        
+        # Filtro explícito por cliente_id (desde GraphQL)
+        cliente_id_param = qp.get("cliente_id")
+        if cliente_id_param:
+            queryset = queryset.filter(cliente_id=cliente_id_param)
+        
         estado = qp.get("estado")
         if estado:
             queryset = queryset.filter(estado=estado)

@@ -1,5 +1,8 @@
 # React + TypeScript + Vite
 
+AI Chat page: `/ai-chat` — simple streaming chat that POSTs to `/api/stream` and reads a streaming response. Provide `ApiKey` in the UI to authenticate service-to-service calls against the Orchestrator if needed.
+
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

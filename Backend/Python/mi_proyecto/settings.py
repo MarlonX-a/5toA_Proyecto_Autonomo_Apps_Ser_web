@@ -153,10 +153,23 @@ CORS_ALLOW_HEADERS = [
     "x-dashboard",  # Permitir header personalizado para dashboard
 ]
 
+# Media settings for uploaded files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Orchestrator integration
+# When running the Orchestrator + Django together, set the following env vars so the
+# Orchestrator can call the protected tools endpoints:
+# - ORCHESTRATOR_API_KEY on Django (shared secret)
+# - ORCHESTRATOR_TOOLS_API_KEY on Orchestrator (same secret)
+ORCHESTRATOR_INGEST_URL = os.environ.get('ORCHESTRATOR_INGEST_URL')
+ORCHESTRATOR_API_KEY = os.environ.get('ORCHESTRATOR_API_KEY')
+
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'api_rest.authentication.ApiKeyAuthentication',
         'api_rest.authentication.JWTAuthentication',
     ],
 }

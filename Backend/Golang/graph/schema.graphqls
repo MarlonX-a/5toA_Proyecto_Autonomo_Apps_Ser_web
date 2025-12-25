@@ -105,8 +105,8 @@ type Categoria {
 
 type Servicio {
   id: Int!
-  proveedor: Proveedor!
-  categoria: Categoria!
+  proveedor: Proveedor
+  categoria: Categoria
   nombreServicio: String!
   descripcion: String
   duracion: String

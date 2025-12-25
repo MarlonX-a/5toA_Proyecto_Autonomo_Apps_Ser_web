@@ -8,7 +8,6 @@ export const QUERY_SERVICIOS = `
       ratingPromedio
       precio
       categoria { id nombre }
-      proveedor { id user { username } }
     }
   }
 `;

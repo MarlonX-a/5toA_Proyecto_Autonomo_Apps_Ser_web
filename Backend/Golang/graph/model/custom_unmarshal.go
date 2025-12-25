@@ -111,3 +111,44 @@ func (c *Cliente) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+
+// UnmarshalJSON implementa json.Unmarshaler para Servicio para manejar snake_case de Django
+func (s *Servicio) UnmarshalJSON(data []byte) error {
+	type Alias Servicio
+
+	aux := &struct {
+		NombreServicio *string  `json:"nombre_servicio"`
+		RatingPromedio *float64 `json:"rating_promedio"`
+		CreatedAt      string   `json:"created_at"`
+		UpdatedAt      string   `json:"updated_at"`
+		*Alias
+	}{
+		Alias: (*Alias)(s),
+	}
+
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	// Mapear snake_case a camelCase
+	if aux.NombreServicio != nil && *aux.NombreServicio != "" {
+		s.NombreServicio = *aux.NombreServicio
+	}
+	if aux.RatingPromedio != nil {
+		s.RatingPromedio = *aux.RatingPromedio
+	}
+
+	// Parsear timestamps si están en snake_case
+	if aux.CreatedAt != "" {
+		if t, err := time.Parse(time.RFC3339, aux.CreatedAt); err == nil {
+			s.CreatedAt = t
+		}
+	}
+	if aux.UpdatedAt != "" {
+		if t, err := time.Parse(time.RFC3339, aux.UpdatedAt); err == nil {
+			s.UpdatedAt = t
+		}
+	}
+
+	return nil
+}

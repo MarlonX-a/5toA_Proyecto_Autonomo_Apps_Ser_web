@@ -55,6 +55,11 @@ export function Navbar() {
                 <span>Registrarse</span>
               </Link>
             </li>
+            <li>
+              <Link to="/ai-chat">
+                <span>AI Chat</span>
+              </Link>
+            </li>
           </>
         ) : (
           <>
@@ -85,6 +90,11 @@ export function Navbar() {
               </Link>
             </li>
 
+            <li>
+              <Link to="/ai-chat">
+                <span>AI Chat</span>
+              </Link>
+            </li>
             <li>
               <button className="logout-btn" onClick={logout}>
                 <LogOut size={18} />

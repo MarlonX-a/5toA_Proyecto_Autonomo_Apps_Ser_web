@@ -54,3 +54,44 @@ class JWTAuthentication(BaseAuthentication):
 
         # No usamos User de Django (el user vive en Auth Service)
         return (None, payload)
+
+
+class ApiKeyAuthentication(BaseAuthentication):
+    """Simple API Key authentication for service-to-service calls.
+
+    Accepts either:
+    - Authorization: ApiKey <key>
+    - X-API-KEY: <key>
+
+    On success returns a lightweight user-like object with is_authenticated=True so
+    DRF's `IsAuthenticated` permission will allow the call.
+    """
+
+    def authenticate(self, request):
+        auth_header = request.headers.get('Authorization', '')
+        api_key_header = request.headers.get('X-API-KEY') or os.environ.get('ORCHESTRATOR_API_KEY')
+
+        key = None
+        if auth_header.startswith('ApiKey '):
+            key = auth_header.split(' ', 1)[1].strip()
+        elif api_key_header:
+            key = api_key_header.strip()
+
+        if not key:
+            return None
+
+        expected = os.environ.get('ORCHESTRATOR_API_KEY') or os.environ.get('ORCHESTRATOR_TOOLS_API_KEY')
+        if not expected:
+            # If not configured, fail-safe: reject external calls
+            logger.error('ORCHESTRATOR_API_KEY no configurada en el entorno')
+            raise AuthenticationFailed('ORCHESTRATOR_API_KEY no configurada')
+
+        if key != expected:
+            logger.warning('API Key invalida recibida: %s', key[:8])
+            raise AuthenticationFailed('API Key invalida')
+
+        # Provide a minimal user-like object accepted by IsAuthenticated
+        from types import SimpleNamespace
+        user = SimpleNamespace(is_authenticated=True, username='orchestrator')
+        request.api_key = key
+        return (user, key)

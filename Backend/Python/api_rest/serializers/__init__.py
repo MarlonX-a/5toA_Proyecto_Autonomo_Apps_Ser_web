@@ -10,3 +10,5 @@ from .foto import FotoServicioSerializer
 from .pago import PagoSerializer
 from .comentario import ComentarioSerializer
 from .califiacion import CalificacionSerializer
+from .document import DocumentSerializer
+from .tool_audit import ToolActionLogSerializer

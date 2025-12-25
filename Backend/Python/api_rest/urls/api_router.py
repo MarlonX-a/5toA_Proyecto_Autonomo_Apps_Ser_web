@@ -15,3 +15,4 @@ router.register(r'reservaServicio', views.ReservaServicioView, 'reserva-servicio
 router.register(r'pago', views.PagoView, 'pago')
 router.register(r'comentario', views.ComentarioView, 'comentario')
 router.register(r'calificacion', views.CalificacionView, 'calificacion')
+router.register(r'document', views.DocumentView, 'document')

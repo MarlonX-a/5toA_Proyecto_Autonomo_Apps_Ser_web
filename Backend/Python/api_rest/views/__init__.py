@@ -11,3 +11,4 @@ from. reserva_views import ReservaView
 from .servicio_ubicacion_views import ServicioUbicacionView
 from .servicio_views import ServicioViewSet
 from .ubicacion_views import UbicacionView
+from .document_views import DocumentView

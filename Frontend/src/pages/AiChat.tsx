@@ -166,7 +166,22 @@ export default function AiChat() {
     try {
       const r = await fetch(`${ORCHESTRATOR_URL}/ingest/`, { method: 'POST', body: fd });
       const json = await r.json();
-      showToast(`✓ Archivo procesado: ${json.chunks || 0} fragmentos indexados`);
+      
+      // Verificar el tipo de archivo procesado
+      if (json.type === 'image') {
+        // Para imágenes, mostrar el texto extraído por OCR
+        showToast(`✓ Imagen procesada: ${json.characters || 0} caracteres extraídos`);
+        if (json.extracted_text) {
+          setMessages(prev => [...prev, {
+            id: Date.now().toString(),
+            role: 'assistant',
+            content: `📷 **Texto extraído de ${f.name}:**\n\n${json.extracted_text}`
+          }]);
+        }
+      } else {
+        // Para PDFs y texto, mostrar fragmentos indexados
+        showToast(`✓ Archivo procesado: ${json.chunks || 0} fragmentos indexados`);
+      }
     } catch (err: any) {
       showToast(`✗ Error al subir: ${err.message}`);
     }
@@ -221,7 +236,7 @@ export default function AiChat() {
         <div className="header-actions">
           <label className="upload-btn">
             📎 Subir documento
-            <input type="file" onChange={uploadFile} accept=".pdf,.txt,.md,.doc,.docx" />
+            <input type="file" onChange={uploadFile} accept=".pdf,.txt,.md,.doc,.docx,.png,.jpg,.jpeg,.bmp,.tiff,.gif,.webp" />
           </label>
           {messages.length > 0 && (
             <button className="upload-btn" onClick={clearChat}>

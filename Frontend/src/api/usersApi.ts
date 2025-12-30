@@ -1,12 +1,12 @@
 import axios from "axios";
 import type { IclienteRegister } from "../interfaces/cliente";
 import type { IproveedorRegister } from "../interfaces/proveedor";
-import { createApiClient } from "./axiosConfig";
+import { createApiClient, getAuthHeader, isJWT } from "./axiosConfig";
 import { parseJwt } from "../utils/jwt";
 
-const clienteApi = createApiClient("http://127.0.0.1:8000/api_rest/api/v1/cliente/", 'Token');
+const clienteApi = createApiClient("http://127.0.0.1:8000/api_rest/api/v1/cliente/", 'Bearer');
 
-const proveedorApi = createApiClient("http://127.0.0.1:8000/api_rest/api/v1/proveedor/", 'Token');
+const proveedorApi = createApiClient("http://127.0.0.1:8000/api_rest/api/v1/proveedor/", 'Bearer');
 
 const profileApi = createApiClient("http://localhost:3000", 'Bearer');
 
@@ -14,7 +14,7 @@ const profileApi = createApiClient("http://localhost:3000", 'Bearer');
 export const getUsers = (token: string | null) => {
     if (!token) return Promise.reject(new Error('No token provided'));
     // Si parece JWT, llamar al auth-service
-    if (token.includes('.')) {
+    if (isJWT(token)) {
         return profileApi.get('/users/me', { headers: { Authorization: `Bearer ${token}` } });
     }
     // Si no es JWT, seguir usando el endpoint Django antiguo
@@ -23,11 +23,11 @@ export const getUsers = (token: string | null) => {
 
 export const getCliente = (id: number) => clienteApi.get(`/${id}/`);
 export const updateCliente = (id: number, cliente: Partial<IclienteRegister>, token: string) =>
-    clienteApi.patch(`/${id}/`, cliente, { headers: { Authorization: `Token ${token}` } });
+    clienteApi.patch(`/${id}/`, cliente, { headers: { Authorization: getAuthHeader(token) } });
 
 export const getProveedor = (id: number) => proveedorApi.get(`/${id}/`);
 export const updateProveedor = (id: number, proveedor: Partial<IproveedorRegister>, token: string) =>
-    proveedorApi.patch(`/${id}/`, proveedor, { headers: { Authorization: `Token ${token}` } });
+    proveedorApi.patch(`/${id}/`, proveedor, { headers: { Authorization: getAuthHeader(token) } });
 
 // Intentos de obtener datos públicos desde el servicio Django sin enviar Authorization
 export const getClientePublic = (id: number) => createApiClient('http://127.0.0.1:8000/api_rest/api/v1/cliente/', 'None').get(`/${id}/`);

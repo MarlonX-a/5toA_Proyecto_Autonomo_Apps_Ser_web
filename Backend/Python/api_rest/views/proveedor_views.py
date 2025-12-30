@@ -9,3 +9,11 @@ class ProveedorView(viewsets.ModelViewSet):
     queryset = models.Proveedor.objects.all()
     authentication_classes = [JWTAuthentication, TokenAuthentication]
     permission_classes = [DashboardReadOnly]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # Permitir filtrar por user_id UUID (usado por auth-service)
+        user_id = self.request.query_params.get('user_id')
+        if user_id:
+            queryset = queryset.filter(user_id=user_id)
+        return queryset

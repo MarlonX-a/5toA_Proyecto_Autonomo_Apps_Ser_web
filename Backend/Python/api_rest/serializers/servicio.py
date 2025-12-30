@@ -49,11 +49,13 @@ class ServicioSerializer(serializers.ModelSerializer):
         categoria = data.get('categoria') or getattr(self.instance, 'categoria', None)
         nombre = data.get('nombre_servicio') or getattr(self.instance, 'nombre_servicio', None)
 
-        if not proveedor:
+        # Nota: En creación, el proveedor se asigna en perform_create usando el JWT
+        # Solo validar proveedor si es una actualización (self.instance existe)
+        if self.instance and not proveedor:
             raise serializers.ValidationError({"proveedor": "Debe especificar un proveedor."})
 
-        if proveedor.user.rol != "proveedor":
-            raise serializers.ValidationError({"proveedor": "El usuario asociado debe tener un rol 'proveedor'."})
+        # Nota: La validación de rol se hace en la vista (perform_create) usando el JWT
+        # El modelo Proveedor ya no tiene relación FK a User de Django
 
         if not categoria:
             raise serializers.ValidationError({"categoria": "Debe especificar una categoría."})
@@ -61,6 +63,7 @@ class ServicioSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"categoria": "La categoría especificada no existe."})
 
         # ✅ Validación de duplicados excluyendo el mismo servicio
+        # Solo validar si tenemos ambos valores (en creación, proveedor viene de perform_create)
         if nombre and proveedor:
             qs = models.Servicio.objects.filter(proveedor=proveedor, nombre_servicio__iexact=nombre)
             if self.instance:

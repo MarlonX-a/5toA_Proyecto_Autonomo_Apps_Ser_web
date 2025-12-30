@@ -51,21 +51,21 @@ export class UsersController {
     // Si hay configuración de Django, intentar recuperar datos extendidos
     if (base && serviceToken) {
       try {
-        // Intentar buscar cliente por username
-        const clienteUrl = `${base.replace(/\/$/, '')}/api_rest/api/v1/cliente/?user__username=${encodeURIComponent(user.username)}`;
+        // Buscar cliente por user_id (UUID del auth-service)
+        const clienteUrl = `${base.replace(/\/$/, '')}/api_rest/api/v1/cliente/?user_id=${encodeURIComponent(user.id)}`;
         const clienteRes = await axios.get(clienteUrl, { headers: { Authorization: `Token ${serviceToken}` } });
         if (clienteRes.status === 200 && Array.isArray(clienteRes.data) && clienteRes.data.length > 0) {
           const c = clienteRes.data[0];
           result.telefono = c.telefono ?? '';
           result.ubicacion = c.ubicacion ?? null;
           result.descripcion = c.descripcion ?? null;
-          // include id if present
+          // Devolver el ID numérico de Django para las queries de reservas
           if (c.id) result.id = c.id;
           return result;
         }
 
-        // Intentar proveedor
-        const provUrl = `${base.replace(/\/$/, '')}/api_rest/api/v1/proveedor/?user__username=${encodeURIComponent(user.username)}`;
+        // Intentar buscar proveedor por user_id
+        const provUrl = `${base.replace(/\/$/, '')}/api_rest/api/v1/proveedor/?user_id=${encodeURIComponent(user.id)}`;
         const provRes = await axios.get(provUrl, { headers: { Authorization: `Token ${serviceToken}` } });
         if (provRes.status === 200 && Array.isArray(provRes.data) && provRes.data.length > 0) {
           const p = provRes.data[0];

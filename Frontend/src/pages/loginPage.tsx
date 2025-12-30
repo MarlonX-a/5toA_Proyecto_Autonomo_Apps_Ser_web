@@ -37,7 +37,7 @@ export function LoginPage() {
           <input type="password" placeholder='Contraseña' {...register('password', { required: 'Obligatorio' })} />
           {errors.password && <span> {errors.password.message} </span>}
 
-          <p><Link to='/singup'>¿No tienes cuenta? Registrate aquí</Link></p>
+          <p><Link to='/signup'>¿No tienes cuenta? Registrate aquí</Link></p>
 
           {apiError && <p style={{ color: 'red' }}>{apiError}</p>}
           <button type='submit'>Iniciar Sesión</button>

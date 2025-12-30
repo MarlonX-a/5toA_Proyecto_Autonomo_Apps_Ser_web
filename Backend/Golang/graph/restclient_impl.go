@@ -247,6 +247,10 @@ func (r *restClientImpl) ListServicios(ctx context.Context, filter *model.Servic
 	}
 	q := u.Query()
 	if filter != nil {
+		// Filtro solo_mios para obtener solo los servicios del proveedor autenticado
+		if filter.SoloMios != nil && *filter.SoloMios {
+			q.Set("solo_mios", "true")
+		}
 		if filter.CategoriaID != nil {
 			q.Set("categoria_id", strconv.Itoa(int(*filter.CategoriaID)))
 		}

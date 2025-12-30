@@ -3,9 +3,9 @@ import type { IclienteRegister } from '../interfaces/cliente';
 import type { IproveedorRegister } from '../interfaces/proveedor';
 import { createApiClient } from './axiosConfig';
 
-const clienteApi = createApiClient('http://127.0.0.1:8000/api_rest/api/v1/cliente/', 'Token');
+const clienteApi = createApiClient('http://127.0.0.1:8000/api_rest/api/v1/cliente/', 'Bearer');
 
-const proveedorApi = createApiClient('http://127.0.0.1:8000/api_rest/api/v1/proveedor/', 'Token');
+const proveedorApi = createApiClient('http://127.0.0.1:8000/api_rest/api/v1/proveedor/', 'Bearer');
 
 const authApi = createApiClient('http://localhost:3000', 'Bearer');
 

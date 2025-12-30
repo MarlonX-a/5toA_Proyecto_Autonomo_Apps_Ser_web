@@ -85,6 +85,11 @@ class ToolRegistry:
                 "method": "POST",
                 "description": "Registrar un pago para una reserva",
             },
+            "resumen_ventas": {
+                "path": "resumen-ventas",
+                "method": "GET",
+                "description": "Obtener resumen de ventas con totales de pagos e ingresos del período. Parámetros: start_date (YYYY-MM-DD), end_date (YYYY-MM-DD)",
+            },
         }
 
     async def execute(self, tool_name: str, params: Dict[str, Any], confirm: bool | None = None) -> Dict[str, Any]:

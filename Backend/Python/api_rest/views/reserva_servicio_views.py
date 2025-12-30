@@ -24,7 +24,17 @@ class ReservaServicioView(viewsets.ModelViewSet):
             queryset = queryset.filter(reserva_id=reserva_id)
 
         if proveedor_id:
-            queryset = queryset.filter(servicio__proveedor_id=proveedor_id)
+            # Soporta tanto ID numérico como UUID de auth-service
+            try:
+                proveedor_id_int = int(proveedor_id)
+                queryset = queryset.filter(servicio__proveedor_id=proveedor_id_int)
+            except ValueError:
+                # Es un UUID, buscar el proveedor por user_id
+                proveedor = models.Proveedor.objects.filter(user_id=proveedor_id).first()
+                if proveedor:
+                    queryset = queryset.filter(servicio__proveedor_id=proveedor.id)
+                else:
+                    queryset = queryset.none()
 
         return queryset
 

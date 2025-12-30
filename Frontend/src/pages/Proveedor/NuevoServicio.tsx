@@ -103,16 +103,27 @@ export default function NuevoServicio() {
       }
     });
 
-    // Agregar proveedor y rating si se está creando
+    // Agregar categoria si se está creando
+    // No enviar proveedor_id, Django lo asigna automáticamente desde el JWT
     if (!params.id) {
-      modifiedData.proveedor_id = proveedorId;
       modifiedData.categoria_id = Number(data.categoria);
+      // Eliminar `categoria` (campo de solo lectura en el serializer) para evitar confusiones
+      if ((modifiedData as any).categoria !== undefined) delete (modifiedData as any).categoria;
       modifiedData.rating_promedio = 0;
     }
 
+    // Normalizar 'duracion' de "HH:MM" a "HH:MM:SS" porque el backend espera segundos
+    if (modifiedData.duracion && typeof modifiedData.duracion === "string") {
+      if (/^\d{1,2}:\d{2}$/.test(modifiedData.duracion)) {
+        modifiedData.duracion = `${modifiedData.duracion}:00`;
+      }
+    }
+
+    // Mostrar payload en consola para depuración
+    console.log("Payload que se va a enviar:", modifiedData);
+
     try {
       if (params.id) {
-        console.log("Data que se va a enviar:", modifiedData);
         await updateServicio(Number(params.id), modifiedData, token);
         alert("✅ Servicio actualizado correctamente");
       } else {
@@ -123,9 +134,10 @@ export default function NuevoServicio() {
       }
 
       navigate("/mis-servicios");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error al guardar servicio:", error);
-      alert("❌ No se pudo guardar el servicio");
+      console.error("Detalles de la respuesta del servidor:", error?.response?.data);
+      alert(`❌ No se pudo guardar el servicio: ${error?.response?.data ? JSON.stringify(error.response.data) : error.message}`);
     }
   });
 

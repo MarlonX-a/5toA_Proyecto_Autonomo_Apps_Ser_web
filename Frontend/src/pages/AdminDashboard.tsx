@@ -269,8 +269,38 @@ export function AdminDashboard() {
           </h1>
           <p style={{ color: '#9c9c9f', fontSize: '1.1rem' }}>Métricas y estadísticas del sistema</p>
         </div>
-        <button
-          onClick={() => navigate('/negocio/dashboard')}
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <button
+            onClick={() => navigate('/ai-chat')}
+            style={{
+              background: 'linear-gradient(135deg, #7b5cff 0%, #9c7cff 100%)',
+              color: 'white',
+              border: 'none',
+              padding: '0.85rem 1.75rem',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              fontSize: '1rem',
+              fontWeight: '600',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              boxShadow: '0 4px 15px rgba(123, 92, 255, 0.4)',
+              transition: 'all 0.3s ease',
+              whiteSpace: 'nowrap'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 6px 25px rgba(123, 92, 255, 0.5)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 15px rgba(123, 92, 255, 0.4)';
+            }}
+          >
+            🤖 AI Chat
+          </button>
+          <button
+            onClick={() => navigate('/negocio/dashboard')}
           style={{
             background: 'linear-gradient(135deg, #4caf50 0%, #66bb6a 100%)',
             color: 'white',
@@ -298,6 +328,7 @@ export function AdminDashboard() {
         >
           🏢 Dashboard de Negocio
         </button>
+        </div>
       </div>
 
       {metricas && (

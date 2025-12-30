@@ -163,6 +163,15 @@ func (c *DummyRestClient) ListServicios(ctx context.Context, filter *model.Servi
 		return nil, err
 	}
 
+	// Pasar el token JWT a Django para que pueda identificar al usuario
+	if ctx != nil {
+		if httpReq, ok := ctx.Value("httpRequest").(*http.Request); ok && httpReq != nil {
+			if auth := httpReq.Header.Get("Authorization"); auth != "" {
+				req.Header.Set("Authorization", auth)
+			}
+		}
+	}
+
 	resp, err := c.HTTP.Do(req)
 	if err != nil {
 		return nil, err

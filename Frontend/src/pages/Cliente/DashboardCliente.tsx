@@ -46,7 +46,7 @@ export default function DashboardCliente() {
 
   const token = useMemo(() => localStorage.getItem('token') || '', []);
 
-  // Función para cargar datos
+  // Función para cargar datos (con mejor manejo de errores)
   const loadData = useCallback(async () => {
     try {
       if (!token) {
@@ -55,7 +55,19 @@ export default function DashboardCliente() {
         return;
       }
 
-      const perfil = await getUsers(token);
+      // Obtener perfil
+      let perfil;
+      try {
+        perfil = await getUsers(token);
+      } catch (err: any) {
+        console.error('Error obteniendo perfil:', err);
+        const status = err?.response?.status;
+        const data = err?.response?.data;
+        setError(`Error obteniendo perfil: ${status ?? ''} ${typeof data === 'object' ? JSON.stringify(data) : data ?? err.message}`);
+        setLoading(false);
+        return;
+      }
+
       const data = perfil.data as { id: number; rol: Rol };
       setRol(data.rol);
       if (data.rol !== 'cliente') {
@@ -67,7 +79,18 @@ export default function DashboardCliente() {
       setClienteId(data.id);
 
       // Cargar reservas del cliente
-      const reservasRes = await getReservasByCliente(data.id, token);
+      let reservasRes;
+      try {
+        reservasRes = await getReservasByCliente(data.id, token);
+      } catch (err: any) {
+        console.error('Error cargando reservas:', err);
+        const status = err?.response?.status;
+        const dataErr = err?.response?.data;
+        setError(`Error cargando reservas: ${status ?? ''} ${typeof dataErr === 'object' ? JSON.stringify(dataErr) : dataErr ?? err.message}`);
+        setLoading(false);
+        return;
+      }
+
       const reservasData: Reserva[] = reservasRes.data || [];
       setReservas(reservasData);
 
@@ -240,6 +263,9 @@ export default function DashboardCliente() {
     <div style={{ padding: '1rem', color: '#fff' }}>
       <h2 style={h2Style}>Dashboard Cliente</h2>
       <p style={{ color: '#f44336' }}>{error}</p>
+      <div style={{ marginTop: 12 }}>
+        <button style={buttonStyle} onClick={() => { setLoading(true); setError(null); loadData(); }}>🔁 Reintentar</button>
+      </div>
     </div>
   );
 

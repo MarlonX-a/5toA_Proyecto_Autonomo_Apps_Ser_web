@@ -36,7 +36,7 @@ export default function DashboardProveedor() {
 
   const token = useMemo(() => localStorage.getItem('token') || '', []);
 
-  // Función para cargar datos
+  // Función para cargar datos (mejor manejo de errores para depuración)
   const loadData = useCallback(async () => {
     try {
       if (!token) {
@@ -45,7 +45,19 @@ export default function DashboardProveedor() {
         return;
       }
 
-      const perfil = await getUsers(token);
+      // Obtener perfil (auth-service o Django según el token)
+      let perfil;
+      try {
+        perfil = await getUsers(token);
+      } catch (err: any) {
+        console.error('Error obteniendo perfil:', err);
+        const status = err?.response?.status;
+        const data = err?.response?.data;
+        setError(`Error obteniendo perfil: ${status ?? ''} ${typeof data === 'object' ? JSON.stringify(data) : data ?? err.message}`);
+        setLoading(false);
+        return;
+      }
+
       const data = perfil.data as { id: number; rol: Rol };
       setRol(data.rol);
       if (data.rol !== 'proveedor') {
@@ -56,10 +68,21 @@ export default function DashboardProveedor() {
 
       setProveedorId(data.id);
 
-      const [servRes, rsByProveedor] = await Promise.all([
-        getServicioByProveedor(data.id, token),
-        getReservaServiciosByProveedor(data.id, token),
-      ]);
+      // Cargar servicios y reservas en paralelo con manejo de errores individual
+      let servRes: any, rsByProveedor: any;
+      try {
+        [servRes, rsByProveedor] = await Promise.all([
+          getServicioByProveedor(data.id, token),
+          getReservaServiciosByProveedor(data.id, token),
+        ]);
+      } catch (err: any) {
+        console.error('Error cargando servicios o reservas:', err);
+        const status = err?.response?.status;
+        const dataErr = err?.response?.data;
+        setError(`Error cargando datos: ${status ?? ''} ${typeof dataErr === 'object' ? JSON.stringify(dataErr) : dataErr ?? err.message}`);
+        setLoading(false);
+        return;
+      }
 
       const svc: Servicio[] = servRes.data || [];
       setServicios(svc);
@@ -95,9 +118,9 @@ export default function DashboardProveedor() {
   await updateReservaServicio(reservaServicioId, { estado: nuevoEstado } as any, token);
       // refrescar datos
       await loadData();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error cambiando estado:', err);
-      alert('No se pudo cambiar el estado');
+      alert(`No se pudo cambiar el estado: ${err?.response?.status ?? ''} ${typeof err?.response?.data === 'object' ? JSON.stringify(err.response.data) : err?.response?.data ?? err.message}`);
     }
   };
 
@@ -217,6 +240,9 @@ export default function DashboardProveedor() {
     <div style={{ padding: '1rem', color: '#fff' }}>
       <h2 style={h2Style}>Dashboard Proveedor</h2>
       <p style={{ color: '#f44336' }}>{error}</p>
+      <div style={{ marginTop: 12 }}>
+        <button onClick={() => { setLoading(true); setError(null); loadData(); }}>🔁 Reintentar</button>
+      </div>
     </div>
   );
 

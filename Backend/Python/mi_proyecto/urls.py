@@ -27,5 +27,20 @@ urlpatterns = [
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('api_rest/', include('api_rest.urls.urls')),
+    
+    # ========================================
+    # Pilar 4: n8n Event Bus - Webhooks
+    # ========================================
+    path('webhooks/', include('api_rest.urls.urls_webhooks')),
+    
+    # ========================================
+    # Pilar 4: n8n Event Bus - Reportes y Tareas Programadas
+    # ========================================
+    path('api_rest/', include('api_rest.urls.urls_reports')),
+    
+    # ========================================
+    # Pilar 4: n8n Event Bus - Integración con Partners
+    # ========================================
+    path('api_rest/', include('api_rest.urls.urls_partner')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
  

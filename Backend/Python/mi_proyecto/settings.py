@@ -165,6 +165,36 @@ MEDIA_ROOT = BASE_DIR / 'media'
 ORCHESTRATOR_INGEST_URL = os.environ.get('ORCHESTRATOR_INGEST_URL')
 ORCHESTRATOR_API_KEY = os.environ.get('ORCHESTRATOR_API_KEY')
 
+# ========================================
+# Pilar 4: n8n Event Bus Configuration
+# ========================================
+# URL base de n8n para webhooks
+N8N_WEBHOOK_URL = os.environ.get('N8N_WEBHOOK_URL', 'http://localhost:5678')
+
+# Timeout para llamadas a n8n (segundos)
+N8N_TIMEOUT = int(os.environ.get('N8N_TIMEOUT', '10'))
+
+# Habilitar/deshabilitar Event Bus
+EVENT_BUS_ENABLED = os.environ.get('EVENT_BUS_ENABLED', 'true').lower() == 'true'
+
+# Partner Integration
+PARTNER_WEBHOOK_SECRET = os.environ.get('PARTNER_WEBHOOK_SECRET', 'your-partner-secret')
+PARTNER_WEBHOOK_URL = os.environ.get('PARTNER_WEBHOOK_URL', '')
+
+# Payment Gateway Webhooks
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
+PAYU_MERCHANT_ID = os.environ.get('PAYU_MERCHANT_ID', '')
+PAYU_API_KEY = os.environ.get('PAYU_API_KEY', '')
+MERCADOPAGO_ACCESS_TOKEN = os.environ.get('MERCADOPAGO_ACCESS_TOKEN', '')
+
+# Telegram Bot
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
+
+# WhatsApp Business API
+WHATSAPP_VERIFY_TOKEN = os.environ.get('WHATSAPP_VERIFY_TOKEN', '')
+WHATSAPP_ACCESS_TOKEN = os.environ.get('WHATSAPP_ACCESS_TOKEN', '')
+WHATSAPP_PHONE_NUMBER_ID = os.environ.get('WHATSAPP_PHONE_NUMBER_ID', '')
+
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',

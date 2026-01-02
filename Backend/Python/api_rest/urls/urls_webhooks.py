@@ -24,6 +24,10 @@ urlpatterns = [
     path('payments/mercadopago/', webhook_views.payment_webhook_mercadopago, name='webhook-payment-mercadopago'),
     path('payments/', webhook_views.payment_webhook_generic, name='webhook-payment-generic'),
     
+    # Simulador de pagos para testing
+    path('payments/simulate/', webhook_views.simulate_payment_webhook, name='webhook-payment-simulate'),
+    path('payments/test/', webhook_views.payment_test_page, name='webhook-payment-test'),
+    
     # ========================================
     # WORKFLOW 2: Partner Handler
     # ========================================

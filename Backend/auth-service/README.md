@@ -31,6 +31,55 @@
 $ npm install
 ```
 
+## Configuración de Integración con Django
+
+Este servicio se integra con Django para sincronizar usuarios (clientes/proveedores). Para que funcione correctamente:
+
+### 1. Configurar el archivo .env
+
+Crea o edita el archivo `.env` con las siguientes variables:
+
+```env
+# Claves JWT (RS256)
+JWT_PRIVATE_KEY_PATH=keys/private.pem
+JWT_PUBLIC_KEY_PATH=keys/public.pem
+JWT_ALGORITHM=RS256
+
+# Tokens
+ACCESS_TOKEN_EXPIRES_MINUTES=15
+REFRESH_TOKEN_EXPIRES_DAYS=7
+
+# Integración Django (IMPORTANTE)
+DJANGO_API_BASE=http://127.0.0.1:8000
+DJANGO_SERVICE_TOKEN=<token_generado_por_django>
+
+# CORS / puerto
+CORS_ORIGIN=http://localhost:5173
+PORT=3000
+```
+
+### 2. Generar el token de servicio en Django
+
+Antes de iniciar auth-service, ejecuta en el directorio de Django:
+
+```bash
+cd ../Python
+python setup_service_token.py
+```
+
+Este script:
+- Crea un usuario de servicio en Django
+- Genera un token de autenticación
+- Actualiza automáticamente el archivo `.env` de auth-service
+
+### 3. Generar claves RSA (si no existen)
+
+```bash
+mkdir -p keys
+openssl genrsa -out keys/private.pem 2048
+openssl rsa -in keys/private.pem -pubout -out keys/public.pem
+```
+
 ## Compile and run the project
 
 ```bash

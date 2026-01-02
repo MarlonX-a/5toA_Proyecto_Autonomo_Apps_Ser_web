@@ -198,6 +198,20 @@ export function ReservasCliente() {
                       : "Ver servicios"}
                   </button>
                   <button
+                    style={{ 
+                      marginLeft: "0.5rem", 
+                      backgroundColor: "#4caf50",
+                      color: "#fff",
+                      border: "none",
+                      padding: "0.5rem 1rem",
+                      borderRadius: "4px",
+                      cursor: "pointer"
+                    }}
+                    onClick={() => navigate(`/pago/${reserva.id}`)}
+                  >
+                    💳 Pagar ${reserva.total_estimado}
+                  </button>
+                  <button
                     style={{ marginLeft: "0.5rem", backgroundColor: "#f44336" }}
                     onClick={() => actualizarEstado(reserva.id ?? 0, "cancelada")}
                   >

@@ -22,6 +22,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
+from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -798,3 +799,166 @@ def n8n_callback(request):
     except Exception as e:
         logger.exception(f"❌ Error procesando callback de n8n: {e}")
         return JsonResponse({'error': str(e)}, status=500)
+
+
+# ========================================
+# SIMULADOR DE PAGOS PARA TESTING
+# ========================================
+
+@csrf_exempt
+@require_POST  
+def simulate_payment_webhook(request):
+    """
+    Endpoint para simular un webhook de pasarela de pago.
+    Usado desde el frontend para probar la integración con n8n.
+    
+    POST /webhooks/payments/simulate/
+    
+    Body:
+    {
+        "type": "payment_intent.succeeded",
+        "provider": "stripe_simulator",
+        "data": {
+            "object": {
+                "id": "pi_simulated_123",
+                "amount": 5000,
+                "currency": "usd",
+                "status": "succeeded",
+                "metadata": {
+                    "reserva_id": 1,
+                    "pago_id": 1
+                }
+            }
+        }
+    }
+    
+    Este endpoint:
+    1. Recibe el webhook simulado del frontend
+    2. Actualiza el pago en la BD a "pagado"
+    3. Actualiza la reserva a "confirmada"
+    4. Envía el evento a n8n para orquestación
+    5. Retorna el resultado al frontend
+    """
+    try:
+        payload = json.loads(request.body)
+        
+        event_type = payload.get('type', 'unknown')
+        provider = payload.get('provider', 'simulator')
+        data_object = payload.get('data', {}).get('object', {})
+        metadata = data_object.get('metadata', {})
+        
+        logger.info(f"🧪 Webhook SIMULADO recibido: {event_type} de {provider}")
+        
+        pago_id = metadata.get('pago_id')
+        reserva_id = metadata.get('reserva_id')
+        
+        result = {
+            'status': 'processed',
+            'event_type': event_type,
+            'pago_id': pago_id,
+            'reserva_id': reserva_id,
+            'actions': []
+        }
+        
+        # 1. Actualizar pago a "pagado"
+        if pago_id:
+            try:
+                pago = Pago.objects.get(id=pago_id)
+                pago.estado = 'pagado'
+                pago.referencia = data_object.get('id', f'SIM-{pago_id}')
+                pago.fecha_pago = timezone.now()
+                pago.save()
+                result['actions'].append(f'Pago {pago_id} marcado como pagado')
+                logger.info(f"✅ Pago {pago_id} actualizado a 'pagado'")
+                
+                # Obtener reserva del pago si no se especificó
+                if not reserva_id:
+                    reserva_id = pago.reserva_id
+            except Pago.DoesNotExist:
+                result['actions'].append(f'Pago {pago_id} no encontrado')
+                logger.warning(f"⚠️ Pago {pago_id} no encontrado")
+        
+        # 2. Actualizar reserva a "confirmada"
+        if reserva_id:
+            try:
+                reserva = Reserva.objects.get(id=reserva_id)
+                reserva.estado = 'confirmada'
+                reserva.save()
+                result['actions'].append(f'Reserva {reserva_id} confirmada')
+                logger.info(f"✅ Reserva {reserva_id} confirmada")
+            except Reserva.DoesNotExist:
+                result['actions'].append(f'Reserva {reserva_id} no encontrada')
+                logger.warning(f"⚠️ Reserva {reserva_id} no encontrada")
+        
+        # 3. Enviar evento a n8n Event Bus
+        try:
+            payment_data = {
+                'gateway': provider,
+                'transaction_id': data_object.get('id'),
+                'type': event_type,
+                'amount': data_object.get('amount', 0) / 100,
+                'currency': data_object.get('currency', 'usd').upper(),
+                'status': data_object.get('status', 'succeeded'),
+                'reserva_id': reserva_id,
+                'pago_id': pago_id,
+                'metadata': metadata,
+                'simulated': True
+            }
+            
+            n8n_result = event_bus.emit_payment_received(payment_data)
+            result['n8n_notified'] = n8n_result
+            result['actions'].append('Evento enviado a n8n Event Bus')
+            logger.info(f"📤 Evento enviado a n8n: {n8n_result}")
+        except Exception as n8n_err:
+            result['n8n_notified'] = False
+            result['n8n_error'] = str(n8n_err)
+            result['actions'].append(f'Error enviando a n8n: {n8n_err}')
+            logger.warning(f"⚠️ No se pudo notificar a n8n: {n8n_err}")
+        
+        return JsonResponse(result)
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        logger.exception(f"❌ Error en simulación de pago: {e}")
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def payment_test_page(request):
+    """
+    Endpoint de prueba que muestra información sobre cómo probar los pagos.
+    GET /webhooks/payments/test/
+    """
+    return Response({
+        'message': 'Sistema de pagos FindYourWork',
+        'endpoints': {
+            'stripe': '/webhooks/payments/stripe/',
+            'payu': '/webhooks/payments/payu/',
+            'mercadopago': '/webhooks/payments/mercadopago/',
+            'generic': '/webhooks/payments/',
+            'simulate': '/webhooks/payments/simulate/'
+        },
+        'simulate_example': {
+            'method': 'POST',
+            'url': '/webhooks/payments/simulate/',
+            'body': {
+                'type': 'payment_intent.succeeded',
+                'provider': 'stripe_simulator',
+                'data': {
+                    'object': {
+                        'id': 'pi_test_123',
+                        'amount': 5000,
+                        'currency': 'usd',
+                        'status': 'succeeded',
+                        'metadata': {
+                            'reserva_id': 1,
+                            'pago_id': 1
+                        }
+                    }
+                }
+            }
+        },
+        'n8n_status': 'Check http://localhost:5678 for n8n dashboard'
+    })

@@ -7,4 +7,7 @@ urlpatterns = [
     re_path('register/', views.RegisterView.as_view()),
     re_path('profile/', views.ProfileView.as_view()),
     path('api/v1/', include(router.urls)),
- ]
+    
+    # Pilar 2: Webhooks e Interoperabilidad B2B
+    path('api/v1/', include('api_rest.urls.webhook_urls')),
+]

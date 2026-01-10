@@ -155,3 +155,105 @@ def servicio_saved(sender, instance, created, **kwargs):
         'precio': str(instance.precio),
     }
     notify_websocket(event_type, data)
+
+
+# ============================================================================
+# PILAR 2: WEBHOOKS B2B - Notificaciones a Partners
+# ============================================================================
+
+def notify_b2b_partners(event_type: str, data: dict):
+    """
+    Envía webhooks a todos los partners B2B suscritos al evento.
+    Esta función se ejecuta de forma asíncrona para no bloquear la request.
+    """
+    try:
+        from api_rest.services.webhooks import webhook_dispatcher
+        webhook_dispatcher.dispatch_event(event_type, data)
+    except Exception as e:
+        print(f"❌ Error enviando webhook B2B: {e}")
+
+
+@receiver(post_save, sender=models.Reserva)
+def reserva_webhook_b2b(sender, instance, created, **kwargs):
+    """
+    Envía webhooks B2B cuando cambia el estado de una reserva.
+    Eventos: booking.created, booking.confirmed, booking.cancelled
+    """
+    # Preparar datos del evento
+    data = {
+        'reserva_id': instance.id,
+        'cliente_id': instance.cliente.id,
+        'estado': instance.estado,
+        'fecha': str(instance.fecha),
+        'hora': str(instance.hora),
+        'total_estimado': str(instance.total_estimado),
+        'created_at': str(instance.created_at),
+    }
+    
+    # Añadir servicios si existen
+    servicios = models.ReservaServicio.objects.filter(reserva=instance)
+    if servicios.exists():
+        data['servicios'] = [
+            {
+                'servicio_id': s.servicio.id,
+                'nombre': s.servicio.nombre_servicio,
+                'cantidad': s.cantidad,
+            }
+            for s in servicios
+        ]
+    
+    if created:
+        notify_b2b_partners('booking.created', data)
+    else:
+        # Mapear estados a eventos
+        estado_eventos = {
+            'confirmada': 'booking.confirmed',
+            'cancelada': 'booking.cancelled',
+            'completada': 'booking.completed',
+        }
+        evento = estado_eventos.get(instance.estado.lower())
+        if evento:
+            notify_b2b_partners(evento, data)
+
+
+@receiver(post_save, sender=models.Pago)
+def pago_webhook_b2b(sender, instance, created, **kwargs):
+    """
+    Envía webhooks B2B cuando se procesa un pago.
+    Eventos: payment.success, payment.failed
+    """
+    data = {
+        'pago_id': instance.id,
+        'reserva_id': instance.reserva.id,
+        'monto': str(instance.monto),
+        'metodo_pago': instance.metodo_pago,
+        'estado': instance.estado,
+        'referencia': instance.referencia,
+        'fecha_pago': str(instance.fecha_pago) if instance.fecha_pago else None,
+    }
+    
+    # Mapear estados a eventos
+    if instance.estado == 'pagado':
+        notify_b2b_partners('payment.success', data)
+    elif instance.estado == 'rechazado':
+        notify_b2b_partners('payment.failed', data)
+
+
+@receiver(post_save, sender=models.Servicio)
+def servicio_webhook_b2b(sender, instance, created, **kwargs):
+    """
+    Envía webhooks B2B cuando se activa/desactiva un servicio.
+    Eventos: service.activated, service.deactivated
+    """
+    data = {
+        'servicio_id': instance.id,
+        'nombre': instance.nombre_servicio,
+        'proveedor_id': instance.proveedor.id,
+        'precio': str(instance.precio),
+        'categoria_id': instance.categoria.id if instance.categoria else None,
+    }
+    
+    if created:
+        notify_b2b_partners('service.created', data)
+    # Aquí podrías añadir lógica para detectar cambios de estado activo/inactivo
+

@@ -80,8 +80,12 @@ export class AuthService {
     const base = getEnv('DJANGO_API_BASE');
     const serviceToken = getEnv('DJANGO_SERVICE_TOKEN');
     
+    console.log('[syncWithDjango] Starting sync for user:', user.id, 'role:', role);
+    console.log('[syncWithDjango] DJANGO_API_BASE:', base ? 'configured' : 'NOT SET');
+    console.log('[syncWithDjango] DJANGO_SERVICE_TOKEN:', serviceToken ? 'configured' : 'NOT SET');
+    
     if (!base || !serviceToken) {
-      console.warn('Django integration not configured, skipping sync');
+      console.warn('[syncWithDjango] Django integration not configured, skipping sync');
       return;
     }
 

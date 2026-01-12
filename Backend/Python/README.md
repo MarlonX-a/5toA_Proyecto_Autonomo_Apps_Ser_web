@@ -65,7 +65,13 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
-4. Crear un superusuario (opcional):
+4. **Configurar token de servicio para auth-service** (IMPORTANTE):
+```bash
+python setup_service_token.py
+```
+Este script genera un token de autenticación que permite al auth-service comunicarse con Django. El token se actualiza automáticamente en `Backend/auth-service/.env`.
+
+5. Crear un superusuario (opcional):
 ```bash
 python manage.py createsuperuser
 ```

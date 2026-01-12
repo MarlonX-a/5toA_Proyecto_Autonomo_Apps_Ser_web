@@ -29,8 +29,8 @@ class ReservaSerializer(serializers.ModelSerializer):
             fecha_obj = datetime.strptime(fecha, "%Y-%m-%d").date()
             if fecha_obj == date.today() and value <= datetime.now().time():
                 raise serializers.ValidationError("La hora de la reserva debe ser futura.")
-            
-            return value
+        
+        return value
         
     def validate_estado(self, value):
         estados_valido = ['pendiente', 'confirmada', 'cancelada']

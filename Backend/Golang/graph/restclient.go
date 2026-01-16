@@ -4,21 +4,18 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/MarlonX-a/5toA_Proyecto_Autonomo_Apps_Ser_web/Golang/graph/model"
-	"github.com/shopspring/decimal"
 	"net/http"
 	"net/url"
 	"sort"
 	"strconv"
 	"time"
+
+	"github.com/MarlonX-a/5toA_Proyecto_Autonomo_Apps_Ser_web/Golang/graph/model"
+	"github.com/shopspring/decimal"
 )
 
 // RestClient defines the interface for REST calls to the Django API
 type RestClient interface {
-
-	// Users
-	GetUser(ctx context.Context, id string) (*model.User, error)
-	ListUsers(ctx context.Context, pagination *model.Pagination) ([]*model.User, error)
 
 	// ServicioUbicacion
 	GetServicioUbicacion(ctx context.Context, id string) (*model.ServicioUbicacion, error)
@@ -87,64 +84,6 @@ type DummyRestClient struct {
 
 func NewDummyRestClient(baseURL string) *DummyRestClient {
 	return &DummyRestClient{HTTP: &http.Client{}, BaseURL: baseURL}
-}
-
-// Función para llamar a todos los usuarios a través de la API REST
-func (c *DummyRestClient) ListUsers(ctx context.Context, pagination *model.Pagination) ([]*model.User, error) {
-	u, _ := url.Parse(c.BaseURL)
-	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api_rest/api/v1/users"
-	} else {
-		u.Path = u.Path + "/api_rest/api/v1/users"
-	}
-	q := u.Query()
-	if pagination != nil {
-		if pagination.Limit != nil {
-			q.Set("limit", strconv.Itoa(int(*pagination.Limit)))
-		}
-		if pagination.Offset != nil {
-			q.Set("offset", strconv.Itoa(int(*pagination.Offset)))
-		}
-	}
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var list []*model.User
-	if err := json.NewDecoder(resp.Body).Decode(&list); err != nil {
-		return nil, err
-	}
-	return list, nil
-}
-
-// Función para llamar a un usuario específico a través de la API REST
-func (c *DummyRestClient) GetUser(ctx context.Context, id string) (*model.User, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/users/%s/", c.BaseURL, id), nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := c.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
-	}
-	var user model.User
-	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
-		return nil, err
-	}
-	return &user, nil
 }
 
 // buildServiciosURL builds a URL for the servicios endpoint with query params
@@ -224,6 +163,15 @@ func (c *DummyRestClient) ListServicios(ctx context.Context, filter *model.Servi
 		return nil, err
 	}
 
+	// Pasar el token JWT a Django para que pueda identificar al usuario
+	if ctx != nil {
+		if httpReq, ok := ctx.Value("httpRequest").(*http.Request); ok && httpReq != nil {
+			if auth := httpReq.Header.Get("Authorization"); auth != "" {
+				req.Header.Set("Authorization", auth)
+			}
+		}
+	}
+
 	resp, err := c.HTTP.Do(req)
 	if err != nil {
 		return nil, err
@@ -243,7 +191,7 @@ func (c *DummyRestClient) ListServicios(ctx context.Context, filter *model.Servi
 
 // Función para llamar a un proveedor específico a través de la API REST
 func (c *DummyRestClient) GetProveedor(ctx context.Context, id string) (*model.Proveedor, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/proveedores/%s/", c.BaseURL, id), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api_rest/api/v1/proveedor/%s/", c.BaseURL, id), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -303,9 +251,9 @@ func (c *DummyRestClient) ListProveedores(ctx context.Context, pagination *model
 func (c *DummyRestClient) ListReservas(ctx context.Context, filter *model.ReservaFilterInput, pagination *model.Pagination) ([]*model.Reserva, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/reservas"
+		u.Path = "/api_rest/api/v1/reserva"
 	} else {
-		u.Path = u.Path + "/api/reservas"
+		u.Path = u.Path + "/api_rest/api/v1/reserva"
 	}
 	q := u.Query()
 	if filter != nil {
@@ -352,7 +300,7 @@ func (c *DummyRestClient) ListReservas(ctx context.Context, filter *model.Reserv
 
 // Función para llamar a una reserva específica a través de la API REST
 func (c *DummyRestClient) GetReserva(ctx context.Context, id string) (*model.Reserva, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/reservas/%s/", c.BaseURL, id), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api_rest/api/v1/reserva/%s/", c.BaseURL, id), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -375,9 +323,9 @@ func (c *DummyRestClient) GetReserva(ctx context.Context, id string) (*model.Res
 func (c *DummyRestClient) ListClientes(ctx context.Context, pagination *model.Pagination) ([]*model.Cliente, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/clientes"
+		u.Path = "/api_rest/api/v1/cliente"
 	} else {
-		u.Path = u.Path + "/api/clientes"
+		u.Path = u.Path + "/api_rest/api/v1/cliente"
 	}
 	q := u.Query()
 	if pagination != nil {
@@ -410,7 +358,7 @@ func (c *DummyRestClient) ListClientes(ctx context.Context, pagination *model.Pa
 
 // Función para llamar a un cliente específico a través de la API REST
 func (c *DummyRestClient) GetCliente(ctx context.Context, id string) (*model.Cliente, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/clientes/%s/", c.BaseURL, id), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api_rest/api/v1/cliente/%s/", c.BaseURL, id), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -433,9 +381,9 @@ func (c *DummyRestClient) GetCliente(ctx context.Context, id string) (*model.Cli
 func (c *DummyRestClient) ListUbicaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Ubicacion, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/ubicaciones"
+		u.Path = "/api_rest/api/v1/ubicacion"
 	} else {
-		u.Path = u.Path + "/api/ubicaciones"
+		u.Path = u.Path + "/api_rest/api/v1/ubicacion"
 	}
 	q := u.Query()
 	if pagination != nil {
@@ -468,7 +416,7 @@ func (c *DummyRestClient) ListUbicaciones(ctx context.Context, pagination *model
 
 // Función para llamar a una ubicación específica a través de la API REST
 func (c *DummyRestClient) GetUbicacion(ctx context.Context, id string) (*model.Ubicacion, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/ubicaciones/%s/", c.BaseURL, id), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api_rest/api/v1/ubicacion/%s/", c.BaseURL, id), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -491,9 +439,9 @@ func (c *DummyRestClient) GetUbicacion(ctx context.Context, id string) (*model.U
 func (c *DummyRestClient) ListCategorias(ctx context.Context, pagination *model.Pagination) ([]*model.Categoria, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/categorias"
+		u.Path = "/api_rest/api/v1/categoria"
 	} else {
-		u.Path = u.Path + "/api/categorias"
+		u.Path = u.Path + "/api_rest/api/v1/categoria"
 	}
 	q := u.Query()
 	if pagination != nil {
@@ -526,7 +474,7 @@ func (c *DummyRestClient) ListCategorias(ctx context.Context, pagination *model.
 
 // Función para llamar a una categoría específica a través de la API REST
 func (c *DummyRestClient) GetCategoria(ctx context.Context, id string) (*model.Categoria, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/categorias/%s/", c.BaseURL, id), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api_rest/api/v1/categoria/%s/", c.BaseURL, id), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -549,9 +497,9 @@ func (c *DummyRestClient) GetCategoria(ctx context.Context, id string) (*model.C
 func (c *DummyRestClient) ListCalificaciones(ctx context.Context, pagination *model.Pagination) ([]*model.Calificacion, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/calificaciones"
+		u.Path = "/api_rest/api/v1/calificacion"
 	} else {
-		u.Path = u.Path + "/api/calificaciones"
+		u.Path = u.Path + "/api_rest/api/v1/calificacion"
 	}
 	q := u.Query()
 	if pagination != nil {
@@ -586,9 +534,9 @@ func (c *DummyRestClient) ListCalificaciones(ctx context.Context, pagination *mo
 func (c *DummyRestClient) ListComentarios(ctx context.Context, pagination *model.Pagination) ([]*model.Comentario, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/comentarios"
+		u.Path = "/api_rest/api/v1/comentario"
 	} else {
-		u.Path = u.Path + "/api/comentarios"
+		u.Path = u.Path + "/api_rest/api/v1/comentario"
 	}
 	q := u.Query()
 	if pagination != nil {
@@ -623,9 +571,9 @@ func (c *DummyRestClient) ListComentarios(ctx context.Context, pagination *model
 func (c *DummyRestClient) ListPagos(ctx context.Context, pagination *model.Pagination) ([]*model.Pago, error) {
 	u, _ := url.Parse(c.BaseURL)
 	if u.Path == "/" || u.Path == "" {
-		u.Path = "/api/pagos"
+		u.Path = "/api_rest/api/v1/pago"
 	} else {
-		u.Path = u.Path + "/api/pagos"
+		u.Path = u.Path + "/api_rest/api/v1/pago"
 	}
 	q := u.Query()
 	if pagination != nil {
@@ -658,7 +606,7 @@ func (c *DummyRestClient) ListPagos(ctx context.Context, pagination *model.Pagin
 
 // Función para llamar a un pago específico a través de la API REST
 func (c *DummyRestClient) GetPago(ctx context.Context, id string) (*model.Pago, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api/pagos/%s/", c.BaseURL, id), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/api_rest/api/v1/pago/%s/", c.BaseURL, id), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -1001,11 +949,7 @@ func (c *DummyRestClient) ReporteClientes(ctx context.Context, pagination *model
 
 // Función para llamar a las métricas generales a través de la API REST
 func (c *DummyRestClient) MetricasGenerales(ctx context.Context, pagination *model.Pagination) (*model.MetricasGenerales, error) {
-	// 1️⃣ Traer todos los usuarios, clientes y proveedores
-	users, err := c.ListUsers(ctx, pagination)
-	if err != nil {
-		return nil, err
-	}
+	// 1️⃣ Traer clientes y proveedores
 	clientes, err := c.ListClientes(ctx, pagination)
 	if err != nil {
 		return nil, err
@@ -1051,8 +995,11 @@ func (c *DummyRestClient) MetricasGenerales(ctx context.Context, pagination *mod
 		promedioSatisfaccion = totalSatisfaccion.Div(divisor)
 	}
 
+	// totalUsuarios = clientes + proveedores (no hay endpoint /user/)
+	totalUsuarios := int32(len(clientes)) + int32(len(proveedores))
+
 	metricas := &model.MetricasGenerales{
-		TotalUsuarios:        int32(len(users)),
+		TotalUsuarios:        totalUsuarios,
 		TotalClientes:        int32(len(clientes)),
 		TotalProveedores:     int32(len(proveedores)),
 		TotalServicios:       int32(len(servicios)),

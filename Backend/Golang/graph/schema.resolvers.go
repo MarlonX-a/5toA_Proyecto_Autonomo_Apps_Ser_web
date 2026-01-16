@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/MarlonX-a/5toA_Proyecto_Autonomo_Apps_Ser_web/Golang/graph/model"
@@ -13,12 +14,14 @@ import (
 
 // Query resolvers (no cambios necesarios, los filtros y paginación ya funcionan)
 func (r *queryResolver) Users(ctx context.Context, pagination *model.Pagination) ([]*model.User, error) {
-	return r.RESTClient.ListUsers(ctx, pagination)
+	// No hay endpoint de usuarios, usar clientes y proveedores
+	return nil, fmt.Errorf("endpoint de usuarios no disponible, usar clientes o proveedores")
 }
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id int32) (*model.User, error) {
-	return r.RESTClient.GetUser(ctx, strconv.Itoa(int(id)))
+	// No hay endpoint de usuarios, usar clientes y proveedores
+	return nil, fmt.Errorf("endpoint de usuarios no disponible, usar clientes o proveedores")
 }
 
 // Ubicaciones is the resolver for the ubicaciones field.

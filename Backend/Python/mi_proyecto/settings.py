@@ -11,6 +11,13 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+
+
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -146,10 +153,55 @@ CORS_ALLOW_HEADERS = [
     "x-dashboard",  # Permitir header personalizado para dashboard
 ]
 
-AUTH_USER_MODEL = 'api_rest.User'
+# Media settings for uploaded files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Orchestrator integration
+# When running the Orchestrator + Django together, set the following env vars so the
+# Orchestrator can call the protected tools endpoints:
+# - ORCHESTRATOR_API_KEY on Django (shared secret)
+# - ORCHESTRATOR_TOOLS_API_KEY on Orchestrator (same secret)
+ORCHESTRATOR_INGEST_URL = os.environ.get('ORCHESTRATOR_INGEST_URL')
+ORCHESTRATOR_API_KEY = os.environ.get('ORCHESTRATOR_API_KEY')
+
+# ========================================
+# Pilar 4: n8n Event Bus Configuration
+# ========================================
+# URL base de n8n para webhooks
+N8N_WEBHOOK_URL = os.environ.get('N8N_WEBHOOK_URL', 'http://localhost:5678')
+
+# Timeout para llamadas a n8n (segundos)
+N8N_TIMEOUT = int(os.environ.get('N8N_TIMEOUT', '10'))
+
+# Habilitar/deshabilitar Event Bus
+EVENT_BUS_ENABLED = os.environ.get('EVENT_BUS_ENABLED', 'true').lower() == 'true'
+
+# Partner Integration
+PARTNER_WEBHOOK_SECRET = os.environ.get('PARTNER_WEBHOOK_SECRET', 'your-partner-secret')
+PARTNER_WEBHOOK_URL = os.environ.get('PARTNER_WEBHOOK_URL', '')
+
+# Payment Gateway Webhooks
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
+PAYU_MERCHANT_ID = os.environ.get('PAYU_MERCHANT_ID', '')
+PAYU_API_KEY = os.environ.get('PAYU_API_KEY', '')
+MERCADOPAGO_ACCESS_TOKEN = os.environ.get('MERCADOPAGO_ACCESS_TOKEN', '')
+
+# Telegram Bot
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
+
+# WhatsApp Business API
+WHATSAPP_VERIFY_TOKEN = os.environ.get('WHATSAPP_VERIFY_TOKEN', '')
+WHATSAPP_ACCESS_TOKEN = os.environ.get('WHATSAPP_ACCESS_TOKEN', '')
+WHATSAPP_PHONE_NUMBER_ID = os.environ.get('WHATSAPP_PHONE_NUMBER_ID', '')
+
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'api_rest.authentication.ApiKeyAuthentication',
+        'api_rest.authentication.JWTAuthentication',
+    ],
 }
 
 SPECTACULAR_SETTINGS = {
@@ -159,3 +211,12 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
 }
+
+load_dotenv()
+
+JWT_PUBLIC_KEY = os.environ.get("JWT_PUBLIC_KEY")
+
+if not JWT_PUBLIC_KEY:
+    raise RuntimeError("JWT_PUBLIC_KEY no está definida en el entorno")
+JWT_PUBLIC_KEY = JWT_PUBLIC_KEY.replace("\\n", "\n")
+

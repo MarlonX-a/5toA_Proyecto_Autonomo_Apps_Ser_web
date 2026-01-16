@@ -30,11 +30,12 @@ export function ServiciosProveedor() {
           setLoading(false);
           return;
         }
-        const proveedorId = perfilRes.data.id;
 
+        // Usar soloMios: true para filtrar por el proveedor autenticado
+        // El backend usa el JWT para identificar al proveedor
         const data = await graphQLRequest<{ servicios: any[] }>({
           query: QUERY_SERVICIOS,
-          variables: { filter: { proveedorId }, pagination: { limit: 50, offset: 0 } },
+          variables: { filter: { soloMios: true }, pagination: { limit: 50, offset: 0 } },
           token,
         });
 

@@ -1,5 +1,4 @@
 from .ubicacion import UbicacionSerializer
-from .user import UserSerializer
 from .cliente import ClienteSerializer
 from .proveedor import ProveedorSerializer
 from .categoria import CategoriaSerializer
@@ -11,3 +10,5 @@ from .foto import FotoServicioSerializer
 from .pago import PagoSerializer
 from .comentario import ComentarioSerializer
 from .califiacion import CalificacionSerializer
+from .document import DocumentSerializer
+from .tool_audit import ToolActionLogSerializer

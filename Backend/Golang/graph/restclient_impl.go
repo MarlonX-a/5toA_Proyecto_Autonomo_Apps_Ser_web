@@ -4,13 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/MarlonX-a/5toA_Proyecto_Autonomo_Apps_Ser_web/Golang/graph/model"
-	"github.com/shopspring/decimal"
+	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"sort"
 	"strconv"
 	"time"
+
+	"github.com/MarlonX-a/5toA_Proyecto_Autonomo_Apps_Ser_web/Golang/graph/model"
+	"github.com/shopspring/decimal"
 )
 
 // restClientImpl implementa la interfaz RestClient
@@ -81,49 +84,6 @@ func (r *restClientImpl) buildListURL(path string, pagination *model.Pagination)
 	}
 	u.RawQuery = q.Encode()
 	return u.String()
-}
-
-// ------------------ Users ------------------
-func (r *restClientImpl) GetUser(ctx context.Context, id string) (*model.User, error) {
-	url := fmt.Sprintf("%suser/%s/", r.BaseURL, id)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := r.doWithAuth(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("error GET %s: status %d", url, resp.StatusCode)
-	}
-	var u model.User
-	if err := json.NewDecoder(resp.Body).Decode(&u); err != nil {
-		return nil, err
-	}
-	return &u, nil
-}
-
-func (r *restClientImpl) ListUsers(ctx context.Context, pagination *model.Pagination) ([]*model.User, error) {
-	u := r.buildListURL("user/", pagination)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := r.doWithAuth(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("error GET %s: status %d", u, resp.StatusCode)
-	}
-	var list []*model.User
-	if err := json.NewDecoder(resp.Body).Decode(&list); err != nil {
-		return nil, err
-	}
-	return list, nil
 }
 
 // ------------------ ServicioUbicacion ------------------
@@ -287,6 +247,10 @@ func (r *restClientImpl) ListServicios(ctx context.Context, filter *model.Servic
 	}
 	q := u.Query()
 	if filter != nil {
+		// Filtro solo_mios para obtener solo los servicios del proveedor autenticado
+		if filter.SoloMios != nil && *filter.SoloMios {
+			q.Set("solo_mios", "true")
+		}
 		if filter.CategoriaID != nil {
 			q.Set("categoria_id", strconv.Itoa(int(*filter.CategoriaID)))
 		}
@@ -452,6 +416,148 @@ func (r *restClientImpl) GetPago(ctx context.Context, id string) (*model.Pago, e
 	return &p, nil
 }
 
+// ------------------ ReservaServicio ------------------
+func (r *restClientImpl) ListReservaServicios(ctx context.Context, pagination *model.Pagination) ([]*model.ReservaServicio, error) {
+	u := r.buildListURL("reservaServicio/", pagination)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := r.doWithAuth(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("error GET %s: status %d", u, resp.StatusCode)
+	}
+	// Read body once; handle both bare list and paginated {results: []}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	// Decode into raw messages to handle mixed shapes and snake_case
+	var rawList []map[string]json.RawMessage
+	if err := json.Unmarshal(body, &rawList); err != nil {
+		var wrapper struct {
+			Results []map[string]json.RawMessage `json:"results"`
+		}
+		if err2 := json.Unmarshal(body, &wrapper); err2 != nil {
+			return nil, err
+		}
+		rawList = wrapper.Results
+	}
+
+	out := make([]*model.ReservaServicio, 0, len(rawList))
+	for _, item := range rawList {
+		var rs model.ReservaServicio
+
+		if v, ok := item["id"]; ok {
+			if err := json.Unmarshal(v, &rs.ID); err != nil {
+				var sidStr string
+				if err2 := json.Unmarshal(v, &sidStr); err2 == nil {
+					if n, e := strconv.Atoi(sidStr); e == nil {
+						rs.ID = int32(n)
+					}
+				}
+			}
+		}
+		if v, ok := item["cantidad"]; ok {
+			if err := json.Unmarshal(v, &rs.Cantidad); err != nil {
+				var s string
+				if err2 := json.Unmarshal(v, &s); err2 == nil {
+					if n, e := strconv.Atoi(s); e == nil {
+						rs.Cantidad = int32(n)
+					}
+				}
+			}
+		}
+		// precio_unitario or precioUnitario
+		if v, ok := item["precio_unitario"]; ok {
+			_ = json.Unmarshal(v, &rs.PrecioUnitario)
+		} else if v, ok := item["precioUnitario"]; ok {
+			_ = json.Unmarshal(v, &rs.PrecioUnitario)
+		}
+		// subtotal
+		if v, ok := item["subtotal"]; ok {
+			_ = json.Unmarshal(v, &rs.Subtotal)
+		}
+		// servicio: can be object or id
+		if v, ok := item["servicio"]; ok {
+			// try object first
+			var svcObj map[string]json.RawMessage
+			if err := json.Unmarshal(v, &svcObj); err == nil && len(svcObj) > 0 {
+				var svc model.Servicio
+				// basic fields
+				if idRaw, ok := svcObj["id"]; ok {
+					_ = json.Unmarshal(idRaw, &svc.ID)
+				}
+				if nRaw, ok := svcObj["nombreServicio"]; ok {
+					_ = json.Unmarshal(nRaw, &svc.NombreServicio)
+				} else if nRaw, ok := svcObj["nombre_servicio"]; ok {
+					_ = json.Unmarshal(nRaw, &svc.NombreServicio)
+				}
+				if pRaw, ok := svcObj["precio"]; ok {
+					_ = json.Unmarshal(pRaw, &svc.Precio)
+				}
+				rs.Servicio = &svc
+			} else {
+				// maybe it's an id
+				var sid int32
+				if err := json.Unmarshal(v, &sid); err == nil {
+					// lazy fetch
+					svc, err := r.GetServicio(ctx, strconv.Itoa(int(sid)))
+					if err == nil {
+						rs.Servicio = svc
+					} else {
+						// at least set an empty with id
+						rs.Servicio = &model.Servicio{ID: sid}
+					}
+				} else {
+					var sidStr string
+					if err2 := json.Unmarshal(v, &sidStr); err2 == nil {
+						if n, e := strconv.Atoi(sidStr); e == nil {
+							sid = int32(n)
+							svc, err := r.GetServicio(ctx, strconv.Itoa(int(sid)))
+							if err == nil {
+								rs.Servicio = svc
+							} else {
+								rs.Servicio = &model.Servicio{ID: sid}
+							}
+						}
+					}
+				}
+			}
+		} else if v, ok := item["servicio_id"]; ok { // alternative key
+			var sid int32
+			if err := json.Unmarshal(v, &sid); err == nil {
+				svc, err := r.GetServicio(ctx, strconv.Itoa(int(sid)))
+				if err == nil {
+					rs.Servicio = svc
+				} else {
+					rs.Servicio = &model.Servicio{ID: sid}
+				}
+			} else {
+				var sidStr string
+				if err2 := json.Unmarshal(v, &sidStr); err2 == nil {
+					if n, e := strconv.Atoi(sidStr); e == nil {
+						sid = int32(n)
+						svc, err := r.GetServicio(ctx, strconv.Itoa(int(sid)))
+						if err == nil {
+							rs.Servicio = svc
+						} else {
+							rs.Servicio = &model.Servicio{ID: sid}
+						}
+					}
+				}
+			}
+		}
+
+		out = append(out, &rs)
+	}
+	return out, nil
+}
+
 // ------------------ Ubicacion ------------------
 func (r *restClientImpl) GetUbicacion(ctx context.Context, id string) (*model.Ubicacion, error) {
 	url := fmt.Sprintf("%subicacion/%s/", r.BaseURL, id)
@@ -575,9 +681,24 @@ func (r *restClientImpl) ListCalificaciones(ctx context.Context, pagination *mod
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("error GET %s: status %d", u, resp.StatusCode)
 	}
-	var list []*model.Calificacion
-	if err := json.NewDecoder(resp.Body).Decode(&list); err != nil {
+
+	// Leer body una vez para manejar ambos formatos
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
 		return nil, err
+	}
+
+	var list []*model.Calificacion
+	// Intentar decodificar como array directo
+	if err := json.Unmarshal(body, &list); err != nil {
+		// Si falla, intentar formato paginado {results: [...]}
+		var wrapper struct {
+			Results []*model.Calificacion `json:"results"`
+		}
+		if err2 := json.Unmarshal(body, &wrapper); err2 != nil {
+			return nil, err
+		}
+		list = wrapper.Results
 	}
 	return list, nil
 }
@@ -588,7 +709,14 @@ func (r *restClientImpl) ReporteVentas(ctx context.Context, pagination *model.Pa
 	// 1️⃣ Traer todas las reservas desde Django
 	reservas, err := r.ListReservas(ctx, nil, pagination)
 	if err != nil {
-		return nil, err
+		// Retornar estructura vacía en lugar de nil
+		return &model.ReporteVentas{
+			Periodo:              "Sin datos",
+			TotalVentas:          decimal.Zero,
+			CantidadReservas:     0,
+			PromedioPorReserva:   decimal.Zero,
+			ServiciosMasVendidos: []*model.ServicioVendido{},
+		}, nil
 	}
 
 	totalVentas := decimal.NewFromInt(0)
@@ -614,6 +742,60 @@ func (r *restClientImpl) ReporteVentas(ctx context.Context, pagination *model.Pa
 			} else {
 				serviciosMap[sid].CantidadVendida += detalle.Cantidad
 				serviciosMap[sid].IngresosGenerados = serviciosMap[sid].IngresosGenerados.Add(detalle.Subtotal)
+			}
+		}
+	}
+
+	// Fallback: si no hay detalles en reservas, usar lista de reservaServicio
+	if len(serviciosMap) == 0 {
+		rsList, err := r.ListReservaServicios(ctx, nil)
+		if err == nil {
+			for _, rs := range rsList {
+				if rs == nil || rs.Servicio == nil {
+					continue
+				}
+				sid := rs.Servicio.ID
+				if _, ok := serviciosMap[sid]; !ok {
+					serviciosMap[sid] = &model.ServicioVendido{
+						Servicio:          rs.Servicio,
+						CantidadVendida:   0,
+						IngresosGenerados: decimal.Zero,
+					}
+				}
+				qty := rs.Cantidad
+				if qty <= 0 {
+					qty = 1
+				}
+				serviciosMap[sid].CantidadVendida += qty
+				ingreso := rs.Subtotal
+				if ingreso.Equal(decimal.Zero) {
+					if !rs.PrecioUnitario.Equal(decimal.Zero) && qty > 0 {
+						ingreso = rs.PrecioUnitario.Mul(decimal.NewFromInt32(qty))
+					} else if rs.Servicio != nil && !rs.Servicio.Precio.Equal(decimal.Zero) && qty > 0 {
+						ingreso = rs.Servicio.Precio.Mul(decimal.NewFromInt32(qty))
+					}
+				}
+				serviciosMap[sid].IngresosGenerados = serviciosMap[sid].IngresosGenerados.Add(ingreso)
+			}
+			// Backfill datos del servicio si faltan
+			cache := make(map[int32]*model.Servicio)
+			for _, sv := range serviciosMap {
+				if sv.Servicio == nil {
+					continue
+				}
+				sid := sv.Servicio.ID
+				needs := sv.Servicio.NombreServicio == "" || sv.Servicio.Precio.Equal(decimal.Zero)
+				if needs {
+					if cached, ok := cache[sid]; ok {
+						sv.Servicio = cached
+					} else {
+						svc, err := r.GetServicio(ctx, strconv.Itoa(int(sid)))
+						if err == nil && svc != nil {
+							cache[sid] = svc
+							sv.Servicio = svc
+						}
+					}
+				}
 			}
 		}
 	}
@@ -653,15 +835,36 @@ func (r *restClientImpl) ReporteSatisfaccion(ctx context.Context, pagination *mo
 	// 1️⃣ Traer todas las calificaciones
 	calificaciones, err := r.ListCalificaciones(ctx, pagination)
 	if err != nil {
-		return nil, err
+		log.Printf("Error getting calificaciones: %v", err)
+		// Retornar slice vacío en lugar de nil
+		return []*model.ReporteSatisfaccion{}, nil
 	}
+
+	log.Printf("ReporteSatisfaccion: recibidas %d calificaciones", len(calificaciones))
 
 	// Mapa para agrupar por servicio
 	serviciosMap := make(map[int32]*model.ReporteSatisfaccion)
+	servicioCache := make(map[int32]*model.Servicio)
 
 	for _, cal := range calificaciones {
+		if cal == nil || cal.Servicio == nil {
+			continue
+		}
 
 		sid := cal.Servicio.ID // int32
+
+		// Backfill servicio si faltan datos
+		if cal.Servicio.NombreServicio == "" {
+			if cached, ok := servicioCache[sid]; ok {
+				cal.Servicio = cached
+			} else {
+				svc, err := r.GetServicio(ctx, strconv.Itoa(int(sid)))
+				if err == nil && svc != nil {
+					servicioCache[sid] = svc
+					cal.Servicio = svc
+				}
+			}
+		}
 
 		if rs, ok := serviciosMap[sid]; ok {
 
@@ -732,17 +935,17 @@ func (r *restClientImpl) ReporteProveedores(ctx context.Context, pagination *mod
 
 	proveedores, err := r.ListProveedores(ctx, pagination)
 	if err != nil {
-		return nil, err
+		proveedores = []*model.Proveedor{}
 	}
 
 	servicios, err := r.ListServicios(ctx, nil, nil)
 	if err != nil {
-		return nil, err
+		servicios = []*model.Servicio{}
 	}
 
 	calificaciones, err := r.ListCalificaciones(ctx, nil)
 	if err != nil {
-		return nil, err
+		calificaciones = []*model.Calificacion{}
 	}
 
 	// Preindexar calificaciones por servicio
@@ -757,6 +960,39 @@ func (r *restClientImpl) ReporteProveedores(ctx context.Context, pagination *mod
 	for _, s := range servicios {
 		pid := int(s.Proveedor.ID)
 		servPorProveedor[pid] = append(servPorProveedor[pid], s)
+	}
+
+	// Obtener reservaServicio para calcular ingresos
+	reservaServicios, err := r.ListReservaServicios(ctx, nil)
+	if err != nil {
+		reservaServicios = []*model.ReservaServicio{}
+	}
+
+	// Indexar reservaServicios por servicio para calcular ingresos
+	ingresosPorServicio := make(map[int]decimal.Decimal)
+	for _, rs := range reservaServicios {
+		if rs.Servicio == nil {
+			continue
+		}
+		sid := int(rs.Servicio.ID)
+
+		// Calcular ingreso de este reservaServicio
+		var ingreso decimal.Decimal
+		if !rs.Subtotal.IsZero() {
+			ingreso = rs.Subtotal
+		} else {
+			qty := rs.Cantidad
+			if qty == 0 {
+				qty = 1
+			}
+			if !rs.PrecioUnitario.IsZero() {
+				ingreso = rs.PrecioUnitario.Mul(decimal.NewFromInt32(qty))
+			} else if rs.Servicio != nil && !rs.Servicio.Precio.IsZero() {
+				ingreso = rs.Servicio.Precio.Mul(decimal.NewFromInt32(qty))
+			}
+		}
+
+		ingresosPorServicio[sid] = ingresosPorServicio[sid].Add(ingreso)
 	}
 
 	// Construir reporte
@@ -780,9 +1016,9 @@ func (r *restClientImpl) ReporteProveedores(ctx context.Context, pagination *mod
 			// Contar como activo (ajusta si tienes campo Activo)
 			rp.ServiciosActivos += 1
 
-			// Sumar ingresos
-			for _, rs := range s.DetallesReserva {
-				rp.IngresosTotales = rp.IngresosTotales.Add(rs.Subtotal)
+			// Sumar ingresos desde el mapa calculado de reservaServicios
+			if ingreso, ok := ingresosPorServicio[int(s.ID)]; ok {
+				rp.IngresosTotales = rp.IngresosTotales.Add(ingreso)
 			}
 
 			// Sumar calificaciones del servicio
@@ -807,13 +1043,13 @@ func (r *restClientImpl) ReporteClientes(ctx context.Context, pagination *model.
 	// 1️⃣ Traer clientes
 	clientes, err := r.ListClientes(ctx, pagination)
 	if err != nil {
-		return nil, err
+		clientes = []*model.Cliente{}
 	}
 
 	// 2️⃣ Traer reservas
 	reservas, err := r.ListReservas(ctx, nil, nil)
 	if err != nil {
-		return nil, err
+		reservas = []*model.Reserva{}
 	}
 
 	result := make([]*model.ReporteCliente, 0, len(clientes))
@@ -866,31 +1102,27 @@ func (r *restClientImpl) ReporteClientes(ctx context.Context, pagination *model.
 // MetricasGenerales genera métricas generales del sistema basado en usuarios, proveedores, servicios y reservas, sin llamar a un endpoint específico en Django sino con la misma data de usuarios, proveedores, servicios y reservas
 func (r *restClientImpl) MetricasGenerales(ctx context.Context, pagination *model.Pagination) (*model.MetricasGenerales, error) {
 
-	// 1️⃣ Usuarios, clientes, proveedores
-	users, err := r.ListUsers(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-
+	// 1️⃣ Clientes y proveedores (no hay endpoint de usuarios)
+	// Si hay error, usar valores vacíos en lugar de retornar nil
 	clientes, err := r.ListClientes(ctx, nil)
 	if err != nil {
-		return nil, err
+		clientes = []*model.Cliente{}
 	}
 
 	proveedores, err := r.ListProveedores(ctx, nil)
 	if err != nil {
-		return nil, err
+		proveedores = []*model.Proveedor{}
 	}
 
 	// 2️⃣ Servicios y reservas
 	servicios, err := r.ListServicios(ctx, nil, nil)
 	if err != nil {
-		return nil, err
+		servicios = []*model.Servicio{}
 	}
 
 	reservas, err := r.ListReservas(ctx, nil, nil)
 	if err != nil {
-		return nil, err
+		reservas = []*model.Reserva{}
 	}
 
 	// 3️⃣ Variables para acumulación
@@ -929,8 +1161,11 @@ func (r *restClientImpl) MetricasGenerales(ctx context.Context, pagination *mode
 	}
 
 	// 4️⃣ Construcción final
+	// totalUsuarios = clientes + proveedores (no hay endpoint /user/)
+	totalUsuarios := int32(len(clientes)) + int32(len(proveedores))
+
 	metricas := &model.MetricasGenerales{
-		TotalUsuarios:        int32(len(users)),
+		TotalUsuarios:        totalUsuarios,
 		TotalClientes:        int32(len(clientes)),
 		TotalProveedores:     int32(len(proveedores)),
 		TotalServicios:       int32(len(servicios)),
@@ -945,13 +1180,13 @@ func (r *restClientImpl) MetricasGenerales(ctx context.Context, pagination *mode
 // ------------------ Reportes específicos ------------------
 // ServiciosMasPopulares genera un reporte de los servicios más populares basado en la cantidad vendida y los ingresos generados, sin llamar a un endpoint específico en Django sino con la misma data de reservas
 func (r *restClientImpl) ServiciosMasPopulares(ctx context.Context, limit *int32) ([]*model.ServicioVendido, error) {
-	// 1️⃣ Traer todas las reservas con sus detalles
-	reservas, err := r.ListReservas(ctx, nil, nil)
+	// 1️⃣ Traer todos los servicios con sus detalles de reserva
+	servicios, err := r.ListServicios(ctx, nil, nil)
 	if err != nil {
-		return nil, err
+		servicios = []*model.Servicio{}
 	}
 
-	// 2️⃣ Contar la cantidad vendida y sumar ingresos con decimal.Decimal
+	// 2️⃣ Contar cantidad vendida y sumar ingresos desde DetallesReserva
 	type stats struct {
 		cantidad int32
 		ingresos decimal.Decimal
@@ -960,49 +1195,118 @@ func (r *restClientImpl) ServiciosMasPopulares(ctx context.Context, limit *int32
 
 	servicioMap := make(map[int32]*stats)
 
-	for _, res := range reservas {
-		for _, detalle := range res.Detalles {
-			if detalle == nil || detalle.Servicio == nil {
+	for _, s := range servicios {
+		if s == nil {
+			continue
+		}
+		for _, det := range s.DetallesReserva {
+			if det == nil {
 				continue
 			}
-
-			sID := detalle.Servicio.ID // int32
-
-			// inicializar si no existe
-			if _, ok := servicioMap[sID]; !ok {
-				servicioMap[sID] = &stats{
+			sid := s.ID
+			if _, ok := servicioMap[sid]; !ok {
+				servicioMap[sid] = &stats{
 					cantidad: 0,
 					ingresos: decimal.Zero,
-					servicio: detalle.Servicio,
+					servicio: s,
 				}
 			}
-
-			// sumar cantidad (int32)
-			servicioMap[sID].cantidad += detalle.Cantidad
-
-			// sumar ingresos (decimal.Decimal)
-			servicioMap[sID].ingresos = servicioMap[sID].ingresos.Add(detalle.Subtotal)
+			servicioMap[sid].cantidad += det.Cantidad
+			servicioMap[sid].ingresos = servicioMap[sid].ingresos.Add(det.Subtotal)
 		}
 	}
 
-	// 3️⃣ Convertir a slice de respuesta
+	// 2b️⃣ Calcular agregación completa desde reservaServicio/ y luego fusionar
+	rsList, err := r.ListReservaServicios(ctx, nil)
+	if err == nil {
+		type rsStats struct {
+			cantidad int32
+			ingresos decimal.Decimal
+			servicio *model.Servicio
+		}
+		rsAgg := make(map[int32]*rsStats)
+		for _, rs := range rsList {
+			if rs == nil || rs.Servicio == nil {
+				continue
+			}
+			sid := rs.Servicio.ID
+			if _, ok := rsAgg[sid]; !ok {
+				rsAgg[sid] = &rsStats{cantidad: 0, ingresos: decimal.Zero, servicio: rs.Servicio}
+			} else if rsAgg[sid].servicio != nil && rsAgg[sid].servicio.NombreServicio == "" {
+				rsAgg[sid].servicio = rs.Servicio
+			}
+
+			// cantidad por defecto: si no existe o es 0, contar 1
+			qty := rs.Cantidad
+			if qty <= 0 {
+				qty = 1
+			}
+			rsAgg[sid].cantidad += qty
+			ingreso := rs.Subtotal
+			if ingreso.Equal(decimal.Zero) {
+				if !rs.PrecioUnitario.Equal(decimal.Zero) && qty > 0 {
+					ingreso = rs.PrecioUnitario.Mul(decimal.NewFromInt32(qty))
+				} else if rs.Servicio != nil && !rs.Servicio.Precio.Equal(decimal.Zero) && qty > 0 {
+					ingreso = rs.Servicio.Precio.Mul(decimal.NewFromInt32(qty))
+				}
+			}
+			rsAgg[sid].ingresos = rsAgg[sid].ingresos.Add(ingreso)
+		}
+
+		// Fusionar: si ya hay métricas de DetallesReserva, priorizarlas y solo usar rsAgg para completar
+		for sid, st := range rsAgg {
+			if current, ok := servicioMap[sid]; ok {
+				if current.cantidad == 0 && current.ingresos.Equal(decimal.Zero) {
+					current.cantidad = st.cantidad
+					current.ingresos = st.ingresos
+				}
+				if (current.servicio == nil || current.servicio.NombreServicio == "") && st.servicio != nil {
+					current.servicio = st.servicio
+				}
+			} else {
+				servicioMap[sid] = &stats{cantidad: st.cantidad, ingresos: st.ingresos, servicio: st.servicio}
+			}
+		}
+	}
+
 	list := make([]*model.ServicioVendido, 0, len(servicioMap))
 	for _, v := range servicioMap {
 		list = append(list, &model.ServicioVendido{
 			Servicio:          v.servicio,
 			CantidadVendida:   v.cantidad,
-			IngresosGenerados: v.ingresos, // decimal.Decimal
+			IngresosGenerados: v.ingresos,
 		})
 	}
 
-	// 4️⃣ Ordenar por cantidad vendida (desc)
+	// Backfill: asegurar que cada servicio tenga nombre/precio completos
+	// Evita que el front muestre celdas vacías si el serializer no incluyó campos
+	cache := make(map[int32]*model.Servicio)
+	for _, it := range list {
+		if it.Servicio == nil {
+			continue
+		}
+		sid := it.Servicio.ID
+		needsFetch := it.Servicio.NombreServicio == "" || it.Servicio.Precio.Equal(decimal.Zero)
+		if needsFetch {
+			if cached, ok := cache[sid]; ok {
+				it.Servicio = cached
+				continue
+			}
+			svc, err := r.GetServicio(ctx, strconv.Itoa(int(sid)))
+			if err == nil && svc != nil {
+				cache[sid] = svc
+				it.Servicio = svc
+			}
+		}
+	}
+
+	// Ordenar por cantidad vendida (desc)
 	sort.Slice(list, func(i, j int) bool {
 		return list[i].CantidadVendida > list[j].CantidadVendida
 	})
 
-	// 5️⃣ Aplicar límite si existe
 	if limit != nil && int(*limit) < len(list) {
-		list = list[:int(*limit)]
+		list = list[:*limit]
 	}
 
 	return list, nil
@@ -1010,62 +1314,132 @@ func (r *restClientImpl) ServiciosMasPopulares(ctx context.Context, limit *int32
 
 // ProveedoresMejorCalificados genera un reporte de los proveedores mejor calificados basado en el promedio de calificaciones de sus servicios, sin llamar a un endpoint específico en Django sino con la misma data de proveedores y servicios
 func (r *restClientImpl) ProveedoresMejorCalificados(ctx context.Context, limit *int32) ([]*model.ReporteProveedor, error) {
-	// 1️⃣ Traer todos los proveedores
+	// 1️⃣ Traer proveedores, servicios y calificaciones
 	proveedores, err := r.ListProveedores(ctx, nil)
 	if err != nil {
-		return nil, err
+		proveedores = []*model.Proveedor{}
 	}
 
-	// 2️⃣ Resultados
+	servicios, err := r.ListServicios(ctx, nil, nil)
+	if err != nil {
+		servicios = []*model.Servicio{}
+	}
+
+	calificaciones, err := r.ListCalificaciones(ctx, nil)
+	if err != nil {
+		calificaciones = []*model.Calificacion{}
+	}
+
+	// 2️⃣ Índices auxiliares
+	// calificaciones por servicio
+	calPorServicio := make(map[int][]*model.Calificacion)
+	for _, cal := range calificaciones {
+		sid := int(cal.Servicio.ID)
+		calPorServicio[sid] = append(calPorServicio[sid], cal)
+	}
+
+	// servicios por proveedor y mapa de servicio
+	servPorProveedor := make(map[int][]*model.Servicio)
+	servicioIndex := make(map[int32]*model.Servicio)
+	for _, s := range servicios {
+		servicioIndex[s.ID] = s
+		if s.Proveedor != nil {
+			pid := int(s.Proveedor.ID)
+			servPorProveedor[pid] = append(servPorProveedor[pid], s)
+		}
+	}
+
+	// 3️⃣ Ingresos por proveedor desde reservaServicio (fallback si detallesReserva está vacío)
+	ingresosPorProveedor := make(map[int32]decimal.Decimal)
+	rsList, err := r.ListReservaServicios(ctx, nil)
+	if err == nil {
+		for _, rs := range rsList {
+			if rs == nil || rs.Servicio == nil {
+				continue
+			}
+			// Resolver proveedor ID
+			var pid int32
+			if rs.Servicio.Proveedor != nil {
+				pid = rs.Servicio.Proveedor.ID
+			} else if s, ok := servicioIndex[rs.Servicio.ID]; ok && s.Proveedor != nil {
+				pid = s.Proveedor.ID
+			} else {
+				// Intento de backfill
+				if svc, e := r.GetServicio(ctx, strconv.Itoa(int(rs.Servicio.ID))); e == nil && svc != nil && svc.Proveedor != nil {
+					pid = svc.Proveedor.ID
+				} else {
+					continue
+				}
+			}
+
+			// Cantidad por defecto 1 si no existe
+			qty := rs.Cantidad
+			if qty <= 0 {
+				qty = 1
+			}
+			ingreso := rs.Subtotal
+			if ingreso.Equal(decimal.Zero) {
+				if !rs.PrecioUnitario.Equal(decimal.Zero) && qty > 0 {
+					ingreso = rs.PrecioUnitario.Mul(decimal.NewFromInt32(qty))
+				} else if s, ok := servicioIndex[rs.Servicio.ID]; ok && !s.Precio.Equal(decimal.Zero) && qty > 0 {
+					ingreso = s.Precio.Mul(decimal.NewFromInt32(qty))
+				}
+			}
+			ingresosPorProveedor[pid] = ingresosPorProveedor[pid].Add(ingreso)
+		}
+	}
+
+	// 4️⃣ Construir resultados
 	result := make([]*model.ReporteProveedor, 0, len(proveedores))
 
-	// 3️⃣ Calcular estadísticas por proveedor
 	for _, p := range proveedores {
-		totalServicios := int32(len(p.Servicios))
-		totalCalif := float64(0)
-		numCalif := 0
+		pid := int(p.ID)
+		servs := servPorProveedor[pid]
 
+		// Total y activos por servicios indexados
+		totalServicios := int32(len(servs))
+		serviciosActivos := int32(len(servs))
+
+		// Ingresos: primero intentar sumar a partir de detallesReserva; si queda en cero, usar fallback de ingresosPorProveedor
 		ingresosTotales := decimal.Zero
-		serviciosActivos := int32(0)
-
-		for _, s := range p.Servicios {
-
-			// Calificaciones promedio del servicio
-			if s.RatingPromedio > 0 {
-				totalCalif += float64(s.RatingPromedio)
-				numCalif++
-			}
-
-			// Sumatoria de ingresos
+		for _, s := range servs {
 			for _, det := range s.DetallesReserva {
-				ingresosTotales = ingresosTotales.Add(det.Subtotal) // decimal.Decimal
+				ingresosTotales = ingresosTotales.Add(det.Subtotal)
 			}
-
-			// Servicios activos
-			serviciosActivos++
+		}
+		if ingresosTotales.Equal(decimal.Zero) {
+			ingresosTotales = ingresosPorProveedor[p.ID]
 		}
 
-		// Calcular promedio final
-		var promedioCalif float64 = 0
-		if numCalif > 0 {
-			promedioCalif = totalCalif / float64(numCalif)
+		// Promedio de calificación basado en calificaciones reales
+		var suma float64
+		var n int
+		for _, s := range servs {
+			for _, cal := range calPorServicio[int(s.ID)] {
+				suma += float64(cal.Puntuacion)
+				n++
+			}
+		}
+		promedio := 0.0
+		if n > 0 {
+			promedio = suma / float64(n)
 		}
 
 		result = append(result, &model.ReporteProveedor{
 			Proveedor:            p,
 			TotalServicios:       totalServicios,
-			IngresosTotales:      ingresosTotales, // decimal.Decimal
-			PromedioCalificacion: promedioCalif,   // float64
+			IngresosTotales:      ingresosTotales,
+			PromedioCalificacion: promedio,
 			ServiciosActivos:     serviciosActivos,
 		})
 	}
 
-	// 4️⃣ Ordenar por calificación descendente
+	// 5️⃣ Ordenar por calificación descendente
 	sort.Slice(result, func(i, j int) bool {
 		return result[i].PromedioCalificacion > result[j].PromedioCalificacion
 	})
 
-	// 5️⃣ Aplicar límite
+	// 6️⃣ Límite
 	if limit != nil && int(*limit) < len(result) {
 		result = result[:int(*limit)]
 	}
@@ -1075,34 +1449,64 @@ func (r *restClientImpl) ProveedoresMejorCalificados(ctx context.Context, limit 
 
 // ClientesMasActivos genera un reporte de los clientes más activos basado en la cantidad de reservas y gasto total, sin llamar a un endpoint específico en Django sino con la misma data de clientes y reservas
 func (r *restClientImpl) ClientesMasActivos(ctx context.Context, limit *int32) ([]*model.ReporteCliente, error) {
-	u, _ := url.Parse(r.BaseURL)
-	if u.Path == "/" || u.Path == "" {
-		u.Path = "cliente/"
-	} else {
-		u.Path = u.Path + "cliente/"
-	}
-	q := u.Query()
-	if limit != nil {
-		q.Set("limit", strconv.Itoa(int(*limit)))
-	}
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
+	// Construir reporte como en ReporteClientes pero ordenado por actividad
+	clientes, err := r.ListClientes(ctx, nil)
 	if err != nil {
-		return nil, err
+		clientes = []*model.Cliente{}
 	}
-	resp, err := r.doWithAuth(ctx, req)
+
+	reservas, err := r.ListReservas(ctx, nil, nil)
 	if err != nil {
-		return nil, err
+		reservas = []*model.Reserva{}
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("error GET %s: status %d", u.String(), resp.StatusCode)
+
+	result := make([]*model.ReporteCliente, 0, len(clientes))
+
+	for _, cl := range clientes {
+		rc := &model.ReporteCliente{
+			Cliente:            cl,
+			TotalReservas:      0,
+			GastoTotal:         decimal.Zero,
+			PromedioPorReserva: decimal.Zero,
+			UltimaReserva:      nil,
+		}
+
+		var ultima time.Time
+		var total int32
+
+		for _, rsv := range reservas {
+			if rsv.Cliente == nil || rsv.Cliente.ID != cl.ID {
+				continue
+			}
+			total++
+			rc.GastoTotal = rc.GastoTotal.Add(rsv.TotalEstimado)
+			if rsv.Fecha.After(ultima) {
+				ultima = rsv.Fecha
+			}
+		}
+
+		rc.TotalReservas = total
+		if total > 0 {
+			rc.PromedioPorReserva = rc.GastoTotal.Div(decimal.NewFromInt32(total))
+			rc.UltimaReserva = &ultima
+		}
+
+		result = append(result, rc)
 	}
-	var list []*model.ReporteCliente
-	if err := json.NewDecoder(resp.Body).Decode(&list); err != nil {
-		return nil, err
+
+	// Ordenar por TotalReservas desc, luego por GastoTotal desc
+	sort.Slice(result, func(i, j int) bool {
+		if result[i].TotalReservas == result[j].TotalReservas {
+			return result[i].GastoTotal.GreaterThan(result[j].GastoTotal)
+		}
+		return result[i].TotalReservas > result[j].TotalReservas
+	})
+
+	if limit != nil && int(*limit) < len(result) {
+		result = result[:int(*limit)]
 	}
-	return list, nil
+
+	return result, nil
 }
 
 // ------------------ Tendencias ------------------

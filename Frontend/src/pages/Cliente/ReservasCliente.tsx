@@ -21,9 +21,11 @@ export function ReservasCliente() {
   // 🔹 Cargar reservas (manteniendo GraphQL)
   const loadReservasData = async (token: string, clienteId: number) => {
     try {
+      const variables = { filter: { clienteId: Number(clienteId) }, pagination: { limit: 50, offset: 0 } };
+      console.log("[ReservasCliente] Enviando query GraphQL con variables:", JSON.stringify(variables));
       const data = await graphQLRequest<{ reservas: any[] }>({
         query: QUERY_RESERVAS,
-        variables: { filter: { clienteId }, pagination: { limit: 50, offset: 0 } },
+        variables,
         token,
       });
 
@@ -69,7 +71,9 @@ export function ReservasCliente() {
 
       try {
         const perfilRes = await getUsers(token);
-        const cliId = perfilRes.data.id;
+        const cliId = Number(perfilRes.data.id);
+        console.log("[ReservasCliente] Perfil obtenido:", perfilRes.data);
+        console.log("[ReservasCliente] clienteId a usar:", cliId);
         setClienteId(cliId);
 
         await loadReservasData(token, cliId);
@@ -152,7 +156,9 @@ export function ReservasCliente() {
       <h2 style={{ marginBottom: "1rem" }}>Mis Reservas</h2>
 
       {reservas.length === 0 ? (
-        <p style={{ textAlign: "center" }}>No tienes reservas registradas</p>
+        <p style={{ textAlign: "center", color: "#666", padding: "2rem" }}>
+          No se ha creado ninguna reserva aún
+        </p>
       ) : (
         <div className="card-container">
           {reservas.map((reserva) => (
@@ -190,6 +196,20 @@ export function ReservasCliente() {
                     {expandedReserva === reserva.id
                       ? "Ocultar servicios"
                       : "Ver servicios"}
+                  </button>
+                  <button
+                    style={{ 
+                      marginLeft: "0.5rem", 
+                      backgroundColor: "#4caf50",
+                      color: "#fff",
+                      border: "none",
+                      padding: "0.5rem 1rem",
+                      borderRadius: "4px",
+                      cursor: "pointer"
+                    }}
+                    onClick={() => navigate(`/pago/${reserva.id}`)}
+                  >
+                    💳 Pagar ${reserva.total_estimado}
                   </button>
                   <button
                     style={{ marginLeft: "0.5rem", backgroundColor: "#f44336" }}

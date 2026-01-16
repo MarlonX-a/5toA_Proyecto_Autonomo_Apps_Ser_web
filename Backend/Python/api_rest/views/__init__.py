@@ -1,4 +1,3 @@
-from .auth_views import RegisterView, LoginView
 from .calificacion_views import CalificacionView
 from .categoria_views import CategoriaView
 from .cliente_views import ClienteView
@@ -12,3 +11,4 @@ from. reserva_views import ReservaView
 from .servicio_ubicacion_views import ServicioUbicacionView
 from .servicio_views import ServicioViewSet
 from .ubicacion_views import UbicacionView
+from .document_views import DocumentView

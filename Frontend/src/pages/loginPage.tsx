@@ -16,7 +16,9 @@ export function LoginPage() {
   const onSubmit: SubmitHandler<Ilogin> = async (data) => {
     try {
         const res = await loginApi(data);
-        loginContext(res.data.token);
+        const token = res.data.token ?? res.data.accessToken;
+        if (!token) throw new Error('No token returned from login');
+        loginContext(token);
 
         navigate("/");
     } catch (err: any) {
@@ -35,7 +37,7 @@ export function LoginPage() {
           <input type="password" placeholder='Contraseña' {...register('password', { required: 'Obligatorio' })} />
           {errors.password && <span> {errors.password.message} </span>}
 
-          <p><Link to='/singup'>¿No tienes cuenta? Registrate aquí</Link></p>
+          <p><Link to='/signup'>¿No tienes cuenta? Registrate aquí</Link></p>
 
           {apiError && <p style={{ color: 'red' }}>{apiError}</p>}
           <button type='submit'>Iniciar Sesión</button>

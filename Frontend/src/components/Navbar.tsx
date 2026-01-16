@@ -9,6 +9,7 @@ import {
   LogOut,
   User,
   LayoutDashboard,
+  Shield,
 } from 'lucide-react';
 
 export function Navbar() {
@@ -55,6 +56,11 @@ export function Navbar() {
                 <span>Registrarse</span>
               </Link>
             </li>
+            <li>
+              <Link to="/ai-chat">
+                <span>AI Chat</span>
+              </Link>
+            </li>
           </>
         ) : (
           <>
@@ -78,6 +84,16 @@ export function Navbar() {
               </li>
             )}
 
+            {/* Panel Admin */}
+            {rol === 'admin' && (
+              <li>
+                <Link to="/admin-dashboard">
+                  <Shield size={18} />
+                  <span>Panel Admin</span>
+                </Link>
+              </li>
+            )}
+
             <li>
               <Link to="/profile">
                 <User size={18} />
@@ -85,6 +101,11 @@ export function Navbar() {
               </Link>
             </li>
 
+            <li>
+              <Link to="/ai-chat">
+                <span>AI Chat</span>
+              </Link>
+            </li>
             <li>
               <button className="logout-btn" onClick={logout}>
                 <LogOut size={18} />

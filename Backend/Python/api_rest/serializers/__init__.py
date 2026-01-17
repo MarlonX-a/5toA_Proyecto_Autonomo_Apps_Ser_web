@@ -12,3 +12,15 @@ from .comentario import ComentarioSerializer
 from .califiacion import CalificacionSerializer
 from .document import DocumentSerializer
 from .tool_audit import ToolActionLogSerializer
+
+# Pilar 2: Webhooks B2B
+from .partner import (
+    PartnerRegistrationSerializer,
+    PartnerResponseSerializer,
+    PartnerListSerializer,
+    WebhookSubscriptionSerializer,
+    WebhookDeliverySerializer,
+    WebhookEventLogSerializer,
+    IncomingWebhookSerializer,
+    PaymentWebhookNormalizedSerializer,
+)

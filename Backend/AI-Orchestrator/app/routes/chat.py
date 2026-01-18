@@ -201,6 +201,21 @@ def detect_intent(query: str) -> dict | None:
         
         return {'tool': 'buscar_productos', 'params': params, 'intent': 'buscar_servicios'}
     
+    # ========== PROCESAR PAGO ==========
+    pago_patterns = [
+        r'(pagar|hacer\s+pago|procesar\s+pago|registrar\s+pago)',
+        r'(quiero|necesito)\s+pagar',
+        r'pago\s+(de|para)\s+(la\s+)?reserva',
+    ]
+    
+    for pattern in pago_patterns:
+        if re.search(pattern, query_lower):
+            params = extract_payment_params(query_lower, query)
+            if params.get('reserva_id') and params.get('monto'):
+                return {'tool': 'procesar_pago', 'params': params, 'intent': 'procesar_pago'}
+            else:
+                return {'tool': None, 'intent': 'procesar_pago_incomplete', 'missing': ['reserva_id', 'monto']}
+    
     # ========== RESUMEN DE VENTAS ==========
     ventas_patterns = [
         r'(resumen|reporte|informe)\s+(de\s+)?ventas',
@@ -218,6 +233,33 @@ def detect_intent(query: str) -> dict | None:
     
     # ========== NO SE DETECTÓ INTENCIÓN CLARA ==========
     return None
+
+
+def extract_payment_params(query_lower: str, query_original: str) -> dict:
+    """Extrae parámetros de pago del mensaje del usuario."""
+    params = {}
+    
+    # Buscar ID de reserva
+    reserva_match = re.search(r'reserva\s*(?:#|n[úu]mero|id)?\s*(\d+)', query_lower)
+    if reserva_match:
+        params['reserva_id'] = int(reserva_match.group(1))
+    
+    # Buscar monto
+    monto_match = re.search(r'\$?\s*(\d+(?:\.\d{2})?)\s*(?:d[oó]lares?)?', query_lower)
+    if monto_match:
+        params['monto'] = monto_match.group(1)
+    
+    # Buscar método de pago
+    if 'tarjeta' in query_lower:
+        params['metodo_pago'] = 'tarjeta'
+    elif 'efectivo' in query_lower:
+        params['metodo_pago'] = 'efectivo'
+    elif 'transferencia' in query_lower:
+        params['metodo_pago'] = 'transferencia'
+    else:
+        params['metodo_pago'] = 'tarjeta'  # Default
+    
+    return params
 
 
 def extract_reservation_params(query_lower: str, query_original: str) -> dict:
@@ -542,6 +584,15 @@ async def stream_chat(payload: ChatRequest, caller=Depends(get_caller)):
                 yield "event: done\n\n"
                 return
             
+            if intent == 'procesar_pago_incomplete':
+                yield "data: Para procesar un pago necesito que me indiques:\n"
+                yield "data: - **Número de reserva** (ej: reserva #5)\n"
+                yield "data: - **Monto a pagar** (ej: $50.00)\n"
+                yield "data: \n"
+                yield "data: 💡 Ejemplo: \"Quiero pagar $50 de la reserva #5 con tarjeta\"\n\n"
+                yield "event: done\n\n"
+                return
+            
             # Caso: Herramienta detectada - ejecutarla
             if tool_name:
                 try:
@@ -746,17 +797,40 @@ async def format_tool_result(tool_name: str, result: Any, params: dict) -> str:
     
     elif tool_name == 'ver_reserva':
         if result and result.get('id'):
-            text = f"📅 **Detalles de tu reserva:**\n\n"
-            text += f"- **ID:** {result.get('id')}\n"
+            text = f"📅 **Detalles de tu reserva #{result.get('id')}:**\n\n"
             text += f"- **Fecha:** {result.get('fecha', 'N/A')}\n"
             text += f"- **Hora:** {result.get('hora', 'N/A')}\n"
             text += f"- **Estado:** {result.get('estado', 'N/A')}\n"
-            text += f"- **Servicio:** {result.get('servicio_nombre', result.get('servicio', 'N/A'))}\n"
+            text += f"- **Total estimado:** ${result.get('total_estimado', '0.00')}\n"
+            
+            # Mostrar servicios asociados
+            servicios = result.get('servicios', [])
+            if servicios:
+                text += "\n**Servicios:**\n"
+                for s in servicios:
+                    text += f"  • {s.get('nombre', 'N/A')} - ${s.get('precio', '0.00')} ({s.get('estado', 'pendiente')})\n"
+            
             return text
         elif result and result.get('error'):
             return f"❌ {result.get('error')}"
         else:
             return "❌ No se encontró la reserva solicitada."
+    
+    elif tool_name == 'procesar_pago':
+        if result and result.get('id'):
+            text = f"✅ **¡Pago registrado exitosamente!**\n\n"
+            text += f"- **ID de pago:** {result.get('id')}\n"
+            text += f"- **Reserva:** #{result.get('reserva')}\n"
+            text += f"- **Monto:** ${result.get('monto', '0.00')}\n"
+            text += f"- **Estado:** {result.get('estado', 'pagado')}\n"
+            text += f"- **Método:** {result.get('metodo_pago', 'N/A')}\n"
+            return text
+        elif result and result.get('proposal'):
+            return f"💳 Pago pendiente de confirmación."
+        elif result and result.get('error'):
+            return f"❌ Error: {result.get('error')}"
+        else:
+            return f"❌ No se pudo procesar el pago."
     
     elif tool_name == 'resumen_ventas':
         if result:

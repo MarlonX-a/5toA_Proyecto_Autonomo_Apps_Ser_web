@@ -4,11 +4,35 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from api_rest.models import Servicio, Reserva, Cliente, Pago
+from api_rest.models import Servicio, Reserva, Cliente, Pago, ReservaServicio
 from api_rest.serializers import ServicioSerializer, ReservaSerializer, ClienteSerializer, PagoSerializer
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def create_reserva_with_servicio(serializer, servicio_id, fecha, hora):
+    """Helper para crear reserva y asociar servicio si se proporciona."""
+    reserva = serializer.save()
+    
+    # Si se proporcionó un servicio_id, crear la relación ReservaServicio
+    if servicio_id:
+        try:
+            servicio = Servicio.objects.get(id=servicio_id)
+            ReservaServicio.objects.create(
+                reserva=reserva,
+                servicio=servicio,
+                fecha_servicio=fecha,
+                hora_servicio=hora,
+                estado='pendiente'
+            )
+            logger.info(f"Created ReservaServicio for reserva={reserva.id}, servicio={servicio_id}")
+        except Servicio.DoesNotExist:
+            logger.warning(f"Servicio {servicio_id} not found, skipping ReservaServicio creation")
+        except Exception as e:
+            logger.error(f"Error creating ReservaServicio: {e}")
+    
+    return reserva
 
 
 class BuscarProductosView(APIView):
@@ -56,7 +80,20 @@ class VerReservaView(APIView):
     def get(self, request, reserva_id):
         reserva = get_object_or_404(Reserva, id=reserva_id)
         serializer = ReservaSerializer(reserva)
-        return Response(serializer.data)
+        data = serializer.data
+        
+        # Agregar los servicios asociados a la reserva
+        servicios = []
+        for rs in reserva.detalles.all():
+            servicios.append({
+                'id': rs.servicio.id,
+                'nombre': rs.servicio.nombre_servicio,
+                'precio': str(rs.servicio.precio),
+                'estado': rs.estado,
+            })
+        data['servicios'] = servicios
+        
+        return Response(data)
 
 
 class ObtenerClienteView(APIView):
@@ -85,6 +122,9 @@ class CrearReservaView(APIView):
         data = request.data.copy()
         if 'cliente' in data and 'cliente_id' not in data:
             data['cliente_id'] = data.pop('cliente')
+        
+        # Extraer servicio_id antes de pasarlo al serializer (no es parte del modelo Reserva)
+        servicio_id = data.pop('servicio_id', None)
 
         idempotency_key = request.headers.get('Idempotency-Key') or request.data.get('idempotency_key')
         actor = getattr(request, 'jwt_payload', {}).get('sub') or getattr(request, 'user', None) and getattr(request.user, 'username', None) or getattr(request, 'api_key', None)
@@ -143,8 +183,21 @@ class CrearReservaView(APIView):
 
                         # We own the slot; create the resource
                         logger.info("Acquired idempotency slot for crear_reserva key=%s", idempotency_key)
-                        reserva = serializer.save()
+                        reserva = create_reserva_with_servicio(
+                            serializer, 
+                            servicio_id, 
+                            validated.get('fecha'), 
+                            validated.get('hora')
+                        )
                         payload = ReservaSerializer(reserva).data
+                        # Agregar información del servicio en la respuesta
+                        if servicio_id:
+                            payload['servicio_id'] = servicio_id
+                            try:
+                                servicio = Servicio.objects.get(id=servicio_id)
+                                payload['servicio_nombre'] = servicio.nombre_servicio
+                            except Servicio.DoesNotExist:
+                                pass
                         slot.response_payload = payload
                         slot.status = 'confirmed'
                         slot.save()
@@ -158,9 +211,23 @@ class CrearReservaView(APIView):
                     return Response({'error': 'Idempotency conflict, retry'}, status=status.HTTP_409_CONFLICT)
 
             # no idempotency key - normal persist
-            reserva = serializer.save()
-            ToolActionLog.objects.create(action='crear_reserva', actor=actor, idempotency_key=idempotency_key, request_payload=data, response_payload=ReservaSerializer(reserva).data, status='confirmed')
-            return Response(ReservaSerializer(reserva).data, status=status.HTTP_201_CREATED)
+            reserva = create_reserva_with_servicio(
+                serializer, 
+                servicio_id, 
+                validated.get('fecha'), 
+                validated.get('hora')
+            )
+            payload = ReservaSerializer(reserva).data
+            # Agregar información del servicio en la respuesta
+            if servicio_id:
+                payload['servicio_id'] = servicio_id
+                try:
+                    servicio = Servicio.objects.get(id=servicio_id)
+                    payload['servicio_nombre'] = servicio.nombre_servicio
+                except Servicio.DoesNotExist:
+                    pass
+            ToolActionLog.objects.create(action='crear_reserva', actor=actor, idempotency_key=idempotency_key, request_payload=data, response_payload=payload, status='confirmed')
+            return Response(payload, status=status.HTTP_201_CREATED)
 
         import logging
         logging.getLogger(__name__).error('CrearReserva validation errors: %s', serializer.errors)

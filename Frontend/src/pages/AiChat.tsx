@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../styles/AiChat.css';
 
-// Lee URL y API Key del entorno (configurados en .env con prefijo VITE_)
+// Lee URL del entorno (configurado en .env con prefijo VITE_)
 const ORCHESTRATOR_URL = import.meta.env.VITE_ORCHESTRATOR_URL || 'http://localhost:8081';
-const ORCHESTRATOR_API_KEY = import.meta.env.VITE_ORCHESTRATOR_API_KEY || '';
 
 interface Message {
   id: string;
@@ -54,8 +53,20 @@ export default function AiChat() {
 
     try {
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      if (ORCHESTRATOR_API_KEY) {
-        headers['Authorization'] = `ApiKey ${ORCHESTRATOR_API_KEY}`;
+      
+      // Usar JWT del usuario autenticado (Bearer token)
+      const userToken = localStorage.getItem('token');
+      if (userToken) {
+        headers['Authorization'] = `Bearer ${userToken}`;
+      } else {
+        // Si no hay token, mostrar mensaje de error
+        setMessages(prev => prev.map(m => 
+          m.id === assistantId 
+            ? { ...m, content: '⚠️ Debes iniciar sesión para usar el asistente.', isError: true }
+            : m
+        ));
+        setIsStreaming(false);
+        return;
       }
 
       const res = await fetch(`${ORCHESTRATOR_URL}/api/stream`, {
@@ -90,16 +101,27 @@ export default function AiChat() {
       const decoder = new TextDecoder();
       let done = false;
       let fullContent = '';
+      let messageBuffer = ''; // Buffer para acumular líneas de un mensaje
       
       while (!done) {
         const { value, done: rdone } = await reader.read();
         done = rdone;
         if (value) {
           const chunk = decoder.decode(value);
-          const matches = chunk.match(/data: (.*)(?:\n\n|$)/g);
-          if (matches) {
-            matches.forEach((m) => {
-              const data = m.replace(/^data: /, '').trim();
+          
+          // SSE envía múltiples "data:" seguidas para formar un mensaje
+          // Una línea vacía doble (\n\n) separa mensajes completos
+          const lines = chunk.split('\n');
+          
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6); // Remover "data: "
+              messageBuffer += (messageBuffer ? '\n' : '') + data;
+            } else if (line === '' && messageBuffer) {
+              // Línea vacía = fin de mensaje SSE, procesar el buffer
+              const data = messageBuffer;
+              messageBuffer = '';
+              
               if (data.startsWith('PROPOSE:')) {
                 try {
                   const json = JSON.parse(data.replace(/^PROPOSE:/, ''));
@@ -107,18 +129,21 @@ export default function AiChat() {
                 } catch (e) {
                   console.warn('Malformed proposal', e);
                 }
-              } else if (data && data !== '[DONE]') {
-                fullContent += (fullContent ? ' ' : '') + data;
+              } else if (data && data !== '[DONE]' && !data.startsWith('event:')) {
+                // Si es un resultado de herramienta, reemplazar todo
+                if (data.startsWith('✅') || data.startsWith('📭') || data.startsWith('🔍') || data.startsWith('❌')) {
+                  fullContent = data;
+                } else {
+                  fullContent += (fullContent ? ' ' : '') + data;
+                }
                 setMessages(prev => prev.map(m => 
                   m.id === assistantId ? { ...m, content: fullContent } : m
                 ));
               }
-            });
-          } else {
-            fullContent += chunk;
-            setMessages(prev => prev.map(m => 
-              m.id === assistantId ? { ...m, content: fullContent } : m
-            ));
+            } else if (line.startsWith('event:')) {
+              // Ignorar líneas de eventos
+              messageBuffer = '';
+            }
           }
         }
       }
@@ -260,7 +285,13 @@ export default function AiChat() {
               key={msg.id} 
               className={`message ${msg.role} ${msg.isError ? 'error' : ''} ${isStreaming && msg.role === 'assistant' && msg === messages[messages.length - 1] ? 'streaming' : ''}`}
             >
-              {msg.content || (
+              {msg.content ? (
+                <div className="message-content" dangerouslySetInnerHTML={{ 
+                  __html: msg.content
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\n/g, '<br/>')
+                }} />
+              ) : (
                 <div className="typing-indicator">
                   <span></span>
                   <span></span>

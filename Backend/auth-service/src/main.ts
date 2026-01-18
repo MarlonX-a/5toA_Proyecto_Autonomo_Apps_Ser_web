@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 import * as fs from 'fs';
+import * as crypto from 'crypto';
 
 async function bootstrap() {
   dotenv.config();
@@ -35,8 +36,13 @@ async function bootstrap() {
       return res.status(500).json({ error: 'JWT_PUBLIC_KEY_PATH not configured' });
     }
     try {
-      const publicKey = fs.readFileSync(publicKeyPath, 'utf8');
-      // Devolver la clave pública en formato PEM para verificación RS256
+      const publicKeyPem = fs.readFileSync(publicKeyPath, 'utf8');
+      
+      // Crear un KeyObject desde el PEM para extraer n y e
+      const keyObject = crypto.createPublicKey(publicKeyPem);
+      const jwk = keyObject.export({ format: 'jwk' });
+      
+      // Devolver la clave pública en formato JWKS estándar con n y e
       res.json({
         keys: [
           {
@@ -44,13 +50,13 @@ async function bootstrap() {
             use: 'sig',
             alg: 'RS256',
             kid: 'auth-service-key-1',
-            // La clave pública en formato PEM (los clientes pueden parsearla)
-            x5c: [publicKey.replace(/-----BEGIN PUBLIC KEY-----/g, '').replace(/-----END PUBLIC KEY-----/g, '').replace(/\n/g, '')],
-            pem: publicKey,
+            n: jwk.n,  // Modulus en Base64URL
+            e: jwk.e,  // Exponent en Base64URL
           },
         ],
       });
     } catch (e) {
+      console.error('Error reading/parsing public key:', e);
       res.status(500).json({ error: 'Could not read public key' });
     }
   });

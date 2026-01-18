@@ -24,6 +24,7 @@ services:
       - HUGGINGFACE_API_KEY=${HUGGINGFACE_API_KEY}
       - TOOLS_API_KEY=${TOOLS_API_KEY}
       - DJANGO_TOOLS_URL=http://host.docker.internal:8000/api_rest/tools
+      - JWKS_URL=http://host.docker.internal:3000/.well-known/jwks.json
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:

@@ -17,11 +17,35 @@ class BuscarProductosView(APIView):
     def get(self, request):
         query = request.query_params.get('q', '')
         categoria = request.query_params.get('categoria', '')
-        servicios = Servicio.objects.filter(
-            Q(nombre_servicio__icontains=query) | Q(descripcion__icontains=query)
-        )
+        precio_min = request.query_params.get('precio_min')
+        precio_max = request.query_params.get('precio_max')
+        
+        servicios = Servicio.objects.all()
+        
+        # Filtro por texto (búsqueda en nombre y descripción)
+        if query:
+            servicios = servicios.filter(
+                Q(nombre_servicio__icontains=query) | Q(descripcion__icontains=query)
+            )
+        
+        # Filtro por categoría
         if categoria:
             servicios = servicios.filter(categoria__nombre__icontains=categoria)
+        
+        # Filtro por precio mínimo
+        if precio_min:
+            try:
+                servicios = servicios.filter(precio__gte=float(precio_min))
+            except ValueError:
+                pass
+        
+        # Filtro por precio máximo
+        if precio_max:
+            try:
+                servicios = servicios.filter(precio__lte=float(precio_max))
+            except ValueError:
+                pass
+        
         serializer = ServicioSerializer(servicios, many=True)
         return Response(serializer.data)
 

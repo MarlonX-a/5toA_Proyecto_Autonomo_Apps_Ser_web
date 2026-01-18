@@ -23,12 +23,23 @@ class ToolClient:
         self._client = httpx.AsyncClient(timeout=30.0)
 
     async def call(self, path: str, method: str = "GET", json: Dict | None = None, extra_headers: Dict[str, str] | None = None) -> Dict[str, Any]:
-        url = f"{self.base_url}/{path.lstrip('/')}/"
+        # Handle query parameters separately to ensure proper trailing slash
+        path_clean = path.lstrip('/')
+        if '?' in path_clean:
+            base_path, query = path_clean.split('?', 1)
+            url = f"{self.base_url}/{base_path}/?{query}"
+        else:
+            url = f"{self.base_url}/{path_clean}/"
         headers = {"Authorization": f"ApiKey {self.api_key}"}
         if extra_headers:
             headers.update(extra_headers)
         try:
-            resp = await self._client.request(method, url, json=json or {}, headers=headers)
+            # Para GET requests, enviar parámetros como query params
+            # Para POST/PUT/PATCH, enviar como JSON body
+            if method.upper() == "GET":
+                resp = await self._client.request(method, url, params=json or {}, headers=headers)
+            else:
+                resp = await self._client.request(method, url, json=json or {}, headers=headers)
         except Exception as e:
             logger.exception("HTTP call to tools failed")
             raise ToolError(f"Tool call network error: {e}")
@@ -58,7 +69,7 @@ class ToolRegistry:
             "buscar_productos": {
                 "path": "buscar-productos",
                 "method": "GET",
-                "description": "Buscar servicios por texto y categoría",
+                "description": "Buscar servicios disponibles. Parámetros opcionales: q (texto de búsqueda), categoria, precio_min, precio_max",
             },
             "ver_reserva": {
                 "path": "ver-reserva/{reserva_id}",
@@ -106,6 +117,7 @@ class ToolRegistry:
         method = meta.get("method", "GET")
 
         # Attach confirm as a query param if provided (Django views support it as query or body)
+        # Note: ToolClient.call() handles trailing slash properly
         if confirm is True:
             path = f"{path}?confirm=true"
         elif confirm is False:

@@ -28,6 +28,7 @@ import { RevokedToken } from '../tokens/revoked-token.entity';
       signOptions: {
         algorithm: 'RS256',
         expiresIn: '15m',
+        keyid: 'auth-service-key-1',  // Debe coincidir con el kid en JWKS
       },
     }),
   ],

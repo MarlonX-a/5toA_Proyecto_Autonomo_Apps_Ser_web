@@ -14,10 +14,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 
-
-
-
-
+# Cargar variables de entorno desde .env
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,7 +30,7 @@ SECRET_KEY = 'django-insecure-8w--3m7cxoc_h-*1#*w=^q#ru$w6(xbogc8zhp7vtzap^&t*x&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'host.docker.internal', 'kubernetes.docker.internal']
 
 
 # Application definition

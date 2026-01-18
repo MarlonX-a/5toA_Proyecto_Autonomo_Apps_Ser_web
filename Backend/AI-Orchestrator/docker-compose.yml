@@ -23,6 +23,9 @@ services:
       - PROPOSAL_TTL_SECONDS=3600
       - HUGGINGFACE_API_KEY=${HUGGINGFACE_API_KEY}
       - TOOLS_API_KEY=${TOOLS_API_KEY}
+      - DJANGO_TOOLS_URL=http://host.docker.internal:8000/api_rest/tools
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - qdrant
       - redis
@@ -49,7 +52,9 @@ services:
       - PROPOSAL_REDIS_URL=redis://redis:6379/2
       - HUGGINGFACE_API_KEY=${HUGGINGFACE_API_KEY}
       - TOOLS_API_KEY=${TOOLS_API_KEY}
-
+      - DJANGO_TOOLS_URL=http://host.docker.internal:8000/api_rest/tools
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - qdrant
       - redis

@@ -58,27 +58,78 @@ def build_prompt(user_query: str) -> str:
     return f"{SYSTEM_PROMPT}\n\n## Mensaje del usuario:\n{user_query}\n\n## Tu respuesta:"
 
 
+def extract_json_from_response(response: str) -> dict | None:
+    """Extrae el JSON del TOOL_CALL manejando objetos anidados."""
+    import json
+    
+    # Buscar el inicio de TOOL_CALL:
+    start_marker = "TOOL_CALL:"
+    start_idx = response.upper().find(start_marker.upper())
+    if start_idx == -1:
+        return None
+    
+    # Encontrar el inicio del JSON (primer '{')
+    json_start = response.find('{', start_idx)
+    if json_start == -1:
+        return None
+    
+    # Contar llaves para encontrar el JSON completo
+    brace_count = 0
+    json_end = json_start
+    
+    for i, char in enumerate(response[json_start:], start=json_start):
+        if char == '{':
+            brace_count += 1
+        elif char == '}':
+            brace_count -= 1
+            if brace_count == 0:
+                json_end = i + 1
+                break
+    
+    json_str = response[json_start:json_end]
+    
+    try:
+        return json.loads(json_str)
+    except json.JSONDecodeError:
+        return None
+
+
 async def execute_tool_if_needed(response: str) -> tuple[str, dict | None]:
     """Detecta y ejecuta llamadas a herramientas en la respuesta del LLM."""
     import json
-    import re
     
-    # Buscar patrón TOOL_CALL: {...}
-    tool_match = re.search(r'TOOL_CALL:\s*(\{[^}]+\})', response, re.IGNORECASE)
-    if not tool_match:
+    tool_json = extract_json_from_response(response)
+    if not tool_json:
         return response, None
     
     try:
-        tool_json = json.loads(tool_match.group(1))
         tool_name = tool_json.get('tool')
         params = tool_json.get('params', {})
+        
+        if not tool_name:
+            return response, None
         
         registry = get_default_registry()
         result = await registry.execute(tool_name, params)
         
-        return f"✅ Resultado de {tool_name}:\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)}\n```", result
-    except json.JSONDecodeError:
-        return response, None
+        # Formatear resultado de forma legible
+        if isinstance(result, list):
+            if len(result) == 0:
+                return "No se encontraron resultados para tu búsqueda.", result
+            
+            # Formatear lista de servicios/productos
+            formatted = f"✅ Encontré {len(result)} resultado(s):\n\n"
+            for i, item in enumerate(result[:10], 1):  # Limitar a 10
+                nombre = item.get('nombre_servicio') or item.get('nombre') or item.get('nombreServicio') or 'Sin nombre'
+                precio = item.get('precio', 'N/A')
+                desc = item.get('descripcion', '')[:100] if item.get('descripcion') else ''
+                formatted += f"**{i}. {nombre}** - ${precio}\n"
+                if desc:
+                    formatted += f"   {desc}...\n"
+            return formatted, result
+        
+        return f"✅ Resultado:\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)}\n```", result
+        
     except ToolError as e:
         return f"❌ Error ejecutando herramienta: {str(e)}", None
     except Exception as e:
@@ -135,40 +186,109 @@ async def stream_chat(payload: ChatRequest, caller=Depends(get_caller)):
     async def event_stream():
         full_response = ""
         
-        # Attempt to stream from adapter if it supports 'stream_generate'
+        # Primero obtenemos la respuesta completa para detectar TOOL_CALL
         if hasattr(adapter, 'stream_generate'):
             async for chunk in adapter.stream_generate(full_prompt):
                 full_response += chunk
-                yield f"data: {chunk}\n\n"
         else:
-            # Fallback: generate whole answer
-            answer = await adapter.generate(full_prompt)
-            full_response = answer
-            
-            # Chunking por oraciones para simular streaming
-            parts = re.split(r'(?<=[.!?])\s+', answer)
-            for part in parts:
-                if not part:
-                    continue
-                yield f"data: {part}\n\n"
-                await asyncio.sleep(0.05)
+            full_response = await adapter.generate(full_prompt)
         
         # Detectar si hay una llamada a herramienta en la respuesta
-        tool_match = re.search(r'TOOL_CALL:\s*(\{[^}]+\})', full_response, re.IGNORECASE)
-        if tool_match:
+        tool_json = extract_json_from_response(full_response)
+        
+        if tool_json and tool_json.get('tool'):
+            # Si hay TOOL_CALL, ejecutar la herramienta y mostrar resultados amigables
             try:
-                tool_json = json.loads(tool_match.group(1))
                 tool_name = tool_json.get('tool')
                 params = tool_json.get('params', {})
+                
+                # Mensaje de estado mientras buscamos
+                yield f"data: 🔍 Buscando información...\n\n"
+                await asyncio.sleep(0.1)
                 
                 registry = get_default_registry()
                 result = await registry.execute(tool_name, params)
                 
-                # Enviar resultado de la herramienta
-                result_text = f"\n\n✅ **Resultado de {tool_name}:**\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)}\n```"
+                # Formatear resultado de forma legible según el tipo de herramienta
+                if tool_name == 'buscar_productos':
+                    if isinstance(result, list):
+                        if len(result) == 0:
+                            result_text = "📭 No encontré servicios que coincidan con tu búsqueda. ¿Podrías intentar con otros términos?"
+                        else:
+                            query = params.get('q', '')
+                            if query:
+                                result_text = f"✅ Encontré **{len(result)} servicio(s)** relacionados con \"{query}\":\n\n"
+                            else:
+                                result_text = f"✅ Aquí tienes **{len(result)} servicio(s)** disponibles:\n\n"
+                            
+                            for i, item in enumerate(result[:10], 1):
+                                nombre = item.get('nombre_servicio') or item.get('nombre') or 'Sin nombre'
+                                precio = item.get('precio', 'N/A')
+                                categoria = item.get('categoria_nombre') or item.get('categoria', {}).get('nombre', '')
+                                desc = item.get('descripcion', '')
+                                
+                                result_text += f"**{i}. {nombre}**\n"
+                                result_text += f"   💰 Precio: ${precio}\n"
+                                if categoria:
+                                    result_text += f"   📁 Categoría: {categoria}\n"
+                                if desc:
+                                    result_text += f"   📝 {desc[:100]}{'...' if len(desc) > 100 else ''}\n"
+                                result_text += "\n"
+                            
+                            if len(result) > 10:
+                                result_text += f"_...y {len(result) - 10} servicios más._\n"
+                    else:
+                        result_text = f"✅ **Resultado:** {json.dumps(result, ensure_ascii=False)}"
+                
+                elif tool_name == 'ver_reserva':
+                    if result:
+                        result_text = f"📅 **Detalles de la reserva:**\n\n"
+                        result_text += f"- **ID:** {result.get('id', 'N/A')}\n"
+                        result_text += f"- **Fecha:** {result.get('fecha', 'N/A')}\n"
+                        result_text += f"- **Estado:** {result.get('estado', 'N/A')}\n"
+                        result_text += f"- **Servicio:** {result.get('servicio_nombre', result.get('servicio', 'N/A'))}\n"
+                    else:
+                        result_text = "❌ No se encontró la reserva solicitada."
+                
+                elif tool_name == 'obtener_cliente':
+                    if result:
+                        result_text = f"👤 **Información del cliente:**\n\n"
+                        result_text += f"- **Nombre:** {result.get('nombre', 'N/A')}\n"
+                        result_text += f"- **Email:** {result.get('email', 'N/A')}\n"
+                        result_text += f"- **Teléfono:** {result.get('telefono', 'N/A')}\n"
+                    else:
+                        result_text = "❌ No se encontró el cliente."
+                
+                elif tool_name == 'resumen_ventas':
+                    if result:
+                        result_text = f"📊 **Resumen de ventas:**\n\n"
+                        result_text += f"- **Total ventas:** ${result.get('total', 0)}\n"
+                        result_text += f"- **Cantidad de transacciones:** {result.get('count', 0)}\n"
+                    else:
+                        result_text = "📊 No hay datos de ventas disponibles."
+                
+                else:
+                    # Formato genérico para otras herramientas
+                    result_text = f"✅ **Resultado de {tool_name}:**\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)}\n```"
+                
                 yield f"data: {result_text}\n\n"
+                
             except Exception as e:
-                yield f"data: \n\n❌ Error ejecutando herramienta: {str(e)}\n\n"
+                yield f"data: ❌ Lo siento, hubo un error al procesar tu solicitud: {str(e)}\n\n"
+        else:
+            # Si NO hay TOOL_CALL, mostrar la respuesta normal del LLM
+            # Limpiar cualquier mención de TOOL_CALL que haya quedado
+            clean_response = re.sub(r'TOOL_CALL:\s*\{[^}]*\}', '', full_response).strip()
+            
+            if clean_response:
+                # Hacer streaming de la respuesta limpia
+                parts = re.split(r'(?<=[.!?])\s+', clean_response)
+                for part in parts:
+                    if part.strip():
+                        yield f"data: {part} \n\n"
+                        await asyncio.sleep(0.03)
+            else:
+                yield f"data: 🤔 No estoy seguro de cómo ayudarte con eso. ¿Podrías reformular tu pregunta?\n\n"
         
         yield "event: done\n\n"
 

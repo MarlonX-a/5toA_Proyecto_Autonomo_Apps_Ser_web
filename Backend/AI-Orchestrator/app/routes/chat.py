@@ -93,114 +93,6 @@ def detect_intent(query: str) -> dict | None:
                 return {'tool': 'ver_reserva', 'params': {'reserva_id': int(id_match.group(1))}, 'intent': 'ver_reserva'}
             return {'tool': None, 'intent': 'ver_reserva_incomplete', 'missing': ['reserva_id']}
     
-    # ========== BUSCAR SERVICIOS CON FILTROS ==========
-    # Detectar filtros de precio
-    precio_min = None
-    precio_max = None
-    categoria = None
-    search_query = None
-    
-    # Precio mayor/mínimo
-    precio_mayor_patterns = [
-        r'precio\s+(mayor|m[aá]s|superior)\s*(a|de|que)?\s*\$?(\d+)',
-        r'(mayor|m[aá]s|superior)\s*(a|de|que)?\s*\$?(\d+)\s*(d[oó]lares?)?',
-        r'\$?(\d+)\s*(d[oó]lares?)?\s*(o\s+)?m[aá]s',
-        r'desde\s*\$?(\d+)',
-    ]
-    
-    for pattern in precio_mayor_patterns:
-        match = re.search(pattern, query_lower)
-        if match:
-            # Encontrar el grupo con el número
-            for group in match.groups():
-                if group and group.isdigit():
-                    precio_min = int(group)
-                    break
-            break
-    
-    # Precio menor/máximo
-    precio_menor_patterns = [
-        r'precio\s+(menor|menos|inferior)\s*(a|de|que)?\s*\$?(\d+)',
-        r'(menor|menos|inferior)\s*(a|de|que)?\s*\$?(\d+)',
-        r'hasta\s*\$?(\d+)',
-        r'\$?(\d+)\s*(d[oó]lares?)?\s*(o\s+)?menos',
-        r'baratos?|econ[oó]micos?',
-    ]
-    
-    for pattern in precio_menor_patterns:
-        match = re.search(pattern, query_lower)
-        if match:
-            for group in match.groups() if match.groups() else []:
-                if group and group.isdigit():
-                    precio_max = int(group)
-                    break
-            break
-    
-    # Detectar categoría
-    categorias_conocidas = [
-        'belleza', 'servicios de belleza', 'peluquer[ií]a', 'cabello',
-        'reparaciones', 'reparaciones del hogar', 'hogar',
-        'clases', 'clases particulares', 'educaci[oó]n',
-        'masajes', 'spa', 'bienestar',
-        'm[eé]dico', 'salud', 'citas m[eé]dicas',
-    ]
-    
-    for cat in categorias_conocidas:
-        if re.search(cat, query_lower):
-            # Mapear a nombre de categoría real
-            if re.search(r'belleza|peluquer|cabello', query_lower):
-                categoria = 'Servicios de belleza'
-            elif re.search(r'reparacion|hogar', query_lower):
-                categoria = 'Reparaciones del hogar'
-            elif re.search(r'clases|educaci|particular', query_lower):
-                categoria = 'Clases particulares'
-            elif re.search(r'masaj|spa|bienestar', query_lower):
-                categoria = 'Masajes y spa'
-            elif re.search(r'm[eé]dic|salud', query_lower):
-                categoria = 'Salud'
-            break
-    
-    # Detectar si es una búsqueda de servicios
-    buscar_patterns = [
-        r'(busca|buscar|encuentra|encontrar|lista|listar|muestra|mostrar|dame|dime|cu[aá]les)',
-        r'servicios?\s+(disponibles?|que\s+hay)',
-        r'qu[eé]\s+servicios',
-        r'hay\s+servicios?',
-    ]
-    
-    is_search = any(re.search(p, query_lower) for p in buscar_patterns)
-    
-    # Si hay filtros de precio o categoría, o es una búsqueda explícita
-    if precio_min or precio_max or categoria or is_search:
-        params = {}
-        if precio_min:
-            params['precio_min'] = precio_min
-        if precio_max:
-            params['precio_max'] = precio_max
-        if categoria:
-            params['categoria'] = categoria
-        
-        # Extraer texto de búsqueda si hay
-        # Buscar patrones como "servicios de X" o "busca X"
-        search_patterns = [
-            r'servicio[s]?\s+(?:de\s+)?["\']?([^"\']+)["\']?',
-            r'busca[r]?\s+["\']?([^"\']+)["\']?',
-            r'llamad[oa]\s+["\']?([^"\']+)["\']?',
-            r'nombre\s+["\']?([^"\']+)["\']?',
-        ]
-        
-        for pattern in search_patterns:
-            match = re.search(pattern, query_lower)
-            if match:
-                potential_query = match.group(1).strip()
-                # Limpiar palabras comunes
-                potential_query = re.sub(r'\b(con|de|del|la|el|los|las|un|una|que|tiene|tienen)\b', '', potential_query).strip()
-                if potential_query and len(potential_query) > 2:
-                    params['q'] = potential_query
-                break
-        
-        return {'tool': 'buscar_productos', 'params': params, 'intent': 'buscar_servicios'}
-    
     # ========== PROCESAR PAGO ==========
     pago_patterns = [
         r'(pagar|hacer\s+pago|procesar\s+pago|registrar\s+pago)',
@@ -216,9 +108,11 @@ def detect_intent(query: str) -> dict | None:
             else:
                 return {'tool': None, 'intent': 'procesar_pago_incomplete', 'missing': ['reserva_id', 'monto']}
     
-    # ========== RESUMEN DE VENTAS ==========
+    # ========== RESUMEN DE VENTAS ========== (ANTES de buscar_productos para evitar conflicto)
     ventas_patterns = [
-        r'(resumen|reporte|informe)\s+(de\s+)?ventas',
+        r'resumen\s+(de\s+)?ventas',
+        r'reporte\s+(de\s+)?ventas',
+        r'informe\s+(de\s+)?ventas',
         r'cu[aá]nto\s+(vend[ií]|se\s+ha\s+vendido)',
         r'ventas\s+(del|de)\s+(d[ií]a|mes|semana)',
     ]
@@ -230,6 +124,48 @@ def detect_intent(query: str) -> dict | None:
             end_date = datetime.now().strftime('%Y-%m-%d')
             start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
             return {'tool': 'resumen_ventas', 'params': {'start_date': start_date, 'end_date': end_date}, 'intent': 'resumen_ventas'}
+    
+    # ========== BUSCAR SERVICIOS (detección mejorada) ==========
+    # Detectar si es una búsqueda de servicios
+    is_search = bool(re.search(r'(busca|buscar|encuentra|lista|listar|muestra|mostrar|dame|dime|cu[aá]les|hay).*(servicio|producto)', query_lower)) or \
+                bool(re.search(r'servicio[s]?\s+(disponible|de\s+|con\s+|que)', query_lower)) or \
+                bool(re.search(r'qu[eé]\s+servicios', query_lower))
+    
+    if is_search:
+        params = {}
+        
+        # Extraer precio mínimo
+        precio_min_match = re.search(r'(?:precio\s+)?(?:mayor|m[aá]s|superior)\s*(?:a|de|que)?\s*\$?\s*(\d+)', query_lower)
+        if precio_min_match:
+            params['precio_min'] = int(precio_min_match.group(1))
+        
+        # Extraer precio máximo
+        precio_max_match = re.search(r'(?:precio\s+)?(?:menor|menos|inferior)\s*(?:a|de|que)?\s*\$?\s*(\d+)', query_lower)
+        if precio_max_match:
+            params['precio_max'] = int(precio_max_match.group(1))
+        
+        # Detectar categoría
+        if re.search(r'belleza|peluquer|cabello|corte', query_lower):
+            params['categoria'] = 'Servicios de belleza'
+        elif re.search(r'reparacion|hogar|plomer|electric', query_lower):
+            params['categoria'] = 'Reparaciones del hogar'
+        elif re.search(r'clases|educaci|particular|enseñ', query_lower):
+            params['categoria'] = 'Clases particulares'
+        elif re.search(r'm[eé]dic|salud|cita', query_lower):
+            params['categoria'] = 'Salud'
+        
+        # Extraer texto de búsqueda específico
+        # Buscar "servicios de X" donde X es el término de búsqueda
+        busqueda_match = re.search(r'servicios?\s+(?:de\s+|llamado\s+)?["\']?([a-záéíóúñ\s]+)["\']?(?:\s+para|\s+con|\s*$)', query_lower)
+        if busqueda_match:
+            q = busqueda_match.group(1).strip()
+            # Limpiar palabras comunes y muy cortas
+            q = re.sub(r'\b(con|de|del|la|el|los|las|un|una|que|tiene|tienen|precio|mayor|menor|disponibles?)\b', '', q).strip()
+            if q and len(q) >= 2:
+                params['q'] = q
+        
+        logger.info(f"Búsqueda detectada con params: {params}")
+        return {'tool': 'buscar_productos', 'params': params, 'intent': 'buscar_servicios'}
     
     # ========== NO SE DETECTÓ INTENCIÓN CLARA ==========
     return None

@@ -50,9 +50,16 @@ class PagoSerializer(serializers.ModelSerializer):
         monto = data.get('monto')
 
         if reserva and monto is not None:
-            if monto > reserva.total_estimado:
+            # Calcular el total real basándose en los servicios asociados
+            total_servicios = sum(
+                rs.servicio.precio for rs in reserva.detalles.all()
+            )
+            # Usar el mayor entre total_estimado y total de servicios
+            total_real = max(reserva.total_estimado, total_servicios)
+            
+            if total_real > 0 and monto > total_real:
                 raise serializers.ValidationError(
-                    "El monto del pago no puede exceder el total estimado de la reserva."
+                    f"El monto del pago ({monto}) no puede exceder el total de la reserva ({total_real})."
                 )
 
             if models.Pago.objects.filter(reserva=reserva).exists():

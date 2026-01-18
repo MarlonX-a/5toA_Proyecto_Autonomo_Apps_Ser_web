@@ -26,7 +26,11 @@ def create_reserva_with_servicio(serializer, servicio_id, fecha, hora):
                 hora_servicio=hora,
                 estado='pendiente'
             )
-            logger.info(f"Created ReservaServicio for reserva={reserva.id}, servicio={servicio_id}")
+            # Actualizar el total_estimado de la reserva con el precio del servicio
+            from decimal import Decimal
+            reserva.total_estimado = Decimal(str(servicio.precio))
+            reserva.save(update_fields=['total_estimado'])
+            logger.info(f"Created ReservaServicio for reserva={reserva.id}, servicio={servicio_id}, total_estimado={reserva.total_estimado}")
         except Servicio.DoesNotExist:
             logger.warning(f"Servicio {servicio_id} not found, skipping ReservaServicio creation")
         except Exception as e:

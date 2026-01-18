@@ -29,6 +29,11 @@ export const getProveedor = (id: number) => proveedorApi.get(`/${id}/`);
 export const updateProveedor = (id: number, proveedor: Partial<IproveedorRegister>, token: string) =>
     proveedorApi.patch(`/${id}/`, proveedor, { headers: { Authorization: getAuthHeader(token) } });
 
+// Nuevo endpoint para actualizar perfil usando JWT (crea registro si no existe)
+const djangoProfileApi = createApiClient("http://127.0.0.1:8000/api_rest/", 'Bearer');
+export const updateProfileByJwt = (payload: any, token: string) =>
+    djangoProfileApi.patch('profile/update/', payload, { headers: { Authorization: `Bearer ${token}` } });
+
 // Intentos de obtener datos públicos desde el servicio Django sin enviar Authorization
 export const getClientePublic = (id: number) => createApiClient('http://127.0.0.1:8000/api_rest/api/v1/cliente/', 'None').get(`/${id}/`);
 export const getProveedorPublic = (id: number) => createApiClient('http://127.0.0.1:8000/api_rest/api/v1/proveedor/', 'None').get(`/${id}/`);

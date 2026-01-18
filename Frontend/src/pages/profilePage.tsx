@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { getUsers, updateCliente, updateProveedor, getClientePublic, getProveedorPublic } from "../api/usersApi";
-import { updateUbicacion } from "../api/ubicacion";
+import { getUsers, updateProfileByJwt } from "../api/usersApi";
 import type { IclienteRegister } from "../interfaces/cliente";
 import type { IproveedorRegister } from "../interfaces/proveedor";
-import type { Iubicacion } from "../interfaces/ubicacion";
 import { useNavigate } from "react-router-dom";
 
 export function ProfilePage() {
   const { register, handleSubmit, reset } = useForm<IclienteRegister | IproveedorRegister>();
   const [loading, setLoading] = useState(true);
   const [rol, setRol] = useState<"cliente" | "proveedor" | null>(null);
-  const [registroId, setRegistroId] = useState<number | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [initialValues, setInitialValues] = useState<any>({});
   const navigate = useNavigate();
@@ -27,56 +24,28 @@ export function ProfilePage() {
         const res = await getUsers(savedToken);
         const data = res.data;
         let formValues: any = {};
-        let extendedData: any = null;
 
-        // Si el perfil no incluye campos extendidos, intentar recuperarlos desde el servicio Django
-        try {
-          if ((!data.telefono && data.telefono !== '') && (!data.descripcion && data.descripcion !== '')) {
-            if (data.rol === 'cliente') {
-              const ext = await getClientePublic(data.id);
-              extendedData = ext.data;
-            } else if (data.rol === 'proveedor') {
-              const ext = await getProveedorPublic(data.id);
-              extendedData = ext.data;
-            }
-          }
-        } catch (e) {
-          // No pasa nada si no existen datos públicos
-          extendedData = null;
-        }
-
-        const source = extendedData ?? data;
-
-        if (source) {
-          if ("telefono" in source && !("descripcion" in source)) {
-            setRol("cliente");
-            setRegistroId(source.id || data.id);
-            formValues = {
-              username: source.user?.username || data.user?.username,
-              first_name: source.user?.first_name || data.user?.first_name,
-              last_name: source.user?.last_name || data.user?.last_name,
-              email: source.user?.email || data.user?.email,
-              telefono: source.telefono || '',
-              direccion: source.ubicacion?.direccion || "",
-              ciudad: source.ubicacion?.ciudad || "",
-              provincia: source.ubicacion?.provincia || "",
-              pais: source.ubicacion?.pais || "",
-            };
-          } else if ("descripcion" in source) {
-            setRol("proveedor");
-            setRegistroId(source.id || data.id);
-            formValues = {
-              username: source.user?.username || data.user?.username,
-              first_name: source.user?.first_name || data.user?.first_name,
-              last_name: source.user?.last_name || data.user?.last_name,
-              email: source.user?.email || data.user?.email,
-              telefono: source.telefono || '',
-              descripcion: source.descripcion || '',
-              direccion: source.ubicacion?.direccion || "",
-              ciudad: source.ubicacion?.ciudad || "",
-              provincia: source.ubicacion?.provincia || "",
-              pais: source.ubicacion?.pais || "",
-            };
+        // Usar el rol directamente del auth-service
+        const userRol = data.rol as "cliente" | "proveedor" | null;
+        
+        if (userRol === "cliente" || userRol === "proveedor") {
+          setRol(userRol);
+          
+          formValues = {
+            username: data.user?.username || '',
+            first_name: data.user?.first_name || '',
+            last_name: data.user?.last_name || '',
+            email: data.user?.email || '',
+            telefono: data.telefono || '',
+            direccion: data.ubicacion?.direccion || "",
+            ciudad: data.ubicacion?.ciudad || "",
+            provincia: data.ubicacion?.provincia || "",
+            pais: data.ubicacion?.pais || "",
+          };
+          
+          // Si es proveedor, agregar descripción
+          if (userRol === "proveedor") {
+            formValues.descripcion = data.descripcion || '';
           }
         }
 
@@ -94,7 +63,7 @@ export function ProfilePage() {
 
   // 🔹 Enviar solo campos modificados (independientes)
   const onSubmit = async (formData: any) => {
-    if (!token || !rol || !registroId) return;
+    if (!token || !rol) return;
 
     // Detectar los cambios
     const changedFields: any = {};
@@ -112,11 +81,6 @@ export function ProfilePage() {
     try {
       let payload: any = {};
 
-      // 🔹 Campos de usuario (email, username)
-      if (changedFields.username) payload.user = { username: changedFields.username };
-      if (changedFields.email)
-        payload.user = { ...payload.user, email: changedFields.email };
-
       // 🔹 Campos generales
       if (changedFields.telefono) payload.telefono = changedFields.telefono;
       if (rol === "proveedor" && changedFields.descripcion !== undefined)
@@ -133,24 +97,21 @@ export function ProfilePage() {
       }
 
       if (Object.keys(payload).length === 0) {
-        alert("No hay cambios válidos para enviar");
+        alert("No hay cambios válidos para enviar (solo se pueden editar teléfono, descripción y ubicación)");
         return;
       }
 
-      if (rol === "cliente") {
-        await updateCliente(registroId, payload, token);
-        alert("Cliente actualizado correctamente ✅");
-      } else if (rol === "proveedor") {
-        await updateProveedor(registroId, payload, token);
-        alert("Proveedor actualizado correctamente ✅");
-      }
+      // Usar el nuevo endpoint que usa el JWT para identificar al usuario
+      await updateProfileByJwt(payload, token);
+      alert("Perfil actualizado correctamente ✅");
 
       // 🔁 Actualizar valores iniciales para próximas ediciones
       setInitialValues({ ...initialValues, ...formData });
       navigate("/");
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error al actualizar:", err);
-      alert("Error al guardar los cambios ❌");
+      const errorMsg = err.response?.data?.error || err.message || "Error desconocido";
+      alert(`Error al guardar los cambios ❌: ${errorMsg}`);
     }
   };
 

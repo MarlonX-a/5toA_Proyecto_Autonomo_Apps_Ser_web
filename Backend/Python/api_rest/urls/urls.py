@@ -4,7 +4,9 @@ from .api_router import router
 from ..views.tools import BuscarProductosView, VerReservaView, ObtenerClienteView, CrearReservaView, RegistrarClienteView, ProcesarPagoView, ResumenVentasView
 
 urlpatterns = [
-    re_path('profile/', views.ProfileView.as_view()),
+    # Rutas más específicas primero
+    path('profile/update/', views.ProfileUpdateView.as_view(), name='profile-update'),
+    path('profile/', views.ProfileView.as_view(), name='profile'),
     path('api/v1/', include(router.urls)),
     
     # Pilar 2: Webhooks e Interoperabilidad B2B

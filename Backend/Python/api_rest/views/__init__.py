@@ -4,7 +4,7 @@ from .cliente_views import ClienteView
 from .comentario_views import ComentarioView
 from .foto_servicio_views import FotoServicioView
 from .pago_views import PagoView
-from .perfil_views import ProfileView
+from .perfil_views import ProfileView, ProfileUpdateView
 from .proveedor_views import ProveedorView
 from .reserva_servicio_views import ReservaServicioView
 from. reserva_views import ReservaView

@@ -28,6 +28,29 @@ def get_user_id_from_caller(caller: dict) -> str | int | None:
     return None
 
 
+def get_user_role_from_caller(caller: dict) -> str | None:
+    """Extrae el rol del usuario del caller (JWT payload).
+    
+    Retorna 'cliente', 'proveedor', u otro rol según el JWT.
+    """
+    if 'jwt_payload' in caller:
+        role = caller['jwt_payload'].get('role')
+        logger.info(f"Found role in jwt_payload: {role}")
+        return role
+    return None
+
+
+def is_authenticated(caller: dict) -> bool:
+    """Verifica si el usuario está autenticado con JWT."""
+    return 'jwt_payload' in caller and caller['jwt_payload'].get('sub') is not None
+
+
+# Definición de permisos por rol para las herramientas
+CLIENTE_ONLY_TOOLS = ['crear_reserva', 'procesar_pago']
+PROVEEDOR_ONLY_TOOLS = ['resumen_ventas']
+ALL_AUTHENTICATED_TOOLS = ['buscar_productos', 'ver_reserva']  # Disponibles para todos los logueados
+
+
 async def get_client_data_for_user(user_id: str | int) -> dict | None:
     """Obtiene los datos del cliente desde Django usando el user_id."""
     logger.info(f"get_client_data_for_user called with user_id: {user_id}")
@@ -581,13 +604,26 @@ async def stream_chat(payload: ChatRequest, caller=Depends(get_caller)):
     """Stream an answer back to client as Server-Sent Events (text/event-stream).
 
     Usa detección de intención basada en reglas primero, y el LLM solo para conversación.
+    REQUIERE: Usuario autenticado con JWT válido.
     """
     from fastapi.responses import StreamingResponse
     import asyncio
     import json
 
-    # Obtener user_id del JWT para operaciones autenticadas
+    # =====================================================
+    # VERIFICACIÓN DE AUTENTICACIÓN - Solo usuarios logueados
+    # =====================================================
+    if not is_authenticated(caller):
+        async def auth_error_stream():
+            yield "data: ❌ **Acceso denegado**: Debes iniciar sesión para usar el asistente.\n\n"
+            yield "data: 👉 Por favor, inicia sesión o regístrate para continuar.\n\n"
+            yield "event: done\n\n"
+        return StreamingResponse(auth_error_stream(), media_type="text/event-stream")
+
+    # Obtener user_id y rol del JWT para operaciones autenticadas
     user_id = get_user_id_from_caller(caller)
+    user_role = get_user_role_from_caller(caller)
+    logger.info(f"Usuario autenticado - ID: {user_id}, Rol: {user_role}")
     
     async def event_stream():
         # =====================================================
@@ -632,15 +668,29 @@ async def stream_chat(payload: ChatRequest, caller=Depends(get_caller)):
             # Caso: Herramienta detectada - ejecutarla
             if tool_name:
                 try:
-                    # Herramientas que requieren usuario autenticado
-                    auth_required_tools = ['crear_reserva', 'procesar_pago', 'registrar_cliente']
+                    # =====================================================
+                    # VERIFICACIÓN DE PERMISOS POR ROL
+                    # =====================================================
                     
-                    if tool_name in auth_required_tools:
-                        if not user_id:
-                            yield f"data: ❌ Para {tool_name.replace('_', ' ')}, necesitas **iniciar sesión** primero.\n\n"
+                    # Herramientas exclusivas para clientes
+                    if tool_name in CLIENTE_ONLY_TOOLS:
+                        if user_role != 'cliente':
+                            yield f"data: ❌ Esta función está disponible solo para **clientes**.\n"
+                            yield f"data: Tu rol actual es: **{user_role or 'no definido'}**\n\n"
                             yield "event: done\n\n"
                             return
-                        
+                    
+                    # Herramientas exclusivas para proveedores
+                    if tool_name in PROVEEDOR_ONLY_TOOLS:
+                        if user_role != 'proveedor':
+                            yield f"data: ❌ Esta función está disponible solo para **proveedores**.\n"
+                            yield f"data: Tu rol actual es: **{user_role or 'no definido'}**\n\n"
+                            yield "event: done\n\n"
+                            return
+                    
+                    # Para herramientas que requieren datos del cliente
+                    client_data = None
+                    if tool_name in ['crear_reserva', 'procesar_pago']:
                         # Obtener datos del cliente automáticamente
                         client_data = await get_client_data_for_user(user_id)
                         

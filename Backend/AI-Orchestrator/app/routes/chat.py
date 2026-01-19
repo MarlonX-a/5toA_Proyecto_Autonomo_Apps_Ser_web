@@ -171,19 +171,109 @@ def detect_intent(query: str) -> dict | None:
     return None
 
 
+def is_off_topic(query: str) -> bool:
+    """
+    Detecta si la pregunta está fuera del tema del sistema FindYourWork.
+    Retorna True si es off-topic.
+    """
+    query_lower = query.lower().strip()
+    
+    # Palabras clave que indican que ES sobre el sistema (no off-topic)
+    on_topic_keywords = [
+        'servicio', 'reserva', 'reservar', 'cita', 'agendar', 'pago', 'pagar',
+        'precio', 'costo', 'disponible', 'horario', 'cliente', 'buscar',
+        'corte', 'cabello', 'peluquer', 'masaje', 'spa', 'belleza', 'manicure',
+        'pedicure', 'facial', 'tratamiento', 'venta', 'resumen', 'reporte',
+        'findyourwork', 'plataforma', 'ayuda', 'hola', 'gracias', 'adios',
+        'salud', 'medic', 'cita', 'consulta'
+    ]
+    
+    # Si contiene palabras del sistema, no es off-topic
+    for keyword in on_topic_keywords:
+        if keyword in query_lower:
+            return False
+    
+    # Patrones que indican preguntas off-topic
+    off_topic_patterns = [
+        r'qu[eé]\s+es\s+(el|la|un|una)\s+\w+',  # "qué es la democracia"
+        r'c[oó]mo\s+(funciona|se\s+hace)\s+\w+(?!\s*(reserva|pago|servicio))',  # "cómo funciona X" (no relacionado)
+        r'cu[aá]l\s+es\s+(el|la)\s+(capital|presidente|rey)',  # preguntas de geografía/política
+        r'qui[eé]n\s+(es|fue|era)\s+\w+',  # "quién es X"
+        r'(cu[eé]ntame|dime|explica)\s+(sobre|acerca|de)\s+(?!(servicio|reserva|pago))',  # "cuéntame sobre X"
+        r'(historia|matem[aá]tica|f[ií]sica|qu[ií]mica|biolog[ií]a|geograf[ií]a)',
+        r'(pol[ií]tica|econom[ií]a|filosof[ií]a|religi[oó]n)',
+        r'(chiste|broma|adivinanza|trabalenguas)',
+        r'(clima|tiempo|temperatura)\s+(en|de)',
+        r'(receta|cocina|ingrediente)',
+        r'(pel[ií]cula|serie|libro|m[uú]sica|canci[oó]n)',
+        r'(deporte|f[uú]tbol|basket|tenis)',
+        r'(c[oó]digo|programar|python|javascript|html)',
+        r'(juego|videojuego|minecraft|fortnite)',
+    ]
+    
+    for pattern in off_topic_patterns:
+        if re.search(pattern, query_lower):
+            return True
+    
+    # Si el mensaje es muy corto y no contiene keywords del sistema
+    if len(query_lower.split()) <= 3 and not any(kw in query_lower for kw in on_topic_keywords):
+        # Podría ser un saludo o algo neutral, dejamos pasar
+        if re.search(r'^(hola|hey|buenos?\s+d[ií]as?|buenas?\s+(tardes?|noches?)|gracias|adi[oó]s|chao)$', query_lower):
+            return False
+    
+    return False
+
+
+OFF_TOPIC_RESPONSE = """🤖 ¡Hola! Soy el asistente virtual de **FindYourWork**.
+
+Mi función es ayudarte exclusivamente con nuestra plataforma de reservas de servicios. Puedo ayudarte con:
+
+📋 **Buscar servicios** - "¿Qué servicios tienen disponibles?"
+📅 **Crear reservas** - "Quiero reservar un corte de cabello para mañana"
+👀 **Ver tus reservas** - "Muéstrame mi reserva #1"
+💳 **Procesar pagos** - "Quiero pagar $50 para la reserva #2"
+📊 **Resúmenes de ventas** - "Dame el resumen de ventas del mes"
+
+¿En qué puedo ayudarte hoy? 😊"""
+
+
 def extract_payment_params(query_lower: str, query_original: str) -> dict:
     """Extrae parámetros de pago del mensaje del usuario."""
     params = {}
     
-    # Buscar ID de reserva
-    reserva_match = re.search(r'reserva\s*(?:#|n[úu]mero|id)?\s*(\d+)', query_lower)
-    if reserva_match:
-        params['reserva_id'] = int(reserva_match.group(1))
+    # PRIMERO: Buscar ID de reserva (patrones específicos para evitar confusión con monto)
+    # Patrones como "reserva #3", "reserva 3", "a la reserva 3"
+    reserva_patterns = [
+        r'(?:a\s+la\s+)?reserva\s*(?:#|n[úu]mero|num|id)?\s*(\d+)',
+        r'(?:#|n[úu]mero|num|id)\s*(\d+)\s*(?:de\s+)?(?:la\s+)?reserva',
+        r'para\s+(?:la\s+)?reserva\s*(?:#)?\s*(\d+)',
+    ]
     
-    # Buscar monto
-    monto_match = re.search(r'\$?\s*(\d+(?:\.\d{2})?)\s*(?:d[oó]lares?)?', query_lower)
-    if monto_match:
-        params['monto'] = monto_match.group(1)
+    reserva_id = None
+    for pattern in reserva_patterns:
+        reserva_match = re.search(pattern, query_lower)
+        if reserva_match:
+            reserva_id = int(reserva_match.group(1))
+            params['reserva_id'] = reserva_id
+            break
+    
+    # SEGUNDO: Buscar monto (patrones con $, excluyendo el número de reserva ya encontrado)
+    # Patrones: "$100", "$100 dolares", "100 dolares", "monto de $100"
+    monto_patterns = [
+        r'\$\s*(\d+(?:\.\d{1,2})?)',  # $100 o $100.00
+        r'(\d+(?:\.\d{1,2})?)\s*d[oó]lares?',  # 100 dolares
+        r'monto\s+(?:de\s+)?\$?\s*(\d+(?:\.\d{1,2})?)',  # monto de $100
+        r'pagar\s+\$?\s*(\d+(?:\.\d{1,2})?)',  # pagar $100
+    ]
+    
+    for pattern in monto_patterns:
+        monto_match = re.search(pattern, query_lower)
+        if monto_match:
+            monto_valor = monto_match.group(1)
+            # Asegurarse de que no sea el mismo número que la reserva
+            if reserva_id is None or int(float(monto_valor)) != reserva_id:
+                params['monto'] = monto_valor
+                break
     
     # Buscar método de pago
     if 'tarjeta' in query_lower:
@@ -195,6 +285,7 @@ def extract_payment_params(query_lower: str, query_original: str) -> dict:
     else:
         params['metodo_pago'] = 'tarjeta'  # Default
     
+    logger.info(f"Payment params extracted: {params}")
     return params
 
 
@@ -283,6 +374,15 @@ def extract_reservation_params(query_lower: str, query_original: str) -> dict:
 
 # System prompt con contexto de FindYourWork y herramientas MCP
 SYSTEM_PROMPT = """Eres el asistente virtual de FindYourWork, una plataforma de reservas de servicios profesionales (peluquería, spa, masajes, etc.).
+
+⚠️ IMPORTANTE: Solo puedes ayudar con temas relacionados a FindYourWork:
+- Buscar y consultar servicios disponibles
+- Crear y ver reservas
+- Procesar pagos
+- Ver resúmenes de ventas
+
+Si el usuario pregunta sobre otros temas (política, historia, matemáticas, programación, noticias, clima, chistes, etc.), 
+responde educadamente que solo puedes ayudar con temas de la plataforma FindYourWork.
 
 Tienes acceso a las siguientes herramientas para ayudar a los usuarios:
 
@@ -623,13 +723,67 @@ async def stream_chat(payload: ChatRequest, caller=Depends(get_caller)):
                     
                 except Exception as e:
                     logger.error(f"Error ejecutando herramienta: {e}", exc_info=True)
-                    yield f"data: ❌ Lo siento, hubo un error: {str(e)}\n\n"
+                    error_msg = str(e)
+                    
+                    # Dar mensajes más amigables según el tipo de error
+                    if "No Reserva matches" in error_msg:
+                        reserva_id = params.get('reserva_id', params.get('reserva', ''))
+                        yield f"data: ❌ La reserva #{reserva_id} no existe. Por favor verifica el número de reserva.\n\n"
+                    elif "No Cliente matches" in error_msg:
+                        yield f"data: ❌ No se encontró el cliente. ¿Deseas registrarte primero?\n\n"
+                    elif "No Servicio matches" in error_msg:
+                        yield f"data: ❌ El servicio especificado no existe.\n\n"
+                    elif "monto" in error_msg.lower() and ("exceder" in error_msg.lower() or "exceed" in error_msg.lower()):
+                        yield f"data: ❌ El monto del pago excede el total de la reserva.\n\n"
+                    elif "ya tiene una reserva en esta fecha y hora" in error_msg:
+                        yield f"data: ❌ Ya tienes una reserva para esa fecha y hora. Por favor elige otro horario.\n\n"
+                    elif "reserva en esta fecha" in error_msg.lower() or "already" in error_msg.lower():
+                        yield f"data: ❌ Ya existe una reserva en esa fecha/hora. Por favor elige otro horario.\n\n"
+                    elif "Ya existe un pago" in error_msg:
+                        yield f"data: ❌ Esta reserva ya tiene un pago registrado.\n\n"
+                    elif "reserva cancelada" in error_msg.lower():
+                        yield f"data: ❌ No se puede procesar el pago de una reserva cancelada.\n\n"
+                    elif "fecha de pago no puede ser futura" in error_msg.lower():
+                        yield f"data: ❌ La fecha de pago no puede ser en el futuro.\n\n"
+                    elif "non_field_errors" in error_msg:
+                        # Extraer el mensaje de error del JSON
+                        import json
+                        try:
+                            error_data = json.loads(error_msg.split(": ", 1)[1] if ": " in error_msg else error_msg)
+                            if isinstance(error_data, dict) and 'non_field_errors' in error_data:
+                                user_error = error_data['non_field_errors'][0]
+                                yield f"data: ❌ {user_error}\n\n"
+                            else:
+                                yield f"data: ❌ Error de validación. Por favor verifica los datos.\n\n"
+                        except:
+                            yield f"data: ❌ Error de validación. Por favor verifica los datos.\n\n"
+                    elif "400" in error_msg:
+                        yield f"data: ❌ Datos inválidos. Por favor verifica la información proporcionada.\n\n"
+                    elif "401" in error_msg or "403" in error_msg:
+                        yield f"data: ❌ No tienes permiso para realizar esta acción. Por favor inicia sesión.\n\n"
+                    elif "404" in error_msg:
+                        yield f"data: ❌ El recurso solicitado no existe.\n\n"
+                    elif "500" in error_msg:
+                        yield f"data: ❌ Error del servidor. Por favor intenta más tarde.\n\n"
+                    else:
+                        yield f"data: ❌ Lo siento, hubo un error procesando tu solicitud. Por favor intenta de nuevo.\n\n"
                 
                 yield "event: done\n\n"
                 return
         
         # =====================================================
-        # PASO 2: Si no detectamos intención, usar el LLM para respuesta conversacional
+        # PASO 2: Verificar si es pregunta fuera del sistema
+        # =====================================================
+        if is_off_topic(payload.query):
+            for line in OFF_TOPIC_RESPONSE.split('\n'):
+                yield f"data: {line}\n"
+                await asyncio.sleep(0.02)
+            yield "\n"
+            yield "event: done\n\n"
+            return
+        
+        # =====================================================
+        # PASO 3: Si no detectamos intención, usar el LLM para respuesta conversacional
         # =====================================================
         adapter = __import__('app.llm_adapter', fromlist=['get_default_adapter']).get_default_adapter()
         full_prompt = build_prompt(payload.query)
@@ -754,9 +908,16 @@ async def format_tool_result(tool_name: str, result: Any, params: dict) -> str:
     
     elif tool_name == 'procesar_pago':
         if result and result.get('id'):
+            # Extraer ID de reserva (puede venir como objeto o como número)
+            reserva_data = result.get('reserva')
+            if isinstance(reserva_data, dict):
+                reserva_id = reserva_data.get('id', 'N/A')
+            else:
+                reserva_id = reserva_data
+            
             text = f"✅ **¡Pago registrado exitosamente!**\n\n"
             text += f"- **ID de pago:** {result.get('id')}\n"
-            text += f"- **Reserva:** #{result.get('reserva')}\n"
+            text += f"- **Reserva:** #{reserva_id}\n"
             text += f"- **Monto:** ${result.get('monto', '0.00')}\n"
             text += f"- **Estado:** {result.get('estado', 'pagado')}\n"
             text += f"- **Método:** {result.get('metodo_pago', 'N/A')}\n"

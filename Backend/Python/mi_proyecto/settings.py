@@ -14,11 +14,19 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 
-# Cargar variables de entorno desde .env
-load_dotenv()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Cargar variables de entorno desde .env (ruta explícita)
+env_path = BASE_DIR / '.env'
+load_dotenv(dotenv_path=env_path)
+
+# Debug: verificar que se cargó JWT_PUBLIC_KEY
+jwt_key = os.environ.get('JWT_PUBLIC_KEY', '')
+if jwt_key:
+    print(f"✅ JWT_PUBLIC_KEY cargada ({len(jwt_key)} chars)")
+else:
+    print("⚠️ JWT_PUBLIC_KEY no encontrada en .env")
 
 
 # Quick-start development settings - unsuitable for production
@@ -210,11 +218,10 @@ SPECTACULAR_SETTINGS = {
     # OTHER SETTINGS
 }
 
-load_dotenv()
-
+# JWT_PUBLIC_KEY ya se cargó al inicio con load_dotenv(dotenv_path=env_path)
 JWT_PUBLIC_KEY = os.environ.get("JWT_PUBLIC_KEY")
 
 if not JWT_PUBLIC_KEY:
-    raise RuntimeError("JWT_PUBLIC_KEY no está definida en el entorno")
+    raise RuntimeError("JWT_PUBLIC_KEY no está definida en el entorno. Verifica el archivo .env")
 JWT_PUBLIC_KEY = JWT_PUBLIC_KEY.replace("\\n", "\n")
 

@@ -27,6 +27,7 @@ import DashboardCliente from './pages/Cliente/DashboardCliente';
 import { AdminDashboard } from './pages/AdminDashboard';
 import BusinessDashboard from './pages/BusinessDashboard';
 import AiChat from './pages/AiChat';
+import B2BIntegrationDashboard from './pages/B2BIntegrationDashboard';
 
 function App() {
 
@@ -62,6 +63,7 @@ function App() {
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/negocio/dashboard" element={<BusinessDashboard />} />
           <Route path="/ai-chat" element={<AiChat />} />
+          <Route path="/b2b-integration" element={<B2BIntegrationDashboard />} />
 
         </Routes>
         <Footer />

@@ -10,6 +10,7 @@ import {
   User,
   LayoutDashboard,
   Shield,
+  Link2,
 } from 'lucide-react';
 
 export function Navbar() {
@@ -104,6 +105,12 @@ export function Navbar() {
             <li>
               <Link to="/ai-chat">
                 <span>AI Chat</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/b2b-integration">
+                <Link2 size={18} />
+                <span>B2B</span>
               </Link>
             </li>
             <li>

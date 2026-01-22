@@ -20,7 +20,12 @@ export type EventType =
   | 'payment_created'
   | 'payment_updated'
   | 'dashboard:metrics'
-  | 'dashboard:refresh';
+  | 'dashboard:refresh'
+  | 'reservation_created'
+  | 'reservation_updated'
+  | 'reservation_deleted'
+  | 'payment_created'
+  | 'payment_updated';
 
 export interface AuthPayload {
   token: string;
